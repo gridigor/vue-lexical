@@ -56,11 +56,7 @@ export const ContentEditable = defineComponent({
           }),
         ),
         canShowPlaceholder.value && slots.placeholder
-          ? h(
-              'div',
-              { 'aria-hidden': 'true', class: 'lexical-placeholder' },
-              slots.placeholder(),
-            )
+          ? h('div', { 'aria-hidden': 'true', class: 'lexical-placeholder' }, slots.placeholder())
           : null,
       ])
   },

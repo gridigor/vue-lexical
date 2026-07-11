@@ -1,4 +1,4 @@
-# vue-lexical
+# @gridigor/vue-lexical
 
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
@@ -20,7 +20,7 @@ version as `lexical`.
 ## Installation
 
 ```sh
-npm install vue-lexical lexical vue
+npm install @gridigor/vue-lexical lexical vue
 ```
 
 ## Plain text editor
@@ -35,7 +35,7 @@ import {
   LexicalComposer,
   OnChangePlugin,
   PlainTextPlugin,
-} from 'vue-lexical'
+} from '@gridigor/vue-lexical'
 
 const initialConfig = {
   namespace: 'MyEditor',
@@ -72,8 +72,8 @@ Components can be imported from the package root or through subpaths matching
 the Lexical naming style:
 
 ```ts
-import { LexicalComposer } from 'vue-lexical/LexicalComposer'
-import { ContentEditable } from 'vue-lexical/LexicalContentEditable'
+import { LexicalComposer } from '@gridigor/vue-lexical/LexicalComposer'
+import { ContentEditable } from '@gridigor/vue-lexical/LexicalContentEditable'
 ```
 
 Inside a plugin, access the current editor with either composable:
@@ -82,7 +82,7 @@ Inside a plugin, access the current editor with either composable:
 import {
   useLexicalComposer,
   useLexicalComposerContext,
-} from 'vue-lexical/LexicalComposerContext'
+} from '@gridigor/vue-lexical/LexicalComposerContext'
 
 const editor = useLexicalComposer()
 const [sameEditor] = useLexicalComposerContext()

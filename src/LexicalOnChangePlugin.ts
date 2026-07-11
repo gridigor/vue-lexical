@@ -16,11 +16,7 @@ export const OnChangePlugin = defineComponent({
     },
   },
   emits: {
-    change: (
-      _editorState: EditorState,
-      _editor: LexicalEditor,
-      _tags: Set<UpdateTag>,
-    ) => true,
+    change: (_editorState: EditorState, _editor: LexicalEditor, _tags: Set<UpdateTag>) => true,
   },
   setup(props, { emit }) {
     const editor = useLexicalComposer()
@@ -30,11 +26,8 @@ export const OnChangePlugin = defineComponent({
       unregister = editor.registerUpdateListener(
         ({ dirtyElements, dirtyLeaves, editorState, prevEditorState, tags }) => {
           if (
-            (props.ignoreSelectionChange &&
-              dirtyElements.size === 0 &&
-              dirtyLeaves.size === 0) ||
-            (props.ignoreHistoryMergeTagChange &&
-              tags.has(HISTORY_MERGE_TAG)) ||
+            (props.ignoreSelectionChange && dirtyElements.size === 0 && dirtyLeaves.size === 0) ||
+            (props.ignoreHistoryMergeTagChange && tags.has(HISTORY_MERGE_TAG)) ||
             prevEditorState.isEmpty()
           ) {
             return

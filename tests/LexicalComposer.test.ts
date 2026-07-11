@@ -1,10 +1,5 @@
 import type { LexicalEditor } from 'lexical'
-import {
-  $createParagraphNode,
-  $createTextNode,
-  $getRoot,
-  $isElementNode,
-} from 'lexical'
+import { $createParagraphNode, $createTextNode, $getRoot, $isElementNode } from 'lexical'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
@@ -69,18 +64,14 @@ describe('LexicalComposer', () => {
           namespace: 'initial-state',
           onError,
           editorState: () => {
-            $getRoot().append(
-              $createParagraphNode().append($createTextNode('Hello Vue')),
-            )
+            $getRoot().append($createParagraphNode().append($createTextNode('Hello Vue')))
           },
         },
       },
       slots: { default: () => h(CaptureEditor) },
     })
 
-    expect(
-      editor?.getEditorState().read(() => $getRoot().getTextContent()),
-    ).toBe('Hello Vue')
+    expect(editor?.getEditorState().read(() => $getRoot().getTextContent())).toBe('Hello Vue')
   })
 
   it('registers plain text behavior and emits editor changes', async () => {

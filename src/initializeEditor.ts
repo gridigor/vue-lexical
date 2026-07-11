@@ -1,11 +1,7 @@
 import type { EditorState, LexicalEditor } from 'lexical'
 import { $createParagraphNode, $getRoot, $getSelection } from 'lexical'
 
-export type InitialEditorState =
-  | null
-  | string
-  | EditorState
-  | ((editor: LexicalEditor) => void)
+export type InitialEditorState = null | string | EditorState | ((editor: LexicalEditor) => void)
 
 export function initializeEditor(
   editor: LexicalEditor,

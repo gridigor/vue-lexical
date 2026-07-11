@@ -8,14 +8,8 @@ import type {
 } from 'lexical'
 import { createEditor } from 'lexical'
 import { defineComponent, provide } from 'vue'
-import {
-  lexicalComposerContextKey,
-  type LexicalComposerContext,
-} from './LexicalComposerContext'
-import {
-  initializeEditor,
-  type InitialEditorState,
-} from './initializeEditor'
+import { lexicalComposerContextKey, type LexicalComposerContext } from './LexicalComposerContext'
+import { initializeEditor, type InitialEditorState } from './initializeEditor'
 
 export interface InitialConfig {
   namespace: string

@@ -11,9 +11,7 @@ export function useLexicalComposerContext(): LexicalComposerContext {
   const context = inject(lexicalComposerContextKey)
 
   if (context === undefined) {
-    throw new Error(
-      'useLexicalComposerContext() must be used inside a <LexicalComposer>.',
-    )
+    throw new Error('useLexicalComposerContext() must be used inside a <LexicalComposer>.')
   }
 
   return context

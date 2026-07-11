@@ -9,9 +9,9 @@ export function useCanShowPlaceholder(): Readonly<Ref<boolean>> {
   let unregister = () => {}
 
   const update = () => {
-    canShow.value = editor.getEditorState().read(
-      () => $getRoot().getTextContentSize() === 0 && !editor.isComposing(),
-    )
+    canShow.value = editor
+      .getEditorState()
+      .read(() => $getRoot().getTextContentSize() === 0 && !editor.isComposing())
   }
 
   onMounted(() => {

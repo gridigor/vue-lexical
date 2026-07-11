@@ -88,6 +88,31 @@ const editor = useLexicalComposer()
 const [sameEditor] = useLexicalComposerContext()
 ```
 
+## Decorator nodes
+
+`DecoratorNode` values can be Vue VNodes. The composer automatically teleports
+them into the DOM element owned by the Lexical node and cleans up their Vue
+component instances when the node or editor is removed.
+
+```ts
+import type { VueDecorator } from '@gridigor/vue-lexical'
+import { DecoratorNode } from 'lexical'
+import { h } from 'vue'
+import MentionChip from './MentionChip.vue'
+
+class MentionNode extends DecoratorNode<VueDecorator> {
+  // Implement the standard Lexical node methods alongside decorate().
+  decorate(): VueDecorator {
+    return h(MentionChip, { name: this.getName() })
+  }
+}
+```
+
+Register the custom node in `initialConfig.nodes`, just as with a framework-free
+Lexical editor. Decorators remain inside the same Vue application context, so
+Vue provide/inject and component reactivity continue to work through the
+Teleport.
+
 ## Development
 
 ```sh

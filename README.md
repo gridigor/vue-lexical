@@ -192,6 +192,11 @@ plugins and decorator components must follow the same rule as the built-ins:
 access browser APIs and register DOM-dependent behavior in `onMounted`, then
 clean it up in `onUnmounted`.
 
+A runnable Nuxt 4 application is available in the
+[`examples/nuxt`](https://github.com/gridigor/vue-lexical/tree/main/examples/nuxt)
+directory. It renders the editor shell on the server and initializes the
+Lexical state during client hydration.
+
 ## Development
 
 ```sh

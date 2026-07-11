@@ -6,6 +6,8 @@ node_modules/
 # Build and test output
 dist/
 coverage/
+.nuxt/
+.output/
 .vitest/
 test-results/
 playwright-report/

@@ -9,7 +9,7 @@ same small, composable building blocks as `@lexical/react`.
 
 ## Requirements
 
-- Vue 3.5.39 or newer
+- Vue 3.5 or newer
 - Lexical 0.47.x
 - Node.js 22.12 or newer for development
 - TypeScript 7 for this repository's toolchain
@@ -112,6 +112,43 @@ Register the custom node in `initialConfig.nodes`, just as with a framework-free
 Lexical editor. Decorators remain inside the same Vue application context, so
 Vue provide/inject and component reactivity continue to work through the
 Teleport.
+
+## Nested editors
+
+Use `LexicalNestedComposer` for an editor owned by another Lexical node, such as
+an image caption. Create the nested editor once in the owning node and pass it
+through `initialEditor`:
+
+```vue
+<script setup lang="ts">
+import type { LexicalEditor } from 'lexical'
+import {
+  ContentEditable,
+  HistoryPlugin,
+  LexicalNestedComposer,
+  PlainTextPlugin,
+} from '@gridigor/vue-lexical'
+
+defineProps<{ editor: LexicalEditor }>()
+</script>
+
+<template>
+  <LexicalNestedComposer :initial-editor="editor">
+    <PlainTextPlugin>
+      <template #contentEditable>
+        <ContentEditable aria-label="Image caption" />
+      </template>
+    </PlainTextPlugin>
+    <HistoryPlugin />
+  </LexicalNestedComposer>
+</template>
+```
+
+The nested editor inherits its parent, theme, namespace when omitted, registered
+nodes when omitted, and editable state. Set `skip-editable-listener` when the
+nested editor must manage its editable state independently. To share undo/redo
+across parent and nested editors, pass the same `HistoryState` instance to both
+`HistoryPlugin` components through `externalHistoryState`.
 
 ## Development
 

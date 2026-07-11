@@ -14,7 +14,7 @@ React-only rendering details are not copied into the public API.
 - [x] `LexicalHistoryPlugin`
 - [x] `LexicalOnChangePlugin`
 - [x] `LexicalAutoFocusPlugin`
-- [ ] nested composers
+- [x] nested composers
 - [x] decorator-node Vue portals
 - [ ] SSR and hydration test suite
 

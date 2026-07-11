@@ -6,5 +6,13 @@
     "suspicious": "warn",
     "perf": "warn"
   },
+  "rules": {
+    "no-underscore-dangle": [
+      "warn",
+      {
+        "allow": ["_config", "_createEditorArgs", "_nodes", "_parentEditor"]
+      }
+    ]
+  },
   "ignorePatterns": ["dist/**", "coverage/**"]
 }

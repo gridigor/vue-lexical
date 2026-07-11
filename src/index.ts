@@ -7,6 +7,7 @@ export {
 } from './LexicalComposerContext'
 export { ContentEditable, LexicalContentEditable } from './LexicalContentEditable'
 export { LexicalDecorators, type VueDecorator } from './LexicalDecorators'
+export { LexicalNestedComposer, type LexicalNestedComposerProps } from './LexicalNestedComposer'
 export { AutoFocusPlugin, LexicalAutoFocusPlugin } from './LexicalAutoFocusPlugin'
 export { HistoryPlugin, LexicalHistoryPlugin } from './LexicalHistoryPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'

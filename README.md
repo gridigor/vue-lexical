@@ -120,6 +120,13 @@ npm install
 npm run check
 ```
 
+## Releases
+
+Package releases are published from GitHub Releases through npm trusted
+publishing. The GitHub tag must equal the version in `package.json`, with an
+optional leading `v` (for example, `v0.1.0-alpha.1`). Prerelease versions are
+published under the `next` dist-tag; stable versions use `latest`.
+
 The dependency versions are intentionally pinned so CI tests the exact latest
 stack selected for the release. Peer ranges remain narrow where Lexical's
 cross-package contracts require aligned minor versions.

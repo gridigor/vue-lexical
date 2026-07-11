@@ -12,4 +12,9 @@ export default defineNuxtConfig({
       inline: ['lexical', /^@lexical\//],
     },
   },
+  vite: {
+    resolve: {
+      dedupe: ['lexical', '@lexical/history', '@lexical/plain-text', '@lexical/rich-text'],
+    },
+  },
 })

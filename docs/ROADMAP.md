@@ -16,6 +16,7 @@ React-only rendering details are not copied into the public API.
 - [x] `LexicalAutoFocusPlugin`
 - [x] nested composers
 - [x] decorator-node Vue portals
+- [x] Vue error boundary
 - [ ] SSR and hydration test suite
 
 ## Milestone 2 — common plugins

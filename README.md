@@ -150,6 +150,36 @@ nested editor must manage its editable state independently. To share undo/redo
 across parent and nested editors, pass the same `HistoryState` instance to both
 `HistoryPlugin` components through `externalHistoryState`.
 
+## Error boundary
+
+`LexicalErrorBoundary` isolates errors thrown by descendant Vue components. Its
+scoped fallback slot receives the normalized `error`, Vue's `errorInfo`, and a
+`reset` function that mounts the original subtree again:
+
+```vue
+<script setup lang="ts">
+import { LexicalErrorBoundary } from '@gridigor/vue-lexical'
+
+function reportError(error: Error, errorInfo: string) {
+  console.error(error, errorInfo)
+}
+</script>
+
+<template>
+  <LexicalErrorBoundary @error="reportError">
+    <EditorUi />
+
+    <template #fallback="{ error, reset }">
+      <p role="alert">{{ error.message }}</p>
+      <button type="button" @click="reset">Try again</button>
+    </template>
+  </LexicalErrorBoundary>
+</template>
+```
+
+Errors raised by Lexical editor updates are not consumed by this component;
+they continue to use the composer's `initialConfig.onError` handler.
+
 ## Development
 
 ```sh

@@ -180,6 +180,18 @@ function reportError(error: Error, errorInfo: string) {
 Errors raised by Lexical editor updates are not consumed by this component;
 they continue to use the composer's `initialConfig.onError` handler.
 
+## SSR and Nuxt
+
+The built-in components can render on the server without `window` or
+`document`. Editor root attachment and plugin listeners are deferred until Vue
+mounts the client application, so a `ClientOnly` wrapper is not required for
+the built-in composer and plugins.
+
+Lexical fills the editable DOM from its editor state after hydration. Custom
+plugins and decorator components must follow the same rule as the built-ins:
+access browser APIs and register DOM-dependent behavior in `onMounted`, then
+clean it up in `onUnmounted`.
+
 ## Development
 
 ```sh

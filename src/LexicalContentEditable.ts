@@ -28,9 +28,11 @@ export const ContentEditable = defineComponent({
     const editable = ref(editor.isEditable())
     const canShowPlaceholder = useCanShowPlaceholder()
     let unregisterEditable = () => {}
+    let mountedRootElement: HTMLElement | null = null
 
     onMounted(() => {
-      editor.setRootElement(rootElement.value)
+      mountedRootElement = rootElement.value
+      editor.setRootElement(mountedRootElement)
       unregisterEditable = editor.registerEditableListener((nextEditable) => {
         editable.value = nextEditable
       })
@@ -38,9 +40,10 @@ export const ContentEditable = defineComponent({
 
     onUnmounted(() => {
       unregisterEditable()
-      if (editor.getRootElement() === rootElement.value) {
+      if (editor.getRootElement() === mountedRootElement) {
         editor.setRootElement(null)
       }
+      mountedRootElement = null
     })
 
     return () =>

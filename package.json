@@ -1,0 +1,62 @@
+{
+  "name": "vue-lexical",
+  "version": "0.1.0",
+  "description": "Vue 3 bindings for the Lexical editor framework",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test && npm run build"
+  },
+  "peerDependencies": {
+    "lexical": "^0.47.0",
+    "vue": "^3.5.39"
+  },
+  "dependencies": {
+    "@lexical/history": "^0.47.0",
+    "@lexical/plain-text": "^0.47.0",
+    "@lexical/rich-text": "^0.47.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/test-utils": "^2.4.11",
+    "jsdom": "^29.1.1",
+    "lexical": "^0.47.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10",
+    "vue": "^3.5.39",
+    "vue-tsc": "^3.3.7"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "keywords": [
+    "vue",
+    "lexical",
+    "editor",
+    "contenteditable",
+    "rich-text"
+  ],
+  "license": "MIT"
+}

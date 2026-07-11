@@ -21,8 +21,7 @@
     }
   },
   "publishConfig": {
-    "access": "public",
-    "tag": "next"
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -39,6 +38,7 @@
     "lint": "oxlint --deny-warnings .",
     "lint:fix": "oxlint --fix .",
     "prepublishOnly": "npm run check",
+    "release:next": "npm publish --tag next",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",

@@ -25,7 +25,7 @@ React-only rendering details are not copied into the public API.
 - [x] character limit and max length
 - [x] link, clickable link, and auto-link
 - [x] list and checklist
-- [ ] markdown shortcuts
+- [x] markdown shortcuts
 - [x] tab indentation
 - [ ] horizontal rules
 - [x] editable state and generic subscription composables

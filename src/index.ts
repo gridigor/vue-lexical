@@ -59,6 +59,15 @@ export {
   type ListPluginProps,
   type RegisterListOptions,
 } from './LexicalListPlugin'
+export {
+  DEFAULT_TRANSFORMERS,
+  LexicalMarkdownShortcutPlugin,
+  MarkdownShortcutPlugin,
+  registerMarkdownShortcuts,
+  type ElementTransformer,
+  type MarkdownShortcutPluginProps,
+  type Transformer,
+} from './LexicalMarkdownShortcutPlugin'
 export { LexicalMaxLengthPlugin, MaxLengthPlugin } from './LexicalMaxLengthPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'

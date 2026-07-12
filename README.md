@@ -258,6 +258,42 @@ Use `INSERT_ORDERED_LIST_COMMAND`, `INSERT_UNORDERED_LIST_COMMAND`,
 control list formatting. Set `disable-take-focus-on-click` on
 `CheckListPlugin` when toggling a checkbox must not focus the editor.
 
+## Markdown shortcuts
+
+`MarkdownShortcutPlugin` converts Markdown syntax as it is typed. Its default
+transformers support headings, quotes, lists, fenced code, text formatting,
+links, and horizontal rules. Register every node required by the transformers
+you use:
+
+```vue
+<script setup lang="ts">
+import { HeadingNode } from '@lexical/rich-text'
+import { HEADING } from '@lexical/markdown'
+import { MarkdownShortcutPlugin } from '@gridigor/vue-lexical'
+
+const initialConfig = {
+  namespace: 'MarkdownEditor',
+  nodes: [HeadingNode],
+  onError(error: Error) {
+    throw error
+  },
+}
+
+const transformers = [HEADING]
+</script>
+
+<template>
+  <LexicalComposer :initial-config="initialConfig">
+    <!-- RichTextPlugin and other editor plugins -->
+    <MarkdownShortcutPlugin :transformers="transformers" />
+  </LexicalComposer>
+</template>
+```
+
+Omit `transformers` to use `DEFAULT_TRANSFORMERS`, which also requires
+`HorizontalRuleNode`, `HeadingNode`, `QuoteNode`, `ListNode`, `ListItemNode`,
+`CodeNode`, and `LinkNode` in the composer configuration.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

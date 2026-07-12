@@ -14,7 +14,7 @@ export function useLexicalSubscription<T>(
   const editor = useLexicalComposer()
   const subscription = createSubscription(editor)
   const value = ref(subscription.initialValue()) as Ref<T>
-  let unsubscribe = () => {}
+  let unsubscribe: (() => void) | undefined
 
   onMounted(() => {
     value.value = subscription.initialValue()
@@ -22,7 +22,7 @@ export function useLexicalSubscription<T>(
       value.value = nextValue
     })
   })
-  onUnmounted(() => unsubscribe())
+  onUnmounted(() => unsubscribe?.())
 
   return value
 }

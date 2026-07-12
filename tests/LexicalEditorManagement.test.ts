@@ -51,7 +51,7 @@ describe('editor management plugins', () => {
 
   it('clears the editor with the default CLEAR_EDITOR_COMMAND handler', async () => {
     const editorRef = shallowRef<LexicalEditor | null>()
-    mount(LexicalComposer, {
+    const wrapper = mount(LexicalComposer, {
       props: {
         initialConfig: {
           namespace: 'clear-editor',
@@ -71,6 +71,7 @@ describe('editor management plugins', () => {
     await nextTick()
     expect(editorRef.value?.getEditorState().read(() => $getRoot().getTextContent())).toBe('')
     expect(editorRef.value?.getEditorState().read(() => $getRoot().getChildrenSize())).toBe(1)
+    wrapper.unmount()
   })
 
   it('uses a custom clear handler in place of the default behavior', async () => {

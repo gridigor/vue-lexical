@@ -18,8 +18,7 @@ function utf8Length(text: string): number {
     return textEncoder.encode(text).length
   }
 
-  const continuationBytes = encodeURIComponent(text).match(/%[89ABab]/g)
-  return text.length + (continuationBytes?.length ?? 0)
+  return encodeURIComponent(text).match(/%[0-9A-Fa-f]{2}|./g)?.length ?? 0
 }
 
 export const CharacterLimitPlugin = defineComponent({

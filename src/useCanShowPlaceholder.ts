@@ -6,7 +6,7 @@ import { useLexicalComposer } from './LexicalComposerContext'
 export function useCanShowPlaceholder(): Readonly<Ref<boolean>> {
   const editor = useLexicalComposer()
   const canShow = ref(false)
-  let unregister = () => {}
+  let unregister: (() => void) | undefined
 
   const update = () => {
     canShow.value = editor
@@ -18,7 +18,7 @@ export function useCanShowPlaceholder(): Readonly<Ref<boolean>> {
     update()
     unregister = editor.registerUpdateListener(update)
   })
-  onUnmounted(() => unregister())
+  onUnmounted(() => unregister?.())
 
   return canShow
 }

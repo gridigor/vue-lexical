@@ -8,12 +8,12 @@ export const PlainTextPlugin = defineComponent({
   setup(_props, { slots }) {
     const editor = useLexicalComposer()
     const canShowPlaceholder = useCanShowPlaceholder()
-    let unregister = () => {}
+    let unregister: (() => void) | undefined
 
     onMounted(() => {
       unregister = registerPlainText(editor)
     })
-    onUnmounted(() => unregister())
+    onUnmounted(() => unregister?.())
 
     return () =>
       h(Fragment, null, [

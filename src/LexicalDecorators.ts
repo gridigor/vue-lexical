@@ -11,8 +11,8 @@ export const LexicalDecorators = defineComponent({
     const editor = useLexicalComposer()
     const decorators = shallowRef(editor.getDecorators<VueDecorator>())
     const rootElement = shallowRef(editor.getRootElement())
-    let unregisterDecorators = () => {}
-    let unregisterRoot = () => {}
+    let unregisterDecorators: (() => void) | undefined
+    let unregisterRoot: (() => void) | undefined
 
     onMounted(() => {
       unregisterDecorators = editor.registerDecoratorListener<VueDecorator>((nextDecorators) => {
@@ -27,8 +27,8 @@ export const LexicalDecorators = defineComponent({
     })
 
     onUnmounted(() => {
-      unregisterDecorators()
-      unregisterRoot()
+      unregisterDecorators?.()
+      unregisterRoot?.()
     })
 
     return () => {

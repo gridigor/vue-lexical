@@ -17,7 +17,7 @@ export const HistoryPlugin = defineComponent({
   },
   setup(props) {
     const editor = useLexicalComposer()
-    let unregister = () => {}
+    let unregister: (() => void) | undefined
 
     onMounted(() => {
       unregister = registerHistory(
@@ -26,7 +26,7 @@ export const HistoryPlugin = defineComponent({
         props.delay,
       )
     })
-    onUnmounted(() => unregister())
+    onUnmounted(() => unregister?.())
 
     return () => null
   },

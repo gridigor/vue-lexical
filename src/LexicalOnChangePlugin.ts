@@ -20,7 +20,7 @@ export const OnChangePlugin = defineComponent({
   },
   setup(props, { emit }) {
     const editor = useLexicalComposer()
-    let unregister = () => {}
+    let unregister: (() => void) | undefined
 
     onMounted(() => {
       unregister = editor.registerUpdateListener(
@@ -37,7 +37,7 @@ export const OnChangePlugin = defineComponent({
         },
       )
     })
-    onUnmounted(() => unregister())
+    onUnmounted(() => unregister?.())
 
     return () => null
   },

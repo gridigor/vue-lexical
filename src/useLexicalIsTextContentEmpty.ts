@@ -11,7 +11,7 @@ export function useLexicalIsTextContentEmpty(
   const readIsEmpty = () =>
     editor.read('latest', $isRootTextContentEmptyCurry(editor.isComposing(), trim))
   const isEmpty = ref(readIsEmpty())
-  let unregister = () => {}
+  let unregister: (() => void) | undefined
 
   onMounted(() => {
     isEmpty.value = readIsEmpty()
@@ -19,7 +19,7 @@ export function useLexicalIsTextContentEmpty(
       isEmpty.value = editorState.read($isRootTextContentEmptyCurry(editor.isComposing(), trim))
     })
   })
-  onUnmounted(() => unregister())
+  onUnmounted(() => unregister?.())
 
   return isEmpty
 }

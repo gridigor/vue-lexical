@@ -122,7 +122,7 @@ describe('LexicalComposer', () => {
       },
     })
 
-    mount(LexicalComposer, {
+    const wrapper = mount(LexicalComposer, {
       props: {
         initialConfig: { namespace: 'editable-state', onError },
       },
@@ -134,5 +134,6 @@ describe('LexicalComposer', () => {
     editor?.setEditable(false)
     await nextTick()
     expect(editable?.value).toBe(false)
+    wrapper.unmount()
   })
 })

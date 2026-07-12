@@ -75,6 +75,12 @@ export {
   type Transformer,
 } from './LexicalMarkdownShortcutPlugin'
 export { LexicalMaxLengthPlugin, MaxLengthPlugin } from './LexicalMaxLengthPlugin'
+export {
+  LexicalNodeEventPlugin,
+  NodeEventPlugin,
+  type NodeEventListener,
+  type NodeEventPluginProps,
+} from './LexicalNodeEventPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'
 export { RichTextPlugin, LexicalRichTextPlugin } from './LexicalRichTextPlugin'

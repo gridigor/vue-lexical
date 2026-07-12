@@ -323,6 +323,34 @@ const initialConfig = {
 
 Use the `hashtag` key in the Lexical theme to style generated hashtag nodes.
 
+## Node events
+
+`NodeEventPlugin` delegates a DOM event from the editor root and reports the
+key of the matching Lexical node. It can match the event target itself or one
+of its Lexical parents, so a single listener handles every node of a class:
+
+```vue
+<script setup lang="ts">
+import { LinkNode } from '@lexical/link'
+import type { LexicalEditor, NodeKey } from 'lexical'
+import { NodeEventPlugin } from '@gridigor/vue-lexical'
+
+function onLinkClick(event: Event, _editor: LexicalEditor, nodeKey: NodeKey) {
+  console.log('Clicked link', nodeKey, event)
+}
+</script>
+
+<template>
+  <LexicalComposer :initial-config="initialConfig">
+    <!-- RichTextPlugin and other editor plugins -->
+    <NodeEventPlugin :node-type="LinkNode" event-type="click" :event-listener="onLinkClick" />
+  </LexicalComposer>
+</template>
+```
+
+`mouseenter` and `mouseleave` use capture semantics and match only the nearest
+Lexical node, consistent with `@lexical/react`.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

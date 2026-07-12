@@ -47,7 +47,14 @@ try {
     true,
   )
   const packResult = JSON.parse(packOutput)
-  const packMetadata = Array.isArray(packResult) ? packResult[0] : packResult
+  const packMetadata = Array.isArray(packResult)
+    ? packResult[0]
+    : typeof packResult.filename === 'string'
+      ? packResult
+      : Object.values(packResult).find((value) => typeof value?.filename === 'string')
+  if (!packMetadata) {
+    throw new Error('npm pack did not return package metadata')
+  }
   const { filename } = packMetadata
   if (typeof filename !== 'string') {
     throw new Error('npm pack did not return a tarball filename')

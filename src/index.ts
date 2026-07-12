@@ -27,6 +27,13 @@ export { LexicalMaxLengthPlugin, MaxLengthPlugin } from './LexicalMaxLengthPlugi
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'
 export { RichTextPlugin, LexicalRichTextPlugin } from './LexicalRichTextPlugin'
+export {
+  LexicalTabIndentationPlugin,
+  TabIndentationPlugin,
+  registerTabIndentation,
+  type CanIndentPredicate,
+  type TabIndentationPluginProps,
+} from './LexicalTabIndentationPlugin'
 export type { InitialEditorState } from './initializeEditor'
 export { useLexicalEditable } from './useLexicalEditable'
 export { useLexicalIsTextContentEmpty } from './useLexicalIsTextContentEmpty'

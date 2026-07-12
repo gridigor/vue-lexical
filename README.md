@@ -165,6 +165,23 @@ it trims text inserted beyond the boundary.
 editor is empty. The `editor` argument can be omitted inside a composer, and
 `trim` defaults to `true` in accordance with `@lexical/text`.
 
+## Tab indentation
+
+`TabIndentationPlugin` turns Tab and Shift+Tab into indent and outdent commands.
+An optional `maxIndent` limits nesting, while `canIndent` restricts which block
+elements may be indented:
+
+```vue
+<LexicalComposer :initial-config="initialConfig">
+  <!-- Editor plugins -->
+  <TabIndentationPlugin :max-indent="4" :can-indent="node => node.canIndent()" />
+</LexicalComposer>
+```
+
+Enabling this behavior can trap keyboard focus inside the editor. Only use it
+when editor indentation is more important than allowing Tab to move focus to
+the next control.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

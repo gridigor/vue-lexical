@@ -5,7 +5,7 @@ same small, composable building blocks as `@lexical/react`.
 
 > This project is in an early development stage. The first milestone covers
 > the editor composer, context, editable root, plain/rich text registration,
-> history, change notifications, and autofocus.
+> history, change notifications, autofocus, text limits, and link plugins.
 
 ## Requirements
 
@@ -181,6 +181,48 @@ elements may be indented:
 Enabling this behavior can trap keyboard focus inside the editor. Only use it
 when editor indentation is more important than allowing Tab to move focus to
 the next control.
+
+## Links
+
+Register `LinkNode` in the composer and add `LinkPlugin` to enable
+`TOGGLE_LINK_COMMAND`, link normalization, URL validation, and link creation
+from pasted URLs:
+
+```vue
+<script setup lang="ts">
+import { AutoLinkNode, LinkNode } from '@lexical/link'
+import {
+  AutoLinkPlugin,
+  ClickableLinkPlugin,
+  LinkPlugin,
+  createLinkMatcherWithRegExp,
+} from '@gridigor/vue-lexical'
+
+const urlMatcher = createLinkMatcherWithRegExp(/https?:\/\/[^\s]+/, (text) => text)
+
+const initialConfig = {
+  namespace: 'LinkEditor',
+  nodes: [LinkNode, AutoLinkNode],
+  onError(error: Error) {
+    throw error
+  },
+}
+</script>
+
+<template>
+  <LexicalComposer :initial-config="initialConfig">
+    <!-- RichTextPlugin and other editor plugins -->
+    <LinkPlugin :validate-url="(url) => url.startsWith('https://')" />
+    <AutoLinkPlugin :matchers="[urlMatcher]" />
+    <ClickableLinkPlugin :new-tab="true" />
+  </LexicalComposer>
+</template>
+```
+
+`AutoLinkPlugin` requires `AutoLinkNode` and also accepts `onChange` and
+`excludeParents`. `ClickableLinkPlugin` opens links in a new tab by default;
+set `:new-tab="false"` to reuse the current tab or `disabled` to temporarily
+turn click navigation off.
 
 ## Decorator nodes
 

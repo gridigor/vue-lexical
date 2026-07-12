@@ -23,7 +23,7 @@ React-only rendering details are not copied into the public API.
 
 - [x] clear editor
 - [x] character limit and max length
-- [ ] link, clickable link, and auto-link
+- [x] link, clickable link, and auto-link
 - [ ] list and checklist
 - [ ] markdown shortcuts
 - [x] tab indentation

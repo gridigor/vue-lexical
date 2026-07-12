@@ -11,6 +11,15 @@ export { LexicalErrorBoundary, type LexicalErrorBoundarySlotProps } from './Lexi
 export { LexicalNestedComposer, type LexicalNestedComposerProps } from './LexicalNestedComposer'
 export { AutoFocusPlugin, LexicalAutoFocusPlugin } from './LexicalAutoFocusPlugin'
 export {
+  AutoLinkPlugin,
+  LexicalAutoLinkPlugin,
+  createLinkMatcherWithRegExp,
+  registerAutoLink,
+  type AutoLinkPluginProps,
+  type ChangeHandler,
+  type LinkMatcher,
+} from './LexicalAutoLinkPlugin'
+export {
   CharacterLimitPlugin,
   LexicalCharacterLimitPlugin,
   type CharacterLimitCharset,
@@ -18,11 +27,24 @@ export {
 } from './LexicalCharacterLimitPlugin'
 export { ClearEditorPlugin, LexicalClearEditorPlugin } from './LexicalClearEditorPlugin'
 export {
+  ClickableLinkPlugin,
+  LexicalClickableLinkPlugin,
+  registerClickableLink,
+  type ClickableLinkPluginProps,
+} from './LexicalClickableLinkPlugin'
+export {
   EditorRefPlugin,
   LexicalEditorRefPlugin,
   type LexicalEditorRef,
 } from './LexicalEditorRefPlugin'
 export { HistoryPlugin, LexicalHistoryPlugin } from './LexicalHistoryPlugin'
+export {
+  LexicalLinkPlugin,
+  LinkPlugin,
+  registerLink,
+  type LinkAttributes,
+  type LinkPluginProps,
+} from './LexicalLinkPlugin'
 export { LexicalMaxLengthPlugin, MaxLengthPlugin } from './LexicalMaxLengthPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'

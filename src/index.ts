@@ -95,3 +95,10 @@ export type { InitialEditorState } from './initializeEditor'
 export { useLexicalEditable } from './useLexicalEditable'
 export { useLexicalIsTextContentEmpty } from './useLexicalIsTextContentEmpty'
 export { useLexicalSubscription, type LexicalSubscription } from './useLexicalSubscription'
+export {
+  registerLexicalTextEntity,
+  useLexicalTextEntity,
+  type EntityMatch,
+  type TextEntityMatcher,
+  type TextEntityNodeFactory,
+} from './useLexicalTextEntity'

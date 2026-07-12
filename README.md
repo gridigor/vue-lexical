@@ -323,6 +323,28 @@ const initialConfig = {
 
 Use the `hashtag` key in the Lexical theme to style generated hashtag nodes.
 
+For custom entities such as mentions, `useLexicalTextEntity` registers the
+same pair of forward and reverse transforms used by the built-in entity
+plugins. Call it during `setup` inside a composer:
+
+```ts
+import type { TextNode } from 'lexical'
+import { useLexicalTextEntity } from '@gridigor/vue-lexical'
+import { $createMentionNode, MentionNode } from './MentionNode'
+
+useLexicalTextEntity(
+  (text) => {
+    const match = /@[a-z0-9_]+/i.exec(text)
+    return match ? { start: match.index, end: match.index + match[0].length } : null
+  },
+  MentionNode,
+  (textNode: TextNode) => $createMentionNode(textNode.getTextContent()),
+)
+```
+
+`getMatch`, `targetNode`, and `createNode` may also be Vue refs. Changing one
+automatically replaces the registered transforms.
+
 ## Node events
 
 `NodeEventPlugin` delegates a DOM event from the editor root and reports the

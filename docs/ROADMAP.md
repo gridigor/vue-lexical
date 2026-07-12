@@ -27,6 +27,7 @@ React-only rendering details are not copied into the public API.
 - [x] list and checklist
 - [x] markdown shortcuts
 - [x] hashtag text entities
+- [x] generic text entity composable
 - [x] delegated node events
 - [x] tab indentation
 - [ ] horizontal rules

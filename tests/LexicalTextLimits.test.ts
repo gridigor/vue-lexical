@@ -1,15 +1,20 @@
 import { $createOverflowNode, $isOverflowNode, OverflowNode } from '@lexical/overflow'
 import type { LexicalEditor } from 'lexical'
 import {
+  $create,
   $createParagraphNode,
   $createTextNode,
   $getRoot,
   $getSelection,
   $isElementNode,
   $isRangeSelection,
+  $setSlot,
   $setSelection,
   createEditor,
+  DecoratorNode,
   DELETE_CHARACTER_COMMAND,
+  type EditorConfig,
+  type NodeKey,
 } from 'lexical'
 import { mount } from '@vue/test-utils'
 import type { Ref } from 'vue'
@@ -32,6 +37,40 @@ import {
 
 const onError = (error: Error) => {
   throw error
+}
+
+class TextSlotNode extends DecoratorNode<null> {
+  static getType(): string {
+    return 'coverage-text-slot'
+  }
+
+  static clone(node: TextSlotNode): TextSlotNode {
+    return new TextSlotNode(node.getKey())
+  }
+
+  constructor(key: NodeKey | undefined = undefined) {
+    super(key)
+  }
+
+  createDOM(_config: EditorConfig): HTMLElement {
+    return document.createElement('span')
+  }
+
+  updateDOM(): boolean {
+    return false
+  }
+
+  getTextContent(): string {
+    return 'slot'
+  }
+
+  isInline(): boolean {
+    return false
+  }
+
+  decorate(): null {
+    return null
+  }
 }
 
 async function flushEditorUpdates(): Promise<void> {
@@ -348,6 +387,80 @@ describe('text limit plugins', () => {
     rootElement.remove()
   })
 
+  it('removes an emptied overflow paragraph after deletion', () => {
+    const editor = createEditor({
+      namespace: 'delete-empty-overflow',
+      nodes: [OverflowNode],
+      onError,
+    })
+    const unregister = registerCharacterLimit(editor, 3)
+
+    editor.update(
+      () => {
+        const text = $createTextNode('x')
+        const paragraph = $createParagraphNode().append($createOverflowNode().append(text))
+        $getRoot().append(paragraph)
+        text.selectEnd()
+        const selection = $getSelection()
+        if (!$isRangeSelection(selection)) {
+          throw new Error('Expected range selection')
+        }
+        selection.deleteCharacter = () => paragraph.clear()
+
+        expect(editor.dispatchCommand(DELETE_CHARACTER_COMMAND, true)).toBe(true)
+        expect(paragraph.isAttached()).toBe(false)
+      },
+      { discrete: true },
+    )
+    unregister()
+  })
+
+  it('removes an empty paragraph following overflow content after deletion', () => {
+    const editor = createEditor({ namespace: 'delete-next-empty', nodes: [OverflowNode], onError })
+    const unregister = registerCharacterLimit(editor, 3)
+
+    editor.update(
+      () => {
+        const text = $createTextNode('x')
+        const paragraph = $createParagraphNode().append($createOverflowNode().append(text))
+        const emptyParagraph = $createParagraphNode()
+        $getRoot().append(paragraph, emptyParagraph)
+        text.selectEnd()
+        const selection = $getSelection()
+        if (!$isRangeSelection(selection)) {
+          throw new Error('Expected range selection')
+        }
+        selection.deleteCharacter = () => {}
+
+        expect(editor.dispatchCommand(DELETE_CHARACTER_COMMAND, true)).toBe(true)
+        expect(emptyParagraph.isAttached()).toBe(false)
+      },
+      { discrete: true },
+    )
+    unregister()
+  })
+
+  it('counts slotted decorator text when locating the overflow boundary', () => {
+    const editor = createEditor({
+      namespace: 'slotted-overflow',
+      nodes: [OverflowNode, TextSlotNode],
+      onError,
+    })
+    editor.update(
+      () => {
+        const paragraph = $createParagraphNode().append($createTextNode('123'))
+        $getRoot().append(paragraph)
+        $setSlot(paragraph, 'media', $create(TextSlotNode))
+        $wrapOverflowedNodes(5)
+
+        const [kept, overflow] = paragraph.getChildren()
+        expect(kept.getTextContent()).toBe('1')
+        expect($isOverflowNode(overflow)).toBe(true)
+      },
+      { discrete: true },
+    )
+  })
+
   it('merges adjacent overflow nodes while preserving a cross-node selection', () => {
     const editor = createEditor({ namespace: 'merge-overflow', nodes: [OverflowNode], onError })
 
@@ -392,6 +505,27 @@ describe('text limit plugins', () => {
     )
   })
 
+  it('moves a collapsed selection from the previous overflow node', () => {
+    const editor = createEditor({
+      namespace: 'merge-previous-selection',
+      nodes: [OverflowNode],
+      onError,
+    })
+    editor.update(
+      () => {
+        const left = $createOverflowNode().append($createTextNode('left'))
+        const right = $createOverflowNode().append($createTextNode('right'))
+        $getRoot().append($createParagraphNode().append(left, right))
+        left.select(0, 0)
+        $mergePrevious(right)
+
+        const selection = $getSelection()
+        expect(selection?.getNodes().every((node) => node.isAttached())).toBe(true)
+      },
+      { discrete: true },
+    )
+  })
+
   it('adjusts a selection owned by the destination overflow node', () => {
     const editor = createEditor({
       namespace: 'merge-selected-destination',
@@ -404,29 +538,62 @@ describe('text limit plugins', () => {
         const right = $createOverflowNode().append($createTextNode('right'))
         $getRoot().append($createParagraphNode().append(left, right))
         right.select(0, 1)
+        const selection = $getSelection()
+        if (!$isRangeSelection(selection)) {
+          throw new Error('Expected range selection')
+        }
+        vi.spyOn(selection.anchor, 'getNode').mockReturnValue(right)
+        vi.spyOn(selection.focus, 'getNode').mockReturnValue(right)
         $mergePrevious(right)
 
-        const selection = $getSelection()
-        expect($isRangeSelection(selection)).toBe(true)
-        expect(selection?.getNodes().every((node) => node.isAttached())).toBe(true)
+        expect(
+          $getSelection()
+            ?.getNodes()
+            .every((node) => node.isAttached()),
+        ).toBe(true)
       },
       { discrete: true },
     )
   })
 
-  it('restores selection when unwrapping a selected overflow node', () => {
-    const editor = createEditor({ namespace: 'unwrap-selection', nodes: [OverflowNode], onError })
+  it.each([
+    ['previous text sibling', 'previous'],
+    ['next text sibling', 'next'],
+    ['parent element', 'parent'],
+  ] as const)('restores selection from an unwrapped overflow using the %s', (_label, fallback) => {
+    const editor = createEditor({
+      namespace: `unwrap-selection-${fallback}`,
+      nodes: [OverflowNode],
+      onError,
+    })
     editor.update(
       () => {
         const overflow = $createOverflowNode().append($createTextNode('b'))
-        const paragraph = $createParagraphNode().append($createTextNode('a'), overflow)
+        const paragraph = $createParagraphNode()
+        if (fallback === 'previous') {
+          paragraph.append($createTextNode('a'), overflow)
+        } else if (fallback === 'next') {
+          paragraph.append(overflow, $createTextNode('c'))
+        } else {
+          paragraph.append(overflow)
+        }
         $getRoot().append(paragraph)
         overflow.select()
-        $wrapOverflowedNodes(2)
-
         const selection = $getSelection()
-        expect($isRangeSelection(selection)).toBe(true)
-        expect(selection?.getNodes().every((node) => node.isAttached())).toBe(true)
+        if (!$isRangeSelection(selection)) {
+          throw new Error('Expected range selection')
+        }
+        vi.spyOn(selection.anchor, 'getNode').mockReturnValue(overflow)
+        vi.spyOn(selection.focus, 'getNode').mockReturnValue(overflow)
+
+        $wrapOverflowedNodes(paragraph.getTextContentSize())
+
+        expect(overflow.isAttached()).toBe(false)
+        expect(
+          $getSelection()
+            ?.getNodes()
+            .every((node) => node.isAttached()),
+        ).toBe(true)
       },
       { discrete: true },
     )

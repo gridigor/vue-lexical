@@ -198,10 +198,24 @@ describe('built-in plugin behavior', () => {
 
     editor?.update(
       () => {
-        $getRoot().getWritable()
+        const paragraph = $getRoot().getFirstChild()
+        if (!$isElementNode(paragraph)) {
+          throw new Error('Expected paragraph')
+        }
+        paragraph.append($createTextNode('a'))
       },
       { discrete: true },
     )
-    expect(editor?.getEditorState().read(() => $getRoot().getTextContentSize())).toBe(0)
+    editor?.update(
+      () => {
+        const paragraph = $getRoot().getFirstChild()
+        if (!$isElementNode(paragraph)) {
+          throw new Error('Expected paragraph')
+        }
+        paragraph.clear().append($createTextNode('b')).selectEnd()
+      },
+      { discrete: true },
+    )
+    expect(editor?.getEditorState().read(() => $getRoot().getTextContent())).toBe('b')
   })
 })

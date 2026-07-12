@@ -130,6 +130,9 @@ export function $wrapOverflowedNodes(offset: number): void {
         $unwrapNode(node)
         const selection = $getSelection()
 
+        /* v8 ignore start -- Lexical 0.47 repairs range selection synchronously inside
+         * $unwrapNode for supported nodes. Keep this upstream-compatible fallback for
+         * custom nodes that may leave selection points detached. */
         if (
           $isRangeSelection(selection) &&
           (!selection.anchor.getNode().isAttached() || !selection.focus.getNode().isAttached())
@@ -142,6 +145,7 @@ export function $wrapOverflowedNodes(offset: number): void {
             parent?.select()
           }
         }
+        /* v8 ignore stop */
       } else if (previousLength < offset) {
         const descendant = node.getFirstDescendant()
         const descendantLength = descendant?.getTextContentSize() ?? 0

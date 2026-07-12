@@ -49,6 +49,7 @@ React-only rendering details are not copied into the public API.
 - [ ] browser tests in Chromium, Firefox, and WebKit
 - [ ] accessibility tests
 - [ ] bundle-size budgets and tree-shaking fixtures
+- [x] packed-package Vue consumer verification
 - [x] Vue/Nuxt SSR example
 - [ ] compatibility automation for each Lexical release
 - [ ] API reference and migration guide from `lexical-vue`

@@ -31,8 +31,14 @@ jobs:
       - name: Verify package
         run: npm run check
 
+      - name: Verify packed package in a Vue consumer
+        run: npm run verify:package
+
       - name: Install Nuxt example dependencies
         run: npm ci --prefix examples/nuxt
+
+      - name: Type-check Nuxt example
+        run: npm run typecheck --prefix examples/nuxt
 
       - name: Verify Nuxt SSR example
         run: npm run build --prefix examples/nuxt

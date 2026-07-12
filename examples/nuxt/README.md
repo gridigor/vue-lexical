@@ -1,8 +1,15 @@
 # Nuxt SSR example
 
-This app exercises `@gridigor/vue-lexical` through Nuxt server rendering and
-client hydration. Nuxt aliases the package name to the repository source, so
-local changes are reflected without publishing or packing the library first.
+This app exercises the built `@gridigor/vue-lexical` package through Nuxt
+server rendering and client hydration. The local `file:` dependency resolves
+the same package entry points used by npm consumers instead of aliasing imports
+to the repository source.
+
+Build the package from the repository root first:
+
+```sh
+npm run build
+```
 
 From this directory:
 
@@ -11,4 +18,6 @@ npm install
 npm run dev
 ```
 
-Use `npm run build` to verify the production SSR bundle.
+Use `npm run typecheck` to check Vue SFCs with TypeScript 7 through
+`vue-tsgo`, and `npm run build` to verify package entry points and the
+production SSR bundle.

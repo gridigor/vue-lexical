@@ -10,7 +10,7 @@ body {
 
 .page-shell {
   box-sizing: border-box;
-  width: min(760px, calc(100% - 32px));
+  width: min(960px, calc(100% - 32px));
   margin: 0 auto;
   padding: 72px 0;
 }
@@ -49,7 +49,7 @@ body {
   box-shadow: 0 20px 60px rgb(38 48 74 / 10%);
 }
 
-.editor-toolbar {
+.editor-card-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -58,14 +58,74 @@ body {
   background: #fafbfe;
 }
 
-.editor-toolbar h2 {
+.editor-card-heading h2 {
   margin: 0;
   font-size: 0.9rem;
 }
 
-.editor-toolbar span {
+.editor-card-heading span {
   color: #7c8497;
   font-size: 0.75rem;
+}
+
+.editor-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid #e7eaf0;
+  background: #fff;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 4px;
+  padding-right: 8px;
+  border-right: 1px solid #e7eaf0;
+}
+
+.toolbar-group-end {
+  margin-left: auto;
+  padding-right: 0;
+  border-right: 0;
+}
+
+.editor-toolbar-actions button,
+.editor-error button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  min-height: 32px;
+  padding: 5px;
+  border: 1px solid #dce1eb;
+  border-radius: 7px;
+  color: #39445a;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.editor-error button {
+  width: auto;
+  padding-inline: 10px;
+}
+
+.editor-toolbar-actions button:hover:not(:disabled),
+.editor-toolbar-actions button.active {
+  border-color: #a5b4fc;
+  color: #3730a3;
+  background: #eef2ff;
+}
+
+.editor-toolbar-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.editor-stage {
+  position: relative;
 }
 
 .editor-input {
@@ -75,13 +135,157 @@ body {
   line-height: 1.65;
 }
 
+.editor-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  border-top: 1px solid #e7eaf0;
+  color: #7c8497;
+  background: #fafbfe;
+  font-size: 0.75rem;
+}
+
+.editor-status .exceeded {
+  color: #dc2626;
+  font-weight: 700;
+}
+
 .editor-paragraph {
   margin: 0;
 }
 
+.editor-heading {
+  margin: 0 0 16px;
+  font-size: 1.75rem;
+}
+
+.editor-hashtag {
+  border-radius: 4px;
+  background: #eef2ff;
+  color: #4338ca;
+  cursor: pointer;
+}
+
+.editor-link {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+.editor-list {
+  margin: 10px 0;
+  padding-left: 28px;
+}
+
+.editor-list-item {
+  margin: 4px 0;
+}
+
+.editor-nested-list-item {
+  list-style: none;
+}
+
+.editor-checklist {
+  padding-left: 8px;
+  list-style: none;
+}
+
+.editor-list-item-checked,
+.editor-list-item-unchecked {
+  position: relative;
+  padding-left: 26px;
+  list-style: none;
+}
+
+.editor-list-item-checked::before,
+.editor-list-item-unchecked::before {
+  position: absolute;
+  top: 0.2em;
+  left: 0;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #a5b4fc;
+  border-radius: 4px;
+  content: '';
+}
+
+.editor-list-item-checked::before {
+  background: #4f46e5;
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.editor-list-item-checked {
+  color: #7c8497;
+  text-decoration: line-through;
+}
+
+.editor-quote {
+  margin: 16px 0;
+  padding-left: 16px;
+  border-left: 4px solid #a5b4fc;
+  color: #59647a;
+}
+
+.editor-overflow {
+  background: #fee2e2;
+}
+
+.editor-text-bold {
+  font-weight: 700;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
+}
+
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.editor-text-code {
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: #eef2f7;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.editor-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
 .editor-placeholder {
   position: absolute;
-  margin: -204px 24px 0;
+  top: 24px;
+  left: 24px;
+  margin: 0;
   color: #9aa2b1;
   pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    width: min(100% - 16px, 960px);
+    padding: 32px 0;
+  }
+
+  .editor-card-heading,
+  .editor-status {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .toolbar-group-end {
+    margin-left: 0;
+  }
 }

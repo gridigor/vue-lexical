@@ -3,9 +3,9 @@
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
 
-> This project is in an early development stage. The first milestone covers
-> the editor composer, context, editable root, plain/rich text registration,
-> history, change notifications, autofocus, text limits, and link plugins.
+> This project is pre-1.0. The current 0.1 line covers the editor foundation,
+> SSR and hydration, history, text limits, links, lists, Markdown shortcuts,
+> hashtags, node events, and custom text entities.
 
 ## Requirements
 

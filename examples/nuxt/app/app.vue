@@ -1,11 +1,12 @@
 <template>
   <main class="page-shell">
     <section class="intro">
-      <p class="eyebrow">Nuxt SSR example</p>
-      <h1>Lexical editor for Vue</h1>
+      <p class="eyebrow">Interactive component showcase</p>
+      <h1>Vue Lexical demo playground</h1>
       <p>
-        This heading and the empty editable root are rendered on the server. Lexical connects the
-        editor state and listeners during hydration.
+        This demonstration playground showcases the editor features currently available in
+        @gridigor/vue-lexical. The page is server-rendered by Nuxt, then Lexical connects the editor
+        state and interactive plugins during hydration.
       </p>
     </section>
 

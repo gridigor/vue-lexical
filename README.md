@@ -279,6 +279,7 @@ Lexical state during client hydration.
 ```sh
 npm install
 npm run check
+npm run coverage
 ```
 
 ## Releases

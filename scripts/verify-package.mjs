@@ -46,7 +46,12 @@ try {
     repositoryRoot,
     true,
   )
-  const [{ filename }] = JSON.parse(packOutput)
+  const packResult = JSON.parse(packOutput)
+  const packMetadata = Array.isArray(packResult) ? packResult[0] : packResult
+  const { filename } = packMetadata
+  if (typeof filename !== 'string') {
+    throw new Error('npm pack did not return a tarball filename')
+  }
   const tarballPath = join(fixtureDirectory, filename).replaceAll('\\', '/')
 
   await writeFile(

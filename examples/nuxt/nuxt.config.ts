@@ -1,10 +1,9 @@
 import { fileURLToPath } from 'node:url'
 
+const lexicalAlias = fileURLToPath(new URL('../../node_modules/lexical', import.meta.url))
+const lexicalPackagesAlias = fileURLToPath(new URL('../../node_modules/@lexical', import.meta.url))
+
 export default defineNuxtConfig({
-  alias: {
-    '@lexical': fileURLToPath(new URL('../../node_modules/@lexical', import.meta.url)),
-    lexical: fileURLToPath(new URL('../../node_modules/lexical', import.meta.url)),
-  },
   app: {
     head: {
       link: [{ href: 'favicon.svg', rel: 'icon', type: 'image/svg+xml' }],
@@ -14,12 +13,20 @@ export default defineNuxtConfig({
   css: ['~/assets/main.css'],
   devtools: { enabled: false },
   nitro: {
+    alias: {
+      '@lexical': lexicalPackagesAlias,
+      lexical: lexicalAlias,
+    },
     externals: {
       inline: ['lexical', /^@lexical\//],
     },
   },
   vite: {
     resolve: {
+      alias: {
+        '@lexical': lexicalPackagesAlias,
+        lexical: lexicalAlias,
+      },
       dedupe: [
         'lexical',
         '@lexical/hashtag',

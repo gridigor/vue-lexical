@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "generate:pages": "nuxt generate --preset github_pages",
     "postinstall": "nuxt prepare",
-    "typecheck": "vue-tsgo --project .nuxt/tsconfig.json"
+    "typecheck": "nuxt prepare && vue-tsgo --project .nuxt/tsconfig.json"
   },
   "dependencies": {
     "@gridigor/vue-lexical": "file:../..",

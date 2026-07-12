@@ -22,7 +22,7 @@ React-only rendering details are not copied into the public API.
 ## Milestone 2 — common plugins
 
 - [x] clear editor
-- [ ] character limit and max length
+- [x] character limit and max length
 - [ ] link, clickable link, and auto-link
 - [ ] list and checklist
 - [ ] markdown shortcuts

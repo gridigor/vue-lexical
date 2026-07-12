@@ -125,6 +125,46 @@ In a Vue template, refs are automatically unwrapped when passed as props, so
 the callback form is the most direct option. In render functions, a
 `shallowRef` can be passed to `editorRef` without unwrapping it.
 
+## Text limits
+
+`CharacterLimitPlugin` keeps all entered text but wraps the part beyond the
+limit in an `OverflowNode`, allowing it to be highlighted. Register that node
+in the composer and use the default counter or a scoped slot:
+
+```vue
+<script setup lang="ts">
+import { OverflowNode } from '@lexical/overflow'
+import { CharacterLimitPlugin } from '@gridigor/vue-lexical'
+
+const initialConfig = {
+  namespace: 'LimitedEditor',
+  nodes: [OverflowNode],
+  onError(error: Error) {
+    throw error
+  },
+}
+</script>
+
+<template>
+  <LexicalComposer :initial-config="initialConfig">
+    <!-- Editor plugins -->
+    <CharacterLimitPlugin :max-length="280">
+      <template #default="{ remainingCharacters, exceeded }">
+        <span :class="{ exceeded }">{{ remainingCharacters }}</span>
+      </template>
+    </CharacterLimitPlugin>
+  </LexicalComposer>
+</template>
+```
+
+Set `charset="UTF-8"` to count encoded bytes instead of the default UTF-16
+code units. For a hard input limit, use `<MaxLengthPlugin :max-length="280" />`;
+it trims text inserted beyond the boundary.
+
+`useLexicalIsTextContentEmpty(editor, trim)` reactively reports whether the
+editor is empty. The `editor` argument can be omitted inside a composer, and
+`trim` defaults to `true` in accordance with `@lexical/text`.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

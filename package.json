@@ -51,8 +51,12 @@
   "dependencies": {
     "@lexical/extension": "^0.47.0",
     "@lexical/history": "^0.47.0",
+    "@lexical/overflow": "^0.47.0",
     "@lexical/plain-text": "^0.47.0",
-    "@lexical/rich-text": "^0.47.0"
+    "@lexical/rich-text": "^0.47.0",
+    "@lexical/selection": "^0.47.0",
+    "@lexical/text": "^0.47.0",
+    "@lexical/utils": "^0.47.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

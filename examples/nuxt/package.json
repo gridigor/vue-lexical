@@ -6,6 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "generate:pages": "nuxt generate --preset github_pages",
     "postinstall": "nuxt prepare",
     "typecheck": "vue-tsgo --project .nuxt/tsconfig.json"
   },

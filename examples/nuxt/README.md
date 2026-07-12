@@ -5,6 +5,9 @@ server rendering and client hydration. The local `file:` dependency resolves
 the same package entry points used by npm consumers instead of aliasing imports
 to the repository source.
 
+The generated version is published as the public
+[Vue Lexical demo playground](https://gridigor.github.io/vue-lexical/).
+
 Build the package from the repository root first:
 
 ```sh

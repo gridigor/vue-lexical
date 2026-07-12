@@ -17,6 +17,13 @@ same small, composable building blocks as `@lexical/react`.
 All `@lexical/*` packages used by an application must resolve to the same
 version as `lexical`.
 
+## Playground
+
+Try the current components and plugins in the public
+[Vue Lexical demo playground](https://gridigor.github.io/vue-lexical/). The
+playground is a statically generated Nuxt application deployed through GitHub
+Pages whenever `main` changes.
+
 ## Installation
 
 ```sh

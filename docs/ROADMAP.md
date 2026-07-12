@@ -51,6 +51,7 @@ React-only rendering details are not copied into the public API.
 - [ ] bundle-size budgets and tree-shaking fixtures
 - [x] packed-package Vue consumer verification
 - [x] Vue/Nuxt SSR example
+- [x] public GitHub Pages playground deployment
 - [ ] compatibility automation for each Lexical release
 - [ ] API reference and migration guide from `lexical-vue`
 

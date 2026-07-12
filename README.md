@@ -294,6 +294,35 @@ Omit `transformers` to use `DEFAULT_TRANSFORMERS`, which also requires
 `HorizontalRuleNode`, `HeadingNode`, `QuoteNode`, `ListNode`, `ListItemNode`,
 `CodeNode`, and `LinkNode` in the composer configuration.
 
+## Hashtags
+
+Register `HashtagNode` in the composer and add `HashtagPlugin` to transform
+text such as `#vue` into a text entity while the user types:
+
+```vue
+<script setup lang="ts">
+import { HashtagNode } from '@lexical/hashtag'
+import { HashtagPlugin } from '@gridigor/vue-lexical'
+
+const initialConfig = {
+  namespace: 'HashtagEditor',
+  nodes: [HashtagNode],
+  onError(error: Error) {
+    throw error
+  },
+}
+</script>
+
+<template>
+  <LexicalComposer :initial-config="initialConfig">
+    <!-- RichTextPlugin and other editor plugins -->
+    <HashtagPlugin />
+  </LexicalComposer>
+</template>
+```
+
+Use the `hashtag` key in the Lexical theme to style generated hashtag nodes.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

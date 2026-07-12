@@ -26,6 +26,7 @@ React-only rendering details are not copied into the public API.
 - [x] link, clickable link, and auto-link
 - [x] list and checklist
 - [x] markdown shortcuts
+- [x] hashtag text entities
 - [x] tab indentation
 - [ ] horizontal rules
 - [x] editable state and generic subscription composables

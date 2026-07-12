@@ -45,6 +45,12 @@ export {
 } from './LexicalEditorRefPlugin'
 export { HistoryPlugin, LexicalHistoryPlugin } from './LexicalHistoryPlugin'
 export {
+  HashtagPlugin,
+  LexicalHashtagPlugin,
+  registerLexicalHashtag,
+  type HashtagConfig,
+} from './LexicalHashtagPlugin'
+export {
   LexicalLinkPlugin,
   LinkPlugin,
   registerLink,

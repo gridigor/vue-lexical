@@ -91,6 +91,21 @@ export {
   type CanIndentPredicate,
   type TabIndentationPluginProps,
 } from './LexicalTabIndentationPlugin'
+export {
+  createBasicTypeaheadTriggerMatch,
+  LexicalTypeaheadMenuPlugin,
+  MenuOption,
+  PUNCTUATION,
+  SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND,
+  TypeaheadMenuPlugin,
+  useBasicTypeaheadTriggerMatch,
+  type BasicTypeaheadTriggerOptions,
+  type MenuResolution,
+  type MenuSlotProps,
+  type MenuTextMatch,
+  type TriggerFn,
+  type TypeaheadMenuPluginProps,
+} from './LexicalTypeaheadMenuPlugin'
 export type { InitialEditorState } from './initializeEditor'
 export { useLexicalEditable } from './useLexicalEditable'
 export { useLexicalIsTextContentEmpty } from './useLexicalIsTextContentEmpty'

@@ -273,6 +273,48 @@ body {
   pointer-events: none;
 }
 
+.editor-typeahead-anchor {
+  z-index: 20;
+}
+
+.typeahead-popover {
+  width: max-content;
+  min-width: 210px;
+  overflow: hidden;
+  border: 1px solid #dce1eb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgb(38 48 74 / 18%);
+}
+
+.typeahead-popover ul {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+}
+
+.typeahead-popover .item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  color: #39445a;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.typeahead-popover .item.selected {
+  color: #3730a3;
+  background: #eef2ff;
+}
+
+.typeahead-popover .item svg {
+  flex: 0 0 auto;
+}
+
 @media (max-width: 640px) {
   .page-shell {
     width: min(100% - 16px, 960px);

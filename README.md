@@ -380,6 +380,55 @@ function onLinkClick(event: Event, _editor: LexicalEditor, nodeKey: NodeKey) {
 `mouseenter` and `mouseleave` use capture semantics and match only the nearest
 Lexical node, consistent with `@lexical/react`.
 
+## Typeahead menus
+
+`TypeaheadMenuPlugin` opens a teleported menu when the text before the cursor
+matches a trigger. The built-in renderer supports mouse selection, arrow keys,
+Enter, Tab, Escape, active-descendant ARIA attributes, viewport repositioning,
+and query-node splitting:
+
+```vue
+<script setup lang="ts">
+import { $createTextNode, type TextNode } from 'lexical'
+import {
+  MenuOption,
+  TypeaheadMenuPlugin,
+  createBasicTypeaheadTriggerMatch,
+} from '@gridigor/vue-lexical'
+
+class MentionOption extends MenuOption {
+  constructor(
+    key: string,
+    public label: string,
+  ) {
+    super(key)
+    this.title = label
+  }
+}
+
+const options = [new MentionOption('vue', 'Vue'), new MentionOption('lexical', 'Lexical')]
+const triggerFn = createBasicTypeaheadTriggerMatch('@', { minLength: 0 })
+
+function onSelectOption(option: MenuOption, queryNode: TextNode | null, close: () => void) {
+  queryNode?.replace($createTextNode(`@${String(option.title)}`))
+  close()
+}
+</script>
+
+<template>
+  <TypeaheadMenuPlugin
+    :options="options"
+    :trigger-fn="triggerFn"
+    :on-query-change="(query) => console.log(query)"
+    :on-select-option="onSelectOption"
+  />
+</template>
+```
+
+Use the default scoped slot to replace the menu markup while retaining the
+positioning and keyboard behavior. It receives `options`, `selectedIndex`,
+`matchingString`, `setHighlightedIndex`, and `selectOptionAndCleanUp`.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

@@ -37,7 +37,7 @@ React-only rendering details are not copied into the public API.
 ## Milestone 3 — advanced editing
 
 - [ ] table support and table selection
-- [ ] typeahead and context menus
+- [ ] typeahead and context menus (`LexicalTypeaheadMenuPlugin` complete)
 - [ ] node selection
 - [ ] draggable blocks
 - [ ] collaboration with Yjs

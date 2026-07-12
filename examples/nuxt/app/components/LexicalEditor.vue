@@ -28,6 +28,7 @@ import {
   TabIndentationPlugin,
   createLinkMatcherWithRegExp,
 } from '@gridigor/vue-lexical'
+import LexicalTypeaheadPlayground from './LexicalTypeaheadPlayground.vue'
 
 const selectedHashtag = ref('none yet')
 const characterCount = ref(0)
@@ -51,7 +52,9 @@ const initialConfig = {
   editorState: () => {
     $getRoot().append(
       $createParagraphNode().append(
-        $createTextNode('Try typing #vue, start a line with “# ”, or click a hashtag.'),
+        $createTextNode(
+          'Try @vu for a mention, /hea for a command, #vue for a hashtag, or “# ” for Markdown.',
+        ),
       ),
     )
   },
@@ -118,7 +121,7 @@ function onChange(editorState: EditorState) {
           </RichTextPlugin>
         </div>
         <div class="editor-status">
-          <span>Markdown: # heading, &gt; quote, -, 1., []</span>
+          <span>Menus: @ mentions, / commands · Markdown: #, &gt;, -, 1., []</span>
           <CharacterLimitPlugin :max-length="280">
             <template #default="{ remainingCharacters, exceeded }">
               <span :class="{ exceeded }">{{ remainingCharacters }} remaining</span>
@@ -135,6 +138,7 @@ function onChange(editorState: EditorState) {
         <TabIndentationPlugin :max-indent="4" />
         <MarkdownShortcutPlugin :transformers="transformers" />
         <HashtagPlugin />
+        <LexicalTypeaheadPlayground />
         <OnChangePlugin @change="onChange" />
         <NodeEventPlugin
           :node-type="HashtagNode"

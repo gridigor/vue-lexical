@@ -10,6 +10,12 @@ export { LexicalDecorators, type VueDecorator } from './LexicalDecorators'
 export { LexicalErrorBoundary, type LexicalErrorBoundarySlotProps } from './LexicalErrorBoundary'
 export { LexicalNestedComposer, type LexicalNestedComposerProps } from './LexicalNestedComposer'
 export { AutoFocusPlugin, LexicalAutoFocusPlugin } from './LexicalAutoFocusPlugin'
+export { ClearEditorPlugin, LexicalClearEditorPlugin } from './LexicalClearEditorPlugin'
+export {
+  EditorRefPlugin,
+  LexicalEditorRefPlugin,
+  type LexicalEditorRef,
+} from './LexicalEditorRefPlugin'
 export { HistoryPlugin, LexicalHistoryPlugin } from './LexicalHistoryPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'

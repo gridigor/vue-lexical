@@ -21,7 +21,7 @@ React-only rendering details are not copied into the public API.
 
 ## Milestone 2 — common plugins
 
-- [ ] clear editor
+- [x] clear editor
 - [ ] character limit and max length
 - [ ] link, clickable link, and auto-link
 - [ ] list and checklist
@@ -29,7 +29,7 @@ React-only rendering details are not copied into the public API.
 - [ ] tab indentation
 - [ ] horizontal rules
 - [x] editable state and generic subscription composables
-- [ ] editor ref plugin
+- [x] editor ref plugin
 
 ## Milestone 3 — advanced editing
 

@@ -88,6 +88,43 @@ const editor = useLexicalComposer()
 const [sameEditor] = useLexicalComposerContext()
 ```
 
+## External editor access and clearing
+
+Use `EditorRefPlugin` when controls outside the composer need the editor
+instance. It accepts either a Vue ref or a callback. `ClearEditorPlugin`
+registers the standard Lexical `CLEAR_EDITOR_COMMAND` behavior:
+
+```vue
+<script setup lang="ts">
+import type { LexicalEditor } from 'lexical'
+import { CLEAR_EDITOR_COMMAND } from 'lexical'
+import { shallowRef } from 'vue'
+import { ClearEditorPlugin, EditorRefPlugin } from '@gridigor/vue-lexical'
+
+const editorRef = shallowRef<LexicalEditor | null>(null)
+
+function setEditor(editor: LexicalEditor | null) {
+  editorRef.value = editor
+}
+</script>
+
+<template>
+  <LexicalComposer :initial-config="initialConfig">
+    <EditorRefPlugin :editor-ref="setEditor" />
+    <ClearEditorPlugin />
+    <!-- Other editor plugins -->
+  </LexicalComposer>
+
+  <button type="button" @click="editorRef?.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined)">
+    Clear
+  </button>
+</template>
+```
+
+In a Vue template, refs are automatically unwrapped when passed as props, so
+the callback form is the most direct option. In render functions, a
+`shallowRef` can be passed to `editorRef` without unwrapping it.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

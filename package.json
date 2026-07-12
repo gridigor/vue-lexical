@@ -49,6 +49,7 @@
     "vue": "^3.5.39"
   },
   "dependencies": {
+    "@lexical/extension": "^0.47.0",
     "@lexical/history": "^0.47.0",
     "@lexical/plain-text": "^0.47.0",
     "@lexical/rich-text": "^0.47.0"

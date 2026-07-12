@@ -25,6 +25,12 @@ export {
   type CharacterLimitCharset,
   type CharacterLimitSlotProps,
 } from './LexicalCharacterLimitPlugin'
+export {
+  CheckListPlugin,
+  LexicalCheckListPlugin,
+  registerCheckList,
+  type CheckListPluginProps,
+} from './LexicalCheckListPlugin'
 export { ClearEditorPlugin, LexicalClearEditorPlugin } from './LexicalClearEditorPlugin'
 export {
   ClickableLinkPlugin,
@@ -45,6 +51,14 @@ export {
   type LinkAttributes,
   type LinkPluginProps,
 } from './LexicalLinkPlugin'
+export {
+  LexicalListPlugin,
+  ListPlugin,
+  registerList,
+  registerListStrictIndentTransform,
+  type ListPluginProps,
+  type RegisterListOptions,
+} from './LexicalListPlugin'
 export { LexicalMaxLengthPlugin, MaxLengthPlugin } from './LexicalMaxLengthPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'

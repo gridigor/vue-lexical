@@ -224,6 +224,40 @@ const initialConfig = {
 set `:new-tab="false"` to reuse the current tab or `disabled` to temporarily
 turn click navigation off.
 
+## Lists
+
+Register `ListNode` and `ListItemNode` in the composer, then add `ListPlugin`
+to enable ordered and unordered lists. Add `CheckListPlugin` to enable the
+check-list command and pointer and keyboard interaction for check-list items:
+
+```vue
+<script setup lang="ts">
+import { ListItemNode, ListNode } from '@lexical/list'
+import { CheckListPlugin, ListPlugin } from '@gridigor/vue-lexical'
+
+const initialConfig = {
+  namespace: 'ListEditor',
+  nodes: [ListNode, ListItemNode],
+  onError(error: Error) {
+    throw error
+  },
+}
+</script>
+
+<template>
+  <LexicalComposer :initial-config="initialConfig">
+    <!-- RichTextPlugin and other editor plugins -->
+    <ListPlugin :has-strict-indent="true" :should-preserve-numbering="true" />
+    <CheckListPlugin />
+  </LexicalComposer>
+</template>
+```
+
+Use `INSERT_ORDERED_LIST_COMMAND`, `INSERT_UNORDERED_LIST_COMMAND`,
+`INSERT_CHECK_LIST_COMMAND`, and `REMOVE_LIST_COMMAND` from `@lexical/list` to
+control list formatting. Set `disable-take-focus-on-click` on
+`CheckListPlugin` when toggling a checkbox must not focus the editor.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

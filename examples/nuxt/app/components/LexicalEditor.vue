@@ -22,6 +22,9 @@ import {
   LinkPlugin,
   ListPlugin,
   MarkdownShortcutPlugin,
+  NodeContextMenuOption,
+  NodeContextMenuPlugin,
+  NodeContextMenuSeparator,
   NodeEventPlugin,
   OnChangePlugin,
   RichTextPlugin,
@@ -32,6 +35,18 @@ import LexicalTypeaheadPlayground from './LexicalTypeaheadPlayground.vue'
 
 const selectedHashtag = ref('none yet')
 const characterCount = ref(0)
+const contextMenuItems = [
+  new NodeContextMenuOption('Select all', {
+    $onSelect: () => {
+      const root = $getRoot()
+      root.select(0, root.getChildrenSize())
+    },
+  }),
+  new NodeContextMenuSeparator(),
+  new NodeContextMenuOption('Clear editor', {
+    $onSelect: () => $getRoot().clear().append($createParagraphNode()),
+  }),
+]
 const transformers = [HEADING, QUOTE, UNORDERED_LIST, ORDERED_LIST, CHECK_LIST]
 const urlMatcher = createLinkMatcherWithRegExp(/https?:\/\/[^\s<]+/i, (text) =>
   text.replace(/[.,!?;:]$/, ''),
@@ -121,7 +136,7 @@ function onChange(editorState: EditorState) {
           </RichTextPlugin>
         </div>
         <div class="editor-status">
-          <span>Menus: @ mentions, / commands · Markdown: #, &gt;, -, 1., []</span>
+          <span>Menus: @, /, right-click · Markdown: #, &gt;, -, 1., []</span>
           <CharacterLimitPlugin :max-length="280">
             <template #default="{ remainingCharacters, exceeded }">
               <span :class="{ exceeded }">{{ remainingCharacters }} remaining</span>
@@ -139,6 +154,12 @@ function onChange(editorState: EditorState) {
         <MarkdownShortcutPlugin :transformers="transformers" />
         <HashtagPlugin />
         <LexicalTypeaheadPlayground />
+        <NodeContextMenuPlugin
+          class-name="editor-context-menu"
+          item-class-name="editor-context-menu-item"
+          separator-class-name="editor-context-menu-separator"
+          :items="contextMenuItems"
+        />
         <OnChangePlugin @change="onChange" />
         <NodeEventPlugin
           :node-type="HashtagNode"

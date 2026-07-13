@@ -429,6 +429,51 @@ Use the default scoped slot to replace the menu markup while retaining the
 positioning and keyboard behavior. It receives `options`, `selectedIndex`,
 `matchingString`, `setHighlightedIndex`, and `selectOptionAndCleanUp`.
 
+## Node and context menus
+
+`NodeMenuPlugin` provides the same keyboard-aware floating menu for a known
+Lexical `nodeKey`. It opens while the node exists and automatically tracks its
+DOM position. `NodeContextMenuPlugin` replaces the browser menu inside the
+editor and filters actions against the right-clicked Lexical node:
+
+```vue
+<script setup lang="ts">
+import { $getRoot } from 'lexical'
+import {
+  NodeContextMenuOption,
+  NodeContextMenuPlugin,
+  NodeContextMenuSeparator,
+} from '@gridigor/vue-lexical'
+
+const items = [
+  new NodeContextMenuOption('Select all', {
+    $onSelect: () => {
+      const root = $getRoot()
+      root.select(0, root.getChildrenSize())
+    },
+  }),
+  new NodeContextMenuSeparator(),
+  new NodeContextMenuOption('Clear', { $onSelect: () => $getRoot().clear() }),
+]
+</script>
+
+<template>
+  <NodeContextMenuPlugin :items="items" />
+</template>
+```
+
+Context menus support disabled actions, separators, `$showOn` node predicates,
+arrow/Home/End navigation, Enter/Space selection, Escape, and keyboard
+type-ahead. Both node menu components expose scoped slots for custom markup.
+
+## Auto embeds
+
+`AutoEmbedPlugin` watches newly pasted `LinkNode` and `AutoLinkNode` instances,
+matches their URL against `embedConfigs`, and opens a node menu. Each config
+supplies `parseUrl` and `insertNode`; `getMenuOptions` decides whether the user
+can embed or dismiss the detected URL. The exported `INSERT_EMBED_COMMAND`,
+`AutoEmbedOption`, and `URL_MATCHER` mirror the corresponding React helpers.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

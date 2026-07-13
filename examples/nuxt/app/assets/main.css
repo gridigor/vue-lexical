@@ -315,6 +315,43 @@ body {
   flex: 0 0 auto;
 }
 
+.editor-context-menu {
+  display: grid;
+  min-width: 170px;
+  gap: 3px;
+  padding: 6px;
+  border: 1px solid #dce1eb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgb(38 48 74 / 18%);
+}
+
+.editor-context-menu-item {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 7px;
+  color: #39445a;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.editor-context-menu-item:hover,
+.editor-context-menu-item:focus,
+.editor-context-menu-item.active {
+  color: #3730a3;
+  outline: none;
+  background: #eef2ff;
+}
+
+.editor-context-menu-separator {
+  width: 100%;
+  margin: 3px 0;
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
 @media (max-width: 640px) {
   .page-shell {
     width: min(100% - 16px, 960px);

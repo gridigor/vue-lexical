@@ -11,6 +11,16 @@ export { LexicalErrorBoundary, type LexicalErrorBoundarySlotProps } from './Lexi
 export { LexicalNestedComposer, type LexicalNestedComposerProps } from './LexicalNestedComposer'
 export { AutoFocusPlugin, LexicalAutoFocusPlugin } from './LexicalAutoFocusPlugin'
 export {
+  AutoEmbedOption,
+  AutoEmbedPlugin,
+  INSERT_EMBED_COMMAND,
+  LexicalAutoEmbedPlugin,
+  URL_MATCHER,
+  type AutoEmbedPluginProps,
+  type EmbedConfig,
+  type EmbedMatchResult,
+} from './LexicalAutoEmbedPlugin'
+export {
   AutoLinkPlugin,
   LexicalAutoLinkPlugin,
   createLinkMatcherWithRegExp,
@@ -76,11 +86,26 @@ export {
 } from './LexicalMarkdownShortcutPlugin'
 export { LexicalMaxLengthPlugin, MaxLengthPlugin } from './LexicalMaxLengthPlugin'
 export {
+  LexicalNodeContextMenuPlugin,
+  NodeContextMenuOption,
+  NodeContextMenuPlugin,
+  NodeContextMenuSeparator,
+  type NodeContextMenuItem,
+  type NodeContextMenuOptionConfig,
+  type NodeContextMenuPluginProps,
+  type NodeContextMenuSlotProps,
+} from './LexicalNodeContextMenuPlugin'
+export {
   LexicalNodeEventPlugin,
   NodeEventPlugin,
   type NodeEventListener,
   type NodeEventPluginProps,
 } from './LexicalNodeEventPlugin'
+export {
+  LexicalNodeMenuPlugin,
+  NodeMenuPlugin,
+  type NodeMenuPluginProps,
+} from './LexicalNodeMenuPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'
 export { RichTextPlugin, LexicalRichTextPlugin } from './LexicalRichTextPlugin'

@@ -6,7 +6,25 @@ export {
   type LexicalComposerContext,
 } from './LexicalComposerContext'
 export { ContentEditable, LexicalContentEditable } from './LexicalContentEditable'
+export {
+  BlockWithAlignableContents,
+  LexicalBlockWithAlignableContents,
+  type BlockWithAlignableContentsClassName,
+  type BlockWithAlignableContentsProps,
+} from './LexicalBlockWithAlignableContents'
+export {
+  $isDecoratorBlockNode,
+  DecoratorBlockNode,
+  type SerializedDecoratorBlockNode,
+} from './LexicalDecoratorBlockNode'
 export { LexicalDecorators, type VueDecorator } from './LexicalDecorators'
+export {
+  DraggableBlockPlugin,
+  DraggableBlockPlugin_EXPERIMENTAL,
+  LexicalDraggableBlockPlugin,
+  type DraggableBlockPluginProps,
+  type DraggableBlockSlotProps,
+} from './LexicalDraggableBlockPlugin'
 export { LexicalErrorBoundary, type LexicalErrorBoundarySlotProps } from './LexicalErrorBoundary'
 export { LexicalNestedComposer, type LexicalNestedComposerProps } from './LexicalNestedComposer'
 export { AutoFocusPlugin, LexicalAutoFocusPlugin } from './LexicalAutoFocusPlugin'
@@ -54,6 +72,14 @@ export {
   type LexicalEditorRef,
 } from './LexicalEditorRefPlugin'
 export { HistoryPlugin, LexicalHistoryPlugin } from './LexicalHistoryPlugin'
+export {
+  $createHorizontalRuleNode,
+  $isHorizontalRuleNode,
+  HorizontalRuleNode,
+  INSERT_HORIZONTAL_RULE_COMMAND,
+  type SerializedHorizontalRuleNode,
+} from './LexicalHorizontalRuleNode'
+export { HorizontalRulePlugin, LexicalHorizontalRulePlugin } from './LexicalHorizontalRulePlugin'
 export {
   HashtagPlugin,
   LexicalHashtagPlugin,
@@ -110,6 +136,11 @@ export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
 export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'
 export { RichTextPlugin, LexicalRichTextPlugin } from './LexicalRichTextPlugin'
 export {
+  LexicalSelectionAlwaysOnDisplay,
+  SelectionAlwaysOnDisplay,
+  type SelectionRepositionHandler,
+} from './LexicalSelectionAlwaysOnDisplay'
+export {
   LexicalTabIndentationPlugin,
   TabIndentationPlugin,
   registerTabIndentation,
@@ -134,6 +165,12 @@ export {
 export type { InitialEditorState } from './initializeEditor'
 export { useLexicalEditable } from './useLexicalEditable'
 export { useLexicalIsTextContentEmpty } from './useLexicalIsTextContentEmpty'
+export {
+  useLexicalNodeSelection,
+  type ClearLexicalNodeSelection,
+  type LexicalNodeSelection,
+  type SetLexicalNodeSelected,
+} from './useLexicalNodeSelection'
 export { useLexicalSubscription, type LexicalSubscription } from './useLexicalSubscription'
 export {
   registerLexicalTextEntity,

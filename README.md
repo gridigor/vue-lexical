@@ -3,9 +3,12 @@
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
 
-> This project is pre-1.0. The current 0.1 line covers the editor foundation,
-> SSR and hydration, history, text limits, links, lists, Markdown shortcuts,
-> hashtags, node events, and custom text entities.
+> This project is pre-1.0. The current 0.3 line covers the editor foundation,
+> SSR and hydration, common text plugins, menu infrastructure, node selection,
+> block decorators, horizontal rules, and draggable top-level blocks.
+
+See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
+status and the features planned next.
 
 ## Requirements
 
@@ -473,6 +476,53 @@ matches their URL against `embedConfigs`, and opens a node menu. Each config
 supplies `parseUrl` and `insertNode`; `getMenuOptions` decides whether the user
 can embed or dismiss the detected URL. The exported `INSERT_EMBED_COMMAND`,
 `AutoEmbedOption`, and `URL_MATCHER` mirror the corresponding React helpers.
+
+## Block elements
+
+Register `HorizontalRuleNode` in the composer and mount `HorizontalRulePlugin`
+to insert selectable horizontal rules with `INSERT_HORIZONTAL_RULE_COMMAND`:
+
+```vue
+<script setup lang="ts">
+import {
+  HorizontalRuleNode,
+  HorizontalRulePlugin,
+  INSERT_HORIZONTAL_RULE_COMMAND,
+  useLexicalComposer,
+} from '@gridigor/vue-lexical'
+
+const editor = useLexicalComposer()
+// Add HorizontalRuleNode to initialConfig.nodes.
+</script>
+
+<template>
+  <button @click="editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined)">
+    Insert rule
+  </button>
+  <HorizontalRulePlugin />
+</template>
+```
+
+`DecoratorBlockNode` is the Vue base class for aligned block decorators.
+Render its content through `BlockWithAlignableContents` to receive node
+selection, Shift-click multi-selection, and `FORMAT_ELEMENT_COMMAND` support.
+The lower-level `useLexicalNodeSelection(nodeKey)` composable returns a readonly
+selection ref, a setter, and a clear function.
+
+`DraggableBlockPlugin` Teleports a drag handle and target line into an anchor
+element and reorders top-level nodes. Supply the visuals through the `menu` and
+`targetLine` slots:
+
+```vue
+<DraggableBlockPlugin :anchor-element="editorContainer">
+  <template #menu>⋮⋮</template>
+  <template #targetLine><div class="drop-line" /></template>
+</DraggableBlockPlugin>
+```
+
+Use `SelectionAlwaysOnDisplay` when toolbar interaction should not hide the
+editor's visual range highlight. Its optional `onReposition` callback receives
+the current highlight elements.
 
 ## Decorator nodes
 

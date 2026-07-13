@@ -34,6 +34,7 @@ import {
   ListX,
   Lock,
   LockOpen,
+  Minus,
   Pilcrow,
   Redo2,
   Strikethrough,
@@ -46,7 +47,11 @@ import {
   Unlink,
 } from '@lucide/vue'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { useLexicalComposer, useLexicalEditable } from '@gridigor/vue-lexical'
+import {
+  INSERT_HORIZONTAL_RULE_COMMAND,
+  useLexicalComposer,
+  useLexicalEditable,
+} from '@gridigor/vue-lexical'
 
 const editor = useLexicalComposer()
 const editable = useLexicalEditable()
@@ -136,6 +141,15 @@ function setLink() {
         @click="setBlock('h1')"
       >
         <Heading1 :size="16" aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        title="Horizontal rule"
+        aria-label="Horizontal rule"
+        @mousedown.prevent
+        @click="editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined)"
+      >
+        <Minus :size="16" aria-hidden="true" />
       </button>
       <button
         type="button"

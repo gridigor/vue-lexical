@@ -30,7 +30,7 @@ React-only rendering details are not copied into the public API.
 - [x] generic text entity composable
 - [x] delegated node events
 - [x] tab indentation
-- [ ] horizontal rules
+- [x] horizontal rules
 - [x] editable state and generic subscription composables
 - [x] editor ref plugin
 
@@ -38,11 +38,11 @@ React-only rendering details are not copied into the public API.
 
 - [ ] table support and table selection
 - [x] typeahead, node, context, and auto-embed menus
-- [ ] node selection
-- [ ] draggable blocks
+- [x] node selection
+- [x] draggable blocks
 - [ ] collaboration with Yjs
 - [ ] speech-to-text
-- [ ] selection always on display
+- [x] selection always on display
 
 ## Milestone 4 — release quality
 

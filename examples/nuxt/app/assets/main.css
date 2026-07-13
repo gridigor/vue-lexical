@@ -128,6 +128,34 @@ body {
   position: relative;
 }
 
+.editor-drag-handle {
+  display: grid;
+  width: 24px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  color: #8b93a5;
+  background: #f4f6fb;
+  cursor: grab;
+  place-items: center;
+}
+
+.editor-drag-handle:hover {
+  color: #3730a3;
+  background: #e0e7ff;
+}
+
+.editor-drag-handle:active {
+  cursor: grabbing;
+}
+
+.editor-drop-line {
+  height: 4px;
+  border-radius: 999px;
+  background: #6366f1;
+}
+
 .editor-input {
   min-height: 180px;
   padding: 24px;
@@ -153,6 +181,12 @@ body {
 
 .editor-paragraph {
   margin: 0;
+  padding: 2px 0;
+  border-radius: 4px;
+}
+
+.editor-paragraph:hover {
+  background: #f8f9fc;
 }
 
 .editor-heading {
@@ -165,6 +199,18 @@ body {
   background: #eef2ff;
   color: #4338ca;
   cursor: pointer;
+}
+
+.editor-horizontal-rule {
+  margin: 14px 0;
+  border: 0;
+  border-top: 2px solid #dce1eb;
+  cursor: pointer;
+}
+
+.editor-horizontal-rule-selected {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgb(99 102 241 / 14%);
 }
 
 .editor-link {

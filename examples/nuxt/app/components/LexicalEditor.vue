@@ -7,6 +7,7 @@ import { ListItemNode, ListNode } from '@lexical/list'
 import { CHECK_LIST, HEADING, ORDERED_LIST, QUOTE, UNORDERED_LIST } from '@lexical/markdown'
 import { OverflowNode } from '@lexical/overflow'
 import { HeadingNode, QuoteNode } from '@lexical/rich-text'
+import { GripVertical } from '@lucide/vue'
 import { ref } from 'vue'
 import {
   AutoFocusPlugin,
@@ -15,8 +16,11 @@ import {
   CheckListPlugin,
   ClearEditorPlugin,
   ContentEditable,
+  DraggableBlockPlugin,
   HashtagPlugin,
   HistoryPlugin,
+  HorizontalRuleNode,
+  HorizontalRulePlugin,
   LexicalErrorBoundary,
   LexicalComposer,
   LinkPlugin,
@@ -28,6 +32,7 @@ import {
   NodeEventPlugin,
   OnChangePlugin,
   RichTextPlugin,
+  SelectionAlwaysOnDisplay,
   TabIndentationPlugin,
   createLinkMatcherWithRegExp,
 } from '@gridigor/vue-lexical'
@@ -35,6 +40,7 @@ import LexicalTypeaheadPlayground from './LexicalTypeaheadPlayground.vue'
 
 const selectedHashtag = ref('none yet')
 const characterCount = ref(0)
+const editorStage = ref<HTMLElement | null>(null)
 const contextMenuItems = [
   new NodeContextMenuOption('Select all', {
     $onSelect: () => {
@@ -58,6 +64,7 @@ const initialConfig = {
     AutoLinkNode,
     HashtagNode,
     HeadingNode,
+    HorizontalRuleNode,
     LinkNode,
     ListItemNode,
     ListNode,
@@ -71,6 +78,9 @@ const initialConfig = {
           'Try @vu for a mention, /hea for a command, #vue for a hashtag, or “# ” for Markdown.',
         ),
       ),
+      $createParagraphNode().append(
+        $createTextNode('Move between blocks to reveal the drag handle on the left.'),
+      ),
     )
   },
   onError(error: Error) {
@@ -78,6 +88,8 @@ const initialConfig = {
   },
   theme: {
     hashtag: 'editor-hashtag',
+    hr: 'editor-horizontal-rule',
+    hrSelected: 'editor-horizontal-rule-selected',
     heading: {
       h1: 'editor-heading',
     },
@@ -125,7 +137,7 @@ function onChange(editorState: EditorState) {
     <LexicalComposer :initial-config="initialConfig">
       <LexicalErrorBoundary>
         <LexicalToolbar />
-        <div class="editor-stage">
+        <div ref="editorStage" class="editor-stage">
           <RichTextPlugin>
             <template #contentEditable>
               <ContentEditable class="editor-input" aria-label="Rich text editor" />
@@ -136,7 +148,7 @@ function onChange(editorState: EditorState) {
           </RichTextPlugin>
         </div>
         <div class="editor-status">
-          <span>Menus: @, /, right-click · Markdown: #, &gt;, -, 1., []</span>
+          <span>Hover a text block, then drag the handle on its left · Minus inserts a rule</span>
           <CharacterLimitPlugin :max-length="280">
             <template #default="{ remainingCharacters, exceeded }">
               <span :class="{ exceeded }">{{ remainingCharacters }} remaining</span>
@@ -144,6 +156,24 @@ function onChange(editorState: EditorState) {
           </CharacterLimitPlugin>
         </div>
         <HistoryPlugin />
+        <HorizontalRulePlugin />
+        <SelectionAlwaysOnDisplay />
+        <DraggableBlockPlugin :anchor-element="editorStage">
+          <template #menu>
+            <button
+              type="button"
+              class="editor-drag-handle"
+              title="Drag block"
+              aria-label="Drag block"
+              tabindex="-1"
+            >
+              <GripVertical :size="17" aria-hidden="true" />
+            </button>
+          </template>
+          <template #targetLine>
+            <div class="editor-drop-line" />
+          </template>
+        </DraggableBlockPlugin>
         <AutoFocusPlugin />
         <ClearEditorPlugin />
         <LinkPlugin />

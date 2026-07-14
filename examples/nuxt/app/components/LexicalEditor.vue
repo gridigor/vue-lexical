@@ -6,7 +6,7 @@ import { AutoLinkNode, LinkNode } from '@lexical/link'
 import { ListItemNode, ListNode } from '@lexical/list'
 import { CHECK_LIST, HEADING, ORDERED_LIST, QUOTE, UNORDERED_LIST } from '@lexical/markdown'
 import { OverflowNode } from '@lexical/overflow'
-import { HeadingNode, QuoteNode } from '@lexical/rich-text'
+import { $createHeadingNode, HeadingNode, QuoteNode } from '@lexical/rich-text'
 import { GripVertical } from '@lucide/vue'
 import { ref } from 'vue'
 import {
@@ -34,6 +34,12 @@ import {
   RichTextPlugin,
   SelectionAlwaysOnDisplay,
   TabIndentationPlugin,
+  TableCellNode,
+  TableCellResizer,
+  TableNode,
+  TableOfContentsPlugin,
+  TablePlugin,
+  TableRowNode,
   createLinkMatcherWithRegExp,
 } from '@gridigor/vue-lexical'
 import LexicalTypeaheadPlayground from './LexicalTypeaheadPlayground.vue'
@@ -70,9 +76,13 @@ const initialConfig = {
     ListNode,
     OverflowNode,
     QuoteNode,
+    TableCellNode,
+    TableNode,
+    TableRowNode,
   ],
   editorState: () => {
     $getRoot().append(
+      $createHeadingNode('h1').append($createTextNode('Vue Lexical playground')),
       $createParagraphNode().append(
         $createTextNode(
           'Try @vu for a mention, /hea for a command, #vue for a hashtag, or “# ” for Markdown.',
@@ -108,6 +118,12 @@ const initialConfig = {
     overflow: 'editor-overflow',
     paragraph: 'editor-paragraph',
     quote: 'editor-quote',
+    table: 'editor-table',
+    tableCell: 'editor-table-cell',
+    tableCellHeader: 'editor-table-cell-header',
+    tableCellSelected: 'editor-table-cell-selected',
+    tableScrollableWrapper: 'editor-table-scroll',
+    tableSelection: 'editor-table-selection',
     text: {
       bold: 'editor-text-bold',
       code: 'editor-text-code',
@@ -146,9 +162,27 @@ function onChange(editorState: EditorState) {
               <p class="editor-placeholder">Start typing…</p>
             </template>
           </RichTextPlugin>
+          <TableOfContentsPlugin v-slot="{ tableOfContents, editor }">
+            <nav
+              v-if="tableOfContents.length"
+              class="editor-table-of-contents"
+              aria-label="Headings"
+            >
+              <strong>On this page</strong>
+              <button
+                v-for="[key, text, tag] in tableOfContents"
+                :key="key"
+                type="button"
+                :class="`toc-${tag}`"
+                @click="editor.getElementByKey(key)?.scrollIntoView({ block: 'center' })"
+              >
+                {{ text || 'Untitled heading' }}
+              </button>
+            </nav>
+          </TableOfContentsPlugin>
         </div>
         <div class="editor-status">
-          <span>Hover a text block, then drag the handle on its left · Minus inserts a rule</span>
+          <span>Drag blocks from the left · Drag table borders to resize cells</span>
           <CharacterLimitPlugin :max-length="280">
             <template #default="{ remainingCharacters, exceeded }">
               <span :class="{ exceeded }">{{ remainingCharacters }} remaining</span>
@@ -157,6 +191,8 @@ function onChange(editorState: EditorState) {
         </div>
         <HistoryPlugin />
         <HorizontalRulePlugin />
+        <TablePlugin :has-horizontal-scroll="true" />
+        <TableCellResizer />
         <SelectionAlwaysOnDisplay />
         <DraggableBlockPlugin :anchor-element="editorStage">
           <template #menu>

@@ -128,6 +128,27 @@ body {
   position: relative;
 }
 
+.editor-table-of-contents {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-top: 1px solid #e7eaf0;
+  color: #59647a;
+  background: #fafbfe;
+  font-size: 0.75rem;
+}
+
+.editor-table-of-contents button {
+  padding: 3px 7px;
+  border: 0;
+  border-radius: 5px;
+  color: #4f46e5;
+  background: #eef2ff;
+  cursor: pointer;
+}
+
 .editor-drag-handle {
   display: grid;
   width: 24px;
@@ -271,6 +292,46 @@ body {
   padding-left: 16px;
   border-left: 4px solid #a5b4fc;
   color: #59647a;
+}
+
+.editor-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.editor-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.editor-table-cell {
+  position: relative;
+  min-width: 92px;
+  padding: 8px 10px;
+  border: 1px solid #cbd2df;
+  vertical-align: top;
+}
+
+.editor-table-cell-header {
+  color: #303a50;
+  background: #f1f4f9;
+  font-weight: 700;
+}
+
+.editor-table-cell-selected {
+  background: #e0e7ff;
+}
+
+.editor-table-selection *::selection {
+  background: transparent;
+}
+
+.TableCellResizer__ui {
+  box-sizing: border-box;
+  touch-action: none;
 }
 
 .editor-overflow {

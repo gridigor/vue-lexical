@@ -148,6 +148,40 @@ export {
   type TabIndentationPluginProps,
 } from './LexicalTabIndentationPlugin'
 export {
+  LexicalTableCellResizer,
+  TABLE_CELL_MIN_COLUMN_WIDTH,
+  TABLE_CELL_MIN_ROW_HEIGHT,
+  TableCellResizer,
+  type TableCellResizeDirection,
+} from './LexicalTableCellResizer'
+export {
+  LexicalTableOfContentsPlugin,
+  TableOfContentsPlugin,
+  type TableOfContentsEntry,
+  type TableOfContentsSlotProps,
+} from './LexicalTableOfContentsPlugin'
+export {
+  $createTableCellNode,
+  $createTableNode,
+  $createTableNodeWithDimensions,
+  $createTableRowNode,
+  $isScrollableTablesActive,
+  $isTableCellNode,
+  $isTableNode,
+  $isTableRowNode,
+  INSERT_TABLE_COMMAND,
+  LexicalTablePlugin,
+  setScrollableTablesActive,
+  TableCellHeaderStates,
+  TableCellNode,
+  TableNode,
+  TablePlugin,
+  TableRowNode,
+  type InsertTableCommandPayload,
+  type InsertTableCommandPayloadHeaders,
+  type TablePluginProps,
+} from './LexicalTablePlugin'
+export {
   createBasicTypeaheadTriggerMatch,
   LexicalTypeaheadMenuPlugin,
   MenuOption,

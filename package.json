@@ -1,6 +1,6 @@
 {
   "name": "@gridigor/vue-lexical",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Vue 3 bindings for the Lexical editor framework",
   "type": "module",
   "sideEffects": false,
@@ -61,6 +61,7 @@
     "@lexical/plain-text": "^0.47.0",
     "@lexical/rich-text": "^0.47.0",
     "@lexical/selection": "^0.47.0",
+    "@lexical/table": "^0.47.0",
     "@lexical/text": "^0.47.0",
     "@lexical/utils": "^0.47.0"
   },

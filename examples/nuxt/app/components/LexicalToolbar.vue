@@ -41,6 +41,7 @@ import {
   TextAlignCenter,
   TextAlignEnd,
   TextAlignStart,
+  Table2,
   Trash2,
   Underline,
   Undo2,
@@ -49,6 +50,7 @@ import {
 import { onMounted, onUnmounted, ref } from 'vue'
 import {
   INSERT_HORIZONTAL_RULE_COMMAND,
+  INSERT_TABLE_COMMAND,
   useLexicalComposer,
   useLexicalEditable,
 } from '@gridigor/vue-lexical'
@@ -150,6 +152,21 @@ function setLink() {
         @click="editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined)"
       >
         <Minus :size="16" aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        title="Insert 3 × 3 table"
+        aria-label="Insert 3 by 3 table"
+        @mousedown.prevent
+        @click="
+          editor.dispatchCommand(INSERT_TABLE_COMMAND, {
+            columns: '3',
+            includeHeaders: true,
+            rows: '3',
+          })
+        "
+      >
+        <Table2 :size="16" aria-hidden="true" />
       </button>
       <button
         type="button"

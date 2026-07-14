@@ -524,6 +524,56 @@ Use `SelectionAlwaysOnDisplay` when toolbar interaction should not hide the
 editor's visual range highlight. Its optional `onReposition` callback receives
 the current highlight elements.
 
+## Tables
+
+Register `TableNode`, `TableRowNode`, and `TableCellNode`, then mount
+`TablePlugin`. The Vue API mirrors `@lexical/react/LexicalTablePlugin`: cell
+merge, cell background, Tab navigation, horizontal scrolling, and the
+experimental nested-table policy are controlled by component props.
+
+```vue
+<script setup lang="ts">
+import {
+  INSERT_TABLE_COMMAND,
+  TableCellNode,
+  TableCellResizer,
+  TableNode,
+  TablePlugin,
+  TableRowNode,
+  useLexicalComposer,
+} from '@gridigor/vue-lexical'
+
+const editor = useLexicalComposer()
+// Add TableNode, TableRowNode, and TableCellNode to initialConfig.nodes.
+</script>
+
+<template>
+  <button
+    @click="
+      editor.dispatchCommand(INSERT_TABLE_COMMAND, {
+        columns: '3',
+        includeHeaders: true,
+        rows: '3',
+      })
+    "
+  >
+    Insert table
+  </button>
+  <TablePlugin :has-horizontal-scroll="true" />
+  <TableCellResizer />
+</template>
+```
+
+`TableCellResizer` is a Vue port of the resizer used by the official Lexical
+Playground. It adds Teleported row and column handles, initializes column
+widths, enforces practical minimum dimensions, and disappears in read-only
+mode. It is an extra playground-level component; `@lexical/react` itself does
+not export a resizer.
+
+`TableOfContentsPlugin` tracks `HeadingNode` instances in document order. Its
+default slot receives `{ tableOfContents, editor }`, where each entry is a
+`[nodeKey, text, headingTag]` tuple.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

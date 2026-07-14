@@ -36,7 +36,7 @@ React-only rendering details are not copied into the public API.
 
 ## Milestone 3 — advanced editing
 
-- [ ] table support and table selection
+- [x] table support and table selection
 - [x] typeahead, node, context, and auto-embed menus
 - [x] node selection
 - [x] draggable blocks

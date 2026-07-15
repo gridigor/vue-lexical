@@ -24,13 +24,22 @@ export {
   type CursorsContainer,
 } from './LexicalCollaborationPlugin'
 export {
+  createLexicalComposerContext,
+  LexicalComposerContext,
   lexicalComposerContextKey,
   useLexicalComposer,
   useLexicalComposerContext,
-  type LexicalComposerContext,
+  type LexicalComposerContextType,
+  type LexicalComposerContextWithEditor,
 } from './LexicalComposerContext'
-export { LexicalExtensionComposer } from './LexicalExtensionComposer'
-export { LexicalExtensionEditorComposer } from './LexicalExtensionEditorComposer'
+export {
+  LexicalExtensionComposer,
+  type LexicalExtensionComposerProps,
+} from './LexicalExtensionComposer'
+export {
+  LexicalExtensionEditorComposer,
+  type LexicalExtensionEditorComposerProps,
+} from './LexicalExtensionEditorComposer'
 export {
   ContentEditable,
   ContentEditableElement,
@@ -57,7 +66,11 @@ export {
   type DraggableBlockPluginProps,
   type DraggableBlockSlotProps,
 } from './LexicalDraggableBlockPlugin'
-export { LexicalErrorBoundary, type LexicalErrorBoundarySlotProps } from './LexicalErrorBoundary'
+export {
+  LexicalErrorBoundary,
+  type LexicalErrorBoundaryProps,
+  type LexicalErrorBoundarySlotProps,
+} from './LexicalErrorBoundary'
 export { LexicalNestedComposer, type LexicalNestedComposerProps } from './LexicalNestedComposer'
 export { AutoFocusPlugin, LexicalAutoFocusPlugin } from './LexicalAutoFocusPlugin'
 export {
@@ -170,8 +183,16 @@ export {
   type NodeMenuPluginProps,
 } from './LexicalNodeMenuPlugin'
 export { OnChangePlugin, LexicalOnChangePlugin } from './LexicalOnChangePlugin'
-export { PlainTextPlugin, LexicalPlainTextPlugin } from './LexicalPlainTextPlugin'
-export { RichTextPlugin, LexicalRichTextPlugin } from './LexicalRichTextPlugin'
+export {
+  PlainTextPlugin,
+  LexicalPlainTextPlugin,
+  type PlainTextPluginProps,
+} from './LexicalPlainTextPlugin'
+export {
+  RichTextPlugin,
+  LexicalRichTextPlugin,
+  type RichTextPluginProps,
+} from './LexicalRichTextPlugin'
 export {
   LexicalSelectionAlwaysOnDisplay,
   SelectionAlwaysOnDisplay,
@@ -264,11 +285,13 @@ export {
 export {
   mountVueExtensionComponent,
   mountVuePluginComponent,
+  mountVuePluginElement,
   mountVuePluginHost,
   VUE_PLUGIN_HOST_MOUNT_PLUGIN_COMMAND,
   VUE_PLUGIN_HOST_MOUNT_ROOT_COMMAND,
   VuePluginHostExtension,
   type MountVuePluginCommandArg,
+  type VuePluginHostDecoratorProps,
   type VuePluginHostMountCommandArg,
   type VuePluginHostOutput,
 } from './VuePluginHostExtension'

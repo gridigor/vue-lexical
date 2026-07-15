@@ -1,7 +1,7 @@
 import { access, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { API_PARITY } from './api-parity.mjs'
+import { API_PARITY, API_SYMBOL_MAPPINGS, collectPublicExports } from './api-parity.mjs'
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const reactPackagePath = resolve(repositoryRoot, 'node_modules/@lexical/react/package.json')
@@ -16,6 +16,7 @@ const [reactPackage, packageJson, rootIndex] = await Promise.all([
 ])
 
 const errors = []
+const rootSymbols = collectPublicExports(rootIndex)
 const reactEntrypoints = Object.keys(reactPackage.exports)
   .filter((entrypoint) => entrypoint.startsWith('./') && !entrypoint.endsWith('.js'))
   .map((entrypoint) => entrypoint.slice(2))
@@ -45,14 +46,37 @@ if (packageJson.exports?.['./*'] === undefined) {
 
 await Promise.all(
   API_PARITY.map(async ([reactEntrypoint, vueEntrypoint]) => {
+    let vueSource
     try {
-      await access(resolve(repositoryRoot, `src/${vueEntrypoint}.ts`))
+      const vuePath = resolve(repositoryRoot, `src/${vueEntrypoint}.ts`)
+      await access(vuePath)
+      vueSource = await readFile(vuePath, 'utf8')
     } catch {
       errors.push(`${reactEntrypoint}: missing src/${vueEntrypoint}.ts`)
     }
 
     if (!rootIndex.includes(`from './${vueEntrypoint}'`)) {
       errors.push(`${reactEntrypoint}: ${vueEntrypoint} is not exported from src/index.ts`)
+    }
+
+    if (vueSource !== undefined) {
+      const reactDeclaration = await readFile(
+        resolve(repositoryRoot, `node_modules/@lexical/react/dist/${reactEntrypoint}.d.ts`),
+        'utf8',
+      )
+      const reactSymbols = collectPublicExports(reactDeclaration)
+      const vueSymbols = collectPublicExports(vueSource)
+      for (const reactSymbol of reactSymbols) {
+        const vueSymbol = API_SYMBOL_MAPPINGS[`${reactEntrypoint}:${reactSymbol}`] ?? reactSymbol
+        if (!vueSymbols.includes(vueSymbol)) {
+          errors.push(
+            `${reactEntrypoint}: public symbol ${reactSymbol} has no ${vueEntrypoint}:${vueSymbol} equivalent`,
+          )
+        }
+        if (!rootSymbols.includes(vueSymbol)) {
+          errors.push(`${reactEntrypoint}: ${vueSymbol} is not exported from src/index.ts`)
+        }
+      }
     }
   }),
 )
@@ -66,7 +90,10 @@ if (lexicalVersion !== reactVersion) {
 }
 
 const documentation = renderDocumentation(reactPackage.version)
-if (process.argv.includes('--write')) {
+if (process.argv.includes('--skip-documentation')) {
+  // Compatibility runs install an undeclared upstream version without changing
+  // the checked-in documentation for the currently supported Lexical line.
+} else if (process.argv.includes('--write')) {
   await writeFile(documentationPath, documentation)
 } else {
   let currentDocumentation = ''
@@ -142,8 +169,9 @@ component props, React hooks, JSX render callbacks, and portals are adapted to
 Vue props, composables, slots, and Teleport.
 
 The audit is executable: \`npm run check:api-parity\` compares this matrix with
-the installed upstream package, verifies every Vue source module and root export,
-and fails when an upstream entrypoint is added or removed. Run
+the installed upstream package, verifies every Vue source module, public symbol,
+and root export, and fails when an upstream entrypoint or symbol is added or
+removed. Run
 \`npm run generate:api-parity\` after intentionally updating the matrix.
 
 - ${API_PARITY.length} of ${API_PARITY.length} upstream entrypoints mapped

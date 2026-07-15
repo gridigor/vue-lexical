@@ -38,6 +38,7 @@ import {
   INSERT_HORIZONTAL_RULE_COMMAND,
 } from '../src/LexicalHorizontalRuleNode'
 import { HorizontalRulePlugin } from '../src/LexicalHorizontalRulePlugin'
+import { RichTextPlugin } from '../src/LexicalRichTextPlugin'
 import { useLexicalNodeSelection } from '../src/useLexicalNodeSelection'
 
 const onError = (error: Error) => {
@@ -172,7 +173,12 @@ describe('BlockWithAlignableContents', () => {
           },
         },
       },
-      slots: { default: () => [h(ContentEditable), h(Capture)] },
+      slots: {
+        default: () => [
+          h(RichTextPlugin, null, { contentEditable: () => h(ContentEditable) }),
+          h(Capture),
+        ],
+      },
     })
 
     await flushEditor()
@@ -237,7 +243,7 @@ describe('BlockWithAlignableContents', () => {
 
     editor.update(() => $getRoot().getFirstChildOrThrow().selectStart(), { discrete: true })
     await flushEditor()
-    expect(editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')).toBe(false)
+    expect(editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')).toBe(true)
     wrapper.unmount()
   })
 
@@ -276,7 +282,14 @@ describe('BlockWithAlignableContents', () => {
           },
         },
       },
-      slots: { default: () => [h(ContentEditable), h(Controls), h(MissingControls), h(Capture)] },
+      slots: {
+        default: () => [
+          h(RichTextPlugin, null, { contentEditable: () => h(ContentEditable) }),
+          h(Controls),
+          h(MissingControls),
+          h(Capture),
+        ],
+      },
     })
 
     await flushEditor()
@@ -328,7 +341,11 @@ describe('HorizontalRuleNode and HorizontalRulePlugin', () => {
         },
       },
       slots: {
-        default: () => [h(ContentEditable), h(HorizontalRulePlugin), h(Capture)],
+        default: () => [
+          h(RichTextPlugin, null, { contentEditable: () => h(ContentEditable) }),
+          h(HorizontalRulePlugin),
+          h(Capture),
+        ],
       },
     })
 
@@ -392,7 +409,9 @@ describe('HorizontalRuleNode and HorizontalRulePlugin', () => {
           editorState: () => $getRoot().append($createHorizontalRuleNode()),
         },
       },
-      slots: { default: () => h(ContentEditable) },
+      slots: {
+        default: () => h(RichTextPlugin, null, { contentEditable: () => h(ContentEditable) }),
+      },
     })
 
     await flushEditor()

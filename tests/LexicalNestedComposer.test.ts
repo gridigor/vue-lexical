@@ -10,15 +10,26 @@ import {
   createEditor,
   DecoratorNode,
   HISTORY_PUSH_TAG,
+  ParagraphNode,
 } from 'lexical'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { Doc } from 'yjs'
+import {
+  createCollaborationContext,
+  LexicalCollaboration,
+} from '../src/LexicalCollaborationContext'
 import { LexicalComposer } from '../src/LexicalComposer'
-import { useLexicalComposer } from '../src/LexicalComposerContext'
+import {
+  createLexicalComposerContext,
+  useLexicalComposer,
+  useLexicalComposerContext,
+} from '../src/LexicalComposerContext'
 import { ContentEditable } from '../src/LexicalContentEditable'
 import { HistoryPlugin } from '../src/LexicalHistoryPlugin'
 import { LexicalNestedComposer } from '../src/LexicalNestedComposer'
+import { RichTextPlugin } from '../src/LexicalRichTextPlugin'
 
 const onError = (error: Error) => {
   throw error
@@ -35,16 +46,39 @@ function createEditorCapture(onCapture: (editor: LexicalEditor) => void) {
 }
 
 describe('LexicalNestedComposer', () => {
+  it('exposes the upstream composer theme context contract', () => {
+    const parentTheme = { paragraph: 'parent' }
+    const ownTheme = { paragraph: 'own' }
+    const parentEditor = createEditor()
+    const parentContext = createLexicalComposerContext(null, parentTheme)
+
+    expect(parentContext.getTheme()).toBe(parentTheme)
+    expect(createLexicalComposerContext([parentEditor, parentContext], undefined).getTheme()).toBe(
+      parentTheme,
+    )
+    expect(createLexicalComposerContext([parentEditor, parentContext], ownTheme).getTheme()).toBe(
+      ownTheme,
+    )
+    expect(createLexicalComposerContext(undefined, undefined).getTheme()).toBeNull()
+  })
+
   it('provides the nested editor and inherits parent configuration', async () => {
     const parentTheme = { paragraph: 'parent-paragraph' }
     const nestedEditor = createEditor()
     let parentEditor: LexicalEditor | undefined
     let providedEditor: LexicalEditor | undefined
+    let providedTheme: unknown
     const CaptureParent = createEditorCapture((editor) => {
       parentEditor = editor
     })
     const CaptureNested = createEditorCapture((editor) => {
       providedEditor = editor
+    })
+    const CaptureContext = defineComponent({
+      setup() {
+        providedTheme = useLexicalComposerContext()[1].getTheme()
+        return () => null
+      },
     })
 
     const wrapper = mount(LexicalComposer, {
@@ -62,7 +96,7 @@ describe('LexicalNestedComposer', () => {
           h(
             LexicalNestedComposer,
             { initialEditor: nestedEditor },
-            { default: () => h(CaptureNested) },
+            { default: () => [h(CaptureNested), h(CaptureContext)] },
           ),
         ],
       },
@@ -74,6 +108,7 @@ describe('LexicalNestedComposer', () => {
     expect(nestedEditor._parentEditor).toBe(parentEditor)
     expect(nestedEditor._config.namespace).toBe('parent-editor')
     expect(nestedEditor._config.theme).toBe(parentEditor?._config.theme)
+    expect(providedTheme).toEqual(parentTheme)
     expect([...nestedEditor._nodes.keys()]).toEqual([...(parentEditor?._nodes.keys() ?? [])])
     expect(nestedEditor.isEditable()).toBe(false)
 
@@ -115,6 +150,64 @@ describe('LexicalNestedComposer', () => {
     expect(nestedEditor.isEditable()).toBe(true)
 
     wrapper.unmount()
+  })
+
+  it('supports deprecated node configuration and collaboration readiness controls', async () => {
+    const context = createCollaborationContext('Tester', 'blue')
+    context.isCollabActive = true
+    const waitingEditor = createEditor()
+    const skippedEditor = createEditor()
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const wrapper = mount(LexicalCollaboration, {
+      props: { context },
+      slots: {
+        default: () =>
+          h(
+            LexicalComposer,
+            { initialConfig: { namespace: 'collab-parent', onError } },
+            {
+              default: () => [
+                h(
+                  LexicalNestedComposer,
+                  {
+                    initialEditor: waitingEditor,
+                    initialNodes: [
+                      ParagraphNode,
+                      {
+                        replace: ParagraphNode,
+                        with: () => $createParagraphNode(),
+                        withKlass: ParagraphNode,
+                      },
+                    ],
+                  },
+                  { default: () => h('span', { 'data-testid': 'waiting' }, 'ready') },
+                ),
+                h(
+                  LexicalNestedComposer,
+                  { initialEditor: skippedEditor, skipCollabChecks: true },
+                  { default: () => h('span', { 'data-testid': 'skipped' }, 'visible') },
+                ),
+              ],
+            },
+          ),
+      },
+    })
+
+    expect(wrapper.find('[data-testid="waiting"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="skipped"]').text()).toBe('visible')
+    expect(warn).toHaveBeenCalledOnce()
+
+    context.yjsDocMap.set(waitingEditor.getKey(), new Doc())
+    await nextTick()
+    expect(wrapper.get('[data-testid="waiting"]').text()).toBe('ready')
+
+    context.yjsDocMap.delete(waitingEditor.getKey())
+    await nextTick()
+    expect(wrapper.get('[data-testid="waiting"]').text()).toBe('ready')
+
+    wrapper.unmount()
+    warn.mockRestore()
   })
 })
 
@@ -220,7 +313,9 @@ describe('LexicalNestedComposer integration', () => {
       },
       slots: {
         default: () => [
-          h(ContentEditable, { 'data-testid': 'parent-editor' }),
+          h(RichTextPlugin, null, {
+            contentEditable: () => h(ContentEditable, { 'data-testid': 'parent-editor' }),
+          }),
           h(HistoryPlugin, { externalHistoryState: historyState }),
           h(CaptureParent),
         ],

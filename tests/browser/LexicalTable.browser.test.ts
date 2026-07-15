@@ -171,10 +171,10 @@ describe('Lexical tables in a real browser', () => {
             expect(selection.getShape()).toEqual({ fromX: 0, fromY: 0, toX: 1, toY: 1 })
           }
         })
+        expect(mounted.host.querySelectorAll('.browser-table-cell-selected')).toHaveLength(4)
       },
       { timeout: 3_000 },
     )
-    expect(mounted.host.querySelectorAll('.browser-table-cell-selected')).toHaveLength(4)
   })
 
   it('shows boundary feedback and resizes columns and rows with the real mouse', async () => {

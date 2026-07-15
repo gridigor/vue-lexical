@@ -6,6 +6,12 @@ import { defineComponent, h, onUnmounted, shallowRef, toRaw, watch } from 'vue'
 import { VueExtension, type VueExtensionContentEditable } from './VueExtension'
 import { VueProviderExtension } from './VueProviderExtension'
 
+/** Props for the extension-owned editor composer; children are supplied through the default slot. */
+export interface LexicalExtensionComposerProps {
+  contentEditable?: VueExtensionContentEditable
+  extension: AnyLexicalExtensionArgument
+}
+
 function buildExtensionEditor(
   extension: AnyLexicalExtensionArgument,
   contentEditable: VueExtensionContentEditable | undefined,

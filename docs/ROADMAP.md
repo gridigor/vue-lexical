@@ -1,8 +1,12 @@
-# API parity roadmap
+# Version 1.0 API parity status
 
 The goal is behavioral parity with the framework-neutral parts of
 `@lexical/react`, expressed with Vue components, slots, emits, and composables.
 React-only rendering details are not copied into the public API.
+
+`1.0.0` completes this roadmap against `@lexical/react@0.47.0`. The executable
+parity audit verifies all 56 upstream entrypoints and every named public symbol;
+framework-specific mappings are declared explicitly.
 
 ## Milestone 1 — editor foundation
 
@@ -68,8 +72,10 @@ React-only rendering details are not copied into the public API.
 - [x] standalone Vue SPA Extension API example
 - [x] Vue/Nuxt SSR example
 - [x] public GitHub Pages playground deployment
-- [ ] compatibility automation for each Lexical release
-- [ ] API reference
+- [x] daily and manually dispatchable compatibility automation for new Lexical releases
+- [x] generated root-export and subpath API reference
+- [x] symbol-level parity audit for every `@lexical/react@0.47.0` entrypoint
+- [x] `1.0.0` package metadata and versioned documentation
 
 ## Compatibility policy
 

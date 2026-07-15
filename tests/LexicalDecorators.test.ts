@@ -7,6 +7,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { LexicalComposer } from '../src/LexicalComposer'
 import { useLexicalComposer } from '../src/LexicalComposerContext'
 import { ContentEditable } from '../src/LexicalContentEditable'
+import { PlainTextPlugin } from '../src/LexicalPlainTextPlugin'
+import { RichTextPlugin } from '../src/LexicalRichTextPlugin'
 
 const onError = (error: Error) => {
   throw error
@@ -27,7 +29,12 @@ const TestDecoratorView = defineComponent({
     onMounted(decoratorMounted)
     onUnmounted(decoratorUnmounted)
 
-    return () => h('button', { 'data-testid': 'decorator' }, props.label)
+    return () => {
+      if (props.label === 'broken') {
+        throw new Error('decorator render failed')
+      }
+      return h('button', { 'data-testid': 'decorator' }, props.label)
+    }
   },
 })
 
@@ -119,7 +126,10 @@ describe('LexicalDecorators', () => {
         },
       },
       slots: {
-        default: () => [h(ContentEditable), h(CaptureEditor)],
+        default: () => [
+          h(RichTextPlugin, null, { contentEditable: () => h(ContentEditable) }),
+          h(CaptureEditor),
+        ],
       },
     })
 
@@ -179,7 +189,8 @@ describe('LexicalDecorators', () => {
         },
       },
       slots: {
-        default: () => h(ReplaceableContentEditable),
+        default: () =>
+          h(RichTextPlugin, null, { contentEditable: () => h(ReplaceableContentEditable) }),
       },
     })
 
@@ -196,5 +207,40 @@ describe('LexicalDecorators', () => {
 
     wrapper.unmount()
     expect(decoratorUnmounted).toHaveBeenCalled()
+  })
+
+  it.each([
+    ['plain-text', PlainTextPlugin],
+    ['rich-text', RichTextPlugin],
+  ])('isolates decorator rendering errors through the %s error boundary', async (name, Plugin) => {
+    const editorError = vi.fn()
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const wrapper = mount(LexicalComposer, {
+      props: {
+        initialConfig: {
+          namespace: `broken-decorator-${name}`,
+          nodes: [TestDecoratorNode],
+          onError: editorError,
+          editorState: () => {
+            $getRoot().append($createTestDecoratorNode('broken'))
+          },
+        },
+      },
+      slots: {
+        default: () => h(Plugin, null, { contentEditable: () => h(ContentEditable) }),
+      },
+    })
+
+    await nextTick()
+    await nextTick()
+
+    expect(editorError).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'decorator render failed' }),
+      expect.anything(),
+    )
+    expect(wrapper.get('[role="alert"]').text()).toBe('An error was thrown.')
+
+    wrapper.unmount()
+    consoleError.mockRestore()
   })
 })

@@ -7,7 +7,11 @@ import {
   shallowMergeConfig,
 } from 'lexical'
 import { Fragment, defineComponent, h, provide } from 'vue'
-import { lexicalComposerContextKey, type LexicalComposerContext } from './LexicalComposerContext'
+import {
+  createLexicalComposerContext,
+  lexicalComposerContextKey,
+  type LexicalComposerContext,
+} from './LexicalComposerContext'
 import { ContentEditable } from './LexicalContentEditable'
 import { LexicalDecorators } from './LexicalDecorators'
 import { LexicalErrorBoundary } from './LexicalErrorBoundary'
@@ -102,7 +106,10 @@ export const VueExtension = defineExtension({
       )
     }
 
-    const context: LexicalComposerContext = Object.freeze([editor])
+    const context: LexicalComposerContext = [
+      editor,
+      createLexicalComposerContext(null, editor._config.theme),
+    ]
     return {
       Component: buildEditorComponent(editor, config, context),
       context,

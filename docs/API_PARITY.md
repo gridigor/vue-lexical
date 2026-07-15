@@ -6,8 +6,9 @@ component props, React hooks, JSX render callbacks, and portals are adapted to
 Vue props, composables, slots, and Teleport.
 
 The audit is executable: `npm run check:api-parity` compares this matrix with
-the installed upstream package, verifies every Vue source module and root export,
-and fails when an upstream entrypoint is added or removed. Run
+the installed upstream package, verifies every Vue source module, public symbol,
+and root export, and fails when an upstream entrypoint or symbol is added or
+removed. Run
 `npm run generate:api-parity` after intentionally updating the matrix.
 
 - 56 of 56 upstream entrypoints mapped

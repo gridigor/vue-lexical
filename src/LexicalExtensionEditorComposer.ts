@@ -4,6 +4,11 @@ import { getExtensionDependencyFromEditor } from '@lexical/extension'
 import { defineComponent, h, toRaw } from 'vue'
 import { VueExtension } from './VueExtension'
 
+/** Props for rendering an externally owned extension editor. */
+export interface LexicalExtensionEditorComposerProps {
+  initialEditor: LexicalEditorWithDispose
+}
+
 export const LexicalExtensionEditorComposer = defineComponent({
   name: 'LexicalExtensionEditorComposer',
   props: {

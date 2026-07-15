@@ -7,6 +7,11 @@ export interface LexicalErrorBoundarySlotProps {
   reset: () => void
 }
 
+/** Vue listener props for LexicalErrorBoundary; content and fallback use slots. */
+export interface LexicalErrorBoundaryProps {
+  onError?: (error: Error, errorInfo: string, instance: ComponentPublicInstance | null) => void
+}
+
 function normalizeError(error: unknown): Error {
   return error instanceof Error ? error : new Error(String(error), { cause: error })
 }

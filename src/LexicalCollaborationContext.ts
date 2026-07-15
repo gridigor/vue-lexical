@@ -1,6 +1,6 @@
 import type { Doc } from 'yjs'
 import type { InjectionKey, PropType } from 'vue'
-import { defineComponent, inject, provide } from 'vue'
+import { defineComponent, inject, provide, shallowReactive } from 'vue'
 
 export interface CollaborationContext {
   color: string
@@ -37,12 +37,12 @@ export const collaborationContextKey: InjectionKey<CollaborationContext> = Symbo
 export function createCollaborationContext(name?: string, color?: string): CollaborationContext {
   const randomEntry = entries[Math.floor(Math.random() * entries.length)]
 
-  return {
+  return shallowReactive({
     color: color ?? randomEntry[1],
     isCollabActive: false,
     name: name ?? randomEntry[0],
-    yjsDocMap: new Map(),
-  }
+    yjsDocMap: shallowReactive(new Map()),
+  })
 }
 
 export const LexicalCollaboration = defineComponent({
@@ -54,7 +54,10 @@ export const LexicalCollaboration = defineComponent({
     },
   },
   setup(props, { slots }) {
-    provide(collaborationContextKey, props.context ?? createCollaborationContext())
+    provide(
+      collaborationContextKey,
+      props.context === undefined ? createCollaborationContext() : shallowReactive(props.context),
+    )
 
     return () => slots.default?.()
   },

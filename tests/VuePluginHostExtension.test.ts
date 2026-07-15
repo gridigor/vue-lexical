@@ -6,6 +6,7 @@ import { VueExtension } from '../src/VueExtension'
 import {
   mountVueExtensionComponent,
   mountVuePluginComponent,
+  mountVuePluginElement,
   mountVuePluginHost,
   VuePluginHostExtension,
 } from '../src/VuePluginHostExtension'
@@ -87,11 +88,16 @@ describe('VuePluginHostExtension', () => {
       key: 'extension',
       props: { message: 'from extension' },
     })
+    mountVuePluginElement(editor, {
+      element: h('em', { class: 'hosted-vnode' }, 'low level'),
+      key: 'vnode',
+    })
     await nextTick()
 
     expect(host.querySelector('.hosted-plugin')?.textContent).toBe('first slot')
     expect(host.querySelector('.hosted-extension')?.textContent).toBe('from extension')
     expect(teleportTarget.querySelector('.hosted-plugin')?.textContent).toBe('away')
+    expect(host.querySelector('.hosted-vnode')?.textContent).toBe('low level')
 
     mountVuePluginComponent(editor, {
       component: PluginComponent,
@@ -99,9 +105,11 @@ describe('VuePluginHostExtension', () => {
       props: { message: 'updated' },
     })
     mountVuePluginComponent(editor, { component: null, key: 'extension' })
+    mountVuePluginElement(editor, { element: null, key: 'vnode' })
     await nextTick()
     expect(host.querySelector('.hosted-plugin')?.textContent).toBe('updated')
     expect(host.querySelector('.hosted-extension')).toBeNull()
+    expect(host.querySelector('.hosted-vnode')).toBeNull()
 
     mountVuePluginHost(editor, createHostContainer('duplicate-host'))
     expect(onError).toHaveBeenCalledWith(

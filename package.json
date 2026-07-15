@@ -1,11 +1,12 @@
 {
   "name": "@gridigor/vue-lexical",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Vue 3 bindings for the Lexical editor framework",
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -46,11 +47,13 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "check:api-parity": "node scripts/check-api-parity.mjs",
+    "check:api-reference": "node scripts/check-api-reference.mjs",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "check:tree-shaking": "node scripts/check-tree-shaking.mjs",
     "generate:api-parity": "node scripts/check-api-parity.mjs --write",
+    "generate:api-reference": "node scripts/check-api-reference.mjs --write",
     "verify:package": "node scripts/verify-package.mjs",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:api-parity && npm run coverage && npm run test:browser && npm run build && npm run check:bundle-size && npm run check:tree-shaking"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:api-parity && npm run check:api-reference && npm run coverage && npm run test:browser && npm run build && npm run check:bundle-size && npm run check:tree-shaking"
   },
   "peerDependencies": {
     "lexical": "^0.47.0",

@@ -22,10 +22,14 @@ import {
   mergeRegister,
 } from 'lexical'
 import { Teleport, createApp, defineComponent, h, onUnmounted, shallowRef } from 'vue'
-import { useLexicalComposer } from './LexicalComposerContext'
+import { type LexicalComposerContext, useLexicalComposer } from './LexicalComposerContext'
 import { LexicalErrorBoundary } from './LexicalErrorBoundary'
 import { VueExtension } from './VueExtension'
 import { VueProviderExtension } from './VueProviderExtension'
+
+export interface VuePluginHostDecoratorProps {
+  context: LexicalComposerContext
+}
 
 export interface MountVuePluginCommandArg {
   component: Component | null
@@ -33,6 +37,7 @@ export interface MountVuePluginCommandArg {
   key: string
   props?: Record<string, unknown>
   slots?: Record<string, () => VNodeChild>
+  vnode?: VNodeChild
 }
 
 export interface VuePluginHostMountCommandArg {
@@ -69,7 +74,7 @@ const VuePluginHostDecorator: Component = defineComponent({
 
     return () =>
       [...plugins.value.values()].map((plugin) => {
-        if (plugin.component === null) {
+        if (plugin.component === null && plugin.vnode == null) {
           return null
         }
 
@@ -82,7 +87,10 @@ const VuePluginHostDecorator: Component = defineComponent({
             },
           },
           {
-            default: () => h(plugin.component!, plugin.props, plugin.slots),
+            default: () =>
+              plugin.vnode === undefined
+                ? h(plugin.component!, plugin.props, plugin.slots)
+                : plugin.vnode,
           },
         )
 
@@ -172,6 +180,17 @@ export function mountVuePluginComponent(
   options: MountVuePluginCommandArg,
 ): void {
   getExtensionDependencyFromEditor(editor, VuePluginHostExtension).output.mountVuePlugin(options)
+}
+
+/** Mounts an already-created Vue VNode in the editor's plugin host. */
+export function mountVuePluginElement(
+  editor: LexicalEditor,
+  options: Omit<MountVuePluginCommandArg, 'component' | 'props' | 'slots' | 'vnode'> & {
+    element: VNodeChild
+  },
+): void {
+  const { element, ...pluginOptions } = options
+  mountVuePluginComponent(editor, { ...pluginOptions, component: null, vnode: element })
 }
 
 export function mountVueExtensionComponent<Extension extends AnyLexicalExtension>(

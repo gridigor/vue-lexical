@@ -7,9 +7,12 @@ import type {
   LexicalNodeReplacement,
 } from 'lexical'
 import { createEditor } from 'lexical'
-import { Fragment, defineComponent, h, provide } from 'vue'
-import { lexicalComposerContextKey, type LexicalComposerContext } from './LexicalComposerContext'
-import { LexicalDecorators } from './LexicalDecorators'
+import { defineComponent, provide } from 'vue'
+import {
+  createLexicalComposerContext,
+  lexicalComposerContextKey,
+  type LexicalComposerContext,
+} from './LexicalComposerContext'
 import { initializeEditor, type InitialEditorStateType } from './initializeEditor'
 
 export type InitialConfigType = Readonly<{
@@ -69,10 +72,13 @@ export const LexicalComposer = defineComponent({
 
     initializeEditor(editor, config.editorState)
 
-    const context: LexicalComposerContext = Object.freeze([editor])
+    const context: LexicalComposerContext = [
+      editor,
+      createLexicalComposerContext(null, config.theme),
+    ]
     provide(lexicalComposerContextKey, context)
 
-    return () => h(Fragment, null, [slots.default?.(), h(LexicalDecorators)])
+    return () => slots.default?.()
   },
 })
 

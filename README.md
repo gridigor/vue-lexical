@@ -3,14 +3,15 @@
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
 
-> This project is pre-1.0. The current 0.x line covers the editor foundation,
-> SSR and hydration, common text plugins, menu infrastructure, node selection,
-> block editing, tables, Yjs collaboration, and the Lexical Extension API.
+Version 1.0 provides a Vue equivalent for every public entrypoint and public
+symbol in `@lexical/react@0.47.0`, with React rendering contracts adapted to Vue
+components, composables, slots, emits, and Teleport.
 
 See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
 status and the [complete API entrypoint matrix](docs/API_PARITY.md) for every
-supported `@lexical/react` module. Framework-specific contracts are listed in
-[Intentional Vue API differences](docs/VUE_API_DIFFERENCES.md).
+supported `@lexical/react` module. The [API reference](docs/API_REFERENCE.md)
+lists every root export and tree-shakeable subpath. Framework-specific contracts
+are listed in [Intentional Vue API differences](docs/VUE_API_DIFFERENCES.md).
 
 ## Requirements
 
@@ -114,8 +115,13 @@ import {
 } from '@gridigor/vue-lexical/LexicalComposerContext'
 
 const editor = useLexicalComposer()
-const [sameEditor] = useLexicalComposerContext()
+const [sameEditor, composerContext] = useLexicalComposerContext()
+const activeTheme = composerContext.getTheme()
 ```
+
+`LexicalComposerContext`, `LexicalComposerContextType`,
+`LexicalComposerContextWithEditor`, and `createLexicalComposerContext()` are
+also public for low-level integrations, matching the upstream context contract.
 
 ## External editor access and clearing
 
@@ -844,6 +850,12 @@ across parent and nested editors, pass the same `HistoryState` instance to both
 and `createEmptyHistoryState()` are exported from `@gridigor/vue-lexical` and
 its `LexicalHistoryPlugin` subpath.
 
+When collaboration is active, nested content waits for its Yjs subdocument by
+default. Set `skip-collab-checks` only when the nested editor is intentionally
+managed outside that lifecycle. The deprecated `initialNodes` prop is retained
+for `@lexical/react@0.47.0` compatibility; new code should configure nodes in
+`createEditor({ nodes, parentEditor })`.
+
 ## Error boundary
 
 `LexicalErrorBoundary` isolates errors thrown by descendant Vue components. Its
@@ -873,6 +885,10 @@ function reportError(error: Error, errorInfo: string) {
 
 Errors raised by Lexical editor updates are not consumed by this component;
 they continue to use the composer's `initialConfig.onError` handler.
+
+`PlainTextPlugin` and `RichTextPlugin` render `DecoratorNode` output through
+`LexicalErrorBoundary` by default. Their `errorBoundary` prop accepts a custom
+Vue boundary component when an application needs different fallback behavior.
 
 ## SSR and Nuxt
 
@@ -918,6 +934,8 @@ npm run test:browser:chromium
 npm run build
 npm run check:bundle-size
 npm run check:tree-shaking
+npm run check:api-reference
+npm run generate:api-reference
 npm run typecheck --prefix examples/vue
 npm run build --prefix examples/vue
 ```
@@ -926,12 +944,12 @@ npm run build --prefix examples/vue
 
 Package releases are published from GitHub Releases through npm trusted
 publishing. The GitHub tag must equal the version in `package.json`, with an
-optional leading `v` (for example, `v0.1.0-alpha.1`). Prerelease versions are
+optional leading `v` (for example, `v1.0.0`). Prerelease versions are
 published under the `next` dist-tag; stable versions use `latest`.
 
-The dependency versions are intentionally pinned so CI tests the exact latest
-stack selected for the release. Peer ranges remain narrow where Lexical's
-cross-package contracts require aligned minor versions.
+The dependency ranges intentionally stay on one Lexical minor line. CI tests
+the exact resolved stack selected for the release, while the peer range cannot
+cross into a new Lexical minor without a compatibility audit.
 
 ## License
 

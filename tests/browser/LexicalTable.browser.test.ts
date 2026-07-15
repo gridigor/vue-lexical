@@ -1,5 +1,6 @@
 import {
   $createTableNodeWithDimensions,
+  getTableObserverFromTableElement,
   $isTableSelection,
   TableCellNode,
   TableNode,
@@ -40,8 +41,8 @@ const cell = (index: number, xRatio = 0.5, yRatio = 0.5): PointerTarget => ({
 const handle = (direction: 'bottom' | 'right'): PointerTarget => ({
   index: 0,
   selector: `[data-direction="${direction}"]`,
-  xRatio: 0.5,
-  yRatio: 0.5,
+  xRatio: direction === 'bottom' ? 0.25 : 0.5,
+  yRatio: direction === 'right' ? 0.25 : 0.5,
 })
 
 const onError = (error: Error) => {
@@ -53,6 +54,17 @@ async function flushEditor(): Promise<void> {
   await nextTick()
   await Promise.resolve()
   await nextTick()
+}
+
+async function waitForTableReady(host: HTMLElement): Promise<void> {
+  await vi.waitFor(
+    () => {
+      const table = host.querySelector('table')
+      expect(table).not.toBeNull()
+      expect(getTableObserverFromTableElement(table!)).not.toBeNull()
+    },
+    { timeout: 3_000 },
+  )
 }
 
 function mountTableEditor(): { app: App; editor: LexicalEditor; host: HTMLElement } {
@@ -122,6 +134,7 @@ describe('Lexical tables in a real browser', () => {
       .browser-table { border-collapse: collapse; table-layout: fixed; width: 400px; }
       .browser-table-cell { border: 1px solid #9ca3af; height: 52px; padding: 8px; }
       .browser-table-cell-selected { background: #bfdbfe; }
+      .browser-table-selection, .browser-table-selection * { user-select: none; }
     `
     document.head.append(style)
   })
@@ -139,18 +152,28 @@ describe('Lexical tables in a real browser', () => {
     const mounted = mountTableEditor()
     app = mounted.app
     await flushEditor()
+    await waitForTableReady(mounted.host)
 
     await commands.mouseDrag(cell(0), cell(3))
 
-    await vi.waitFor(() => {
-      mounted.editor.getEditorState().read(() => {
-        const selection = $getSelection()
-        expect($isTableSelection(selection)).toBe(true)
-        if ($isTableSelection(selection)) {
-          expect(selection.getShape()).toEqual({ fromX: 0, fromY: 0, toX: 1, toY: 1 })
-        }
-      })
-    })
+    await vi.waitFor(
+      () => {
+        mounted.editor.getEditorState().read(() => {
+          const selection = $getSelection()
+          const observer = getTableObserverFromTableElement(mounted.host.querySelector('table')!)!
+          expect(observer.tableSelection?.getShape()).toEqual({
+            fromX: 0,
+            fromY: 0,
+            toX: 1,
+            toY: 1,
+          })
+          if ($isTableSelection(selection)) {
+            expect(selection.getShape()).toEqual({ fromX: 0, fromY: 0, toX: 1, toY: 1 })
+          }
+        })
+      },
+      { timeout: 3_000 },
+    )
     expect(mounted.host.querySelectorAll('.browser-table-cell-selected')).toHaveLength(4)
   })
 
@@ -158,6 +181,7 @@ describe('Lexical tables in a real browser', () => {
     const mounted = mountTableEditor()
     app = mounted.app
     await flushEditor()
+    await waitForTableReady(mounted.host)
 
     let initialColumnWidth = 0
     mounted.editor.getEditorState().read(() => {

@@ -8,8 +8,9 @@ same small, composable building blocks as `@lexical/react`.
 > block editing, tables, Yjs collaboration, and the Lexical Extension API.
 
 See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
-status and the features planned next. Framework-specific contracts are listed
-in [Intentional Vue API differences](docs/VUE_API_DIFFERENCES.md).
+status and the [complete API entrypoint matrix](docs/API_PARITY.md) for every
+supported `@lexical/react` module. Framework-specific contracts are listed in
+[Intentional Vue API differences](docs/VUE_API_DIFFERENCES.md).
 
 ## Requirements
 
@@ -909,10 +910,11 @@ example remains the reference for SSR and hydration.
 
 ```sh
 npm install
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 npm run check
 npm run coverage
 npm run test:browser
+npm run test:browser:chromium
 npm run typecheck --prefix examples/vue
 npm run build --prefix examples/vue
 ```

@@ -59,8 +59,9 @@ React-only rendering details are not copied into the public API.
 
 ## Milestone 4 — release quality
 
-- [ ] browser tests in Chromium, Firefox, and WebKit
-- [ ] accessibility tests
+- [x] executable public API-entrypoint matrix against `@lexical/react@0.47.0`
+- [x] browser tests in Chromium, Firefox, and WebKit
+- [x] automated WCAG accessibility audits and focus-management browser tests
 - [ ] bundle-size budgets and tree-shaking fixtures
 - [x] packed-package Vue consumer verification
 - [x] standalone Vue SPA Extension API example

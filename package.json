@@ -41,11 +41,14 @@
     "release:next": "npm publish --tag next",
     "test": "vitest run",
     "test:browser": "vitest run --config vitest.browser.config.ts",
+    "test:browser:chromium": "vitest run --config vitest.browser.config.ts --browser.name chromium",
     "coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "check:api-parity": "node scripts/check-api-parity.mjs",
+    "generate:api-parity": "node scripts/check-api-parity.mjs --write",
     "verify:package": "node scripts/verify-package.mjs",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run coverage && npm run test:browser && npm run build"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:api-parity && npm run coverage && npm run test:browser && npm run build"
   },
   "peerDependencies": {
     "lexical": "^0.47.0",
@@ -74,12 +77,14 @@
   },
   "devDependencies": {
     "@lexical/devtools-core": "^0.47.0",
+    "@lexical/react": "^0.47.0",
     "@types/node": "^26.1.1",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/browser-playwright": "^4.1.10",
     "@vitest/coverage-v8": "^4.1.10",
     "@vue/server-renderer": "^3.5.39",
     "@vue/test-utils": "^2.4.11",
+    "axe-core": "^4.12.1",
     "jsdom": "^29.1.1",
     "lexical": "^0.47.0",
     "oxfmt": "^0.58.0",

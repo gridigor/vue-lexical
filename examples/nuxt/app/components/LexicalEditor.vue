@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { $createParagraphNode, $createTextNode, $getNodeByKey, $getRoot } from 'lexical'
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getNodeByKey,
+  $getRoot,
+  createEditor,
+} from 'lexical'
 import type { EditorState, LexicalEditor, NodeKey } from 'lexical'
 import { HashtagNode } from '@lexical/hashtag'
 import { AutoLinkNode, LinkNode } from '@lexical/link'
@@ -40,6 +46,7 @@ import {
   TableOfContentsPlugin,
   TablePlugin,
   TableRowNode,
+  createEmptyHistoryState,
   createLinkMatcherWithRegExp,
 } from '@gridigor/vue-lexical'
 import LexicalTypeaheadPlayground from './LexicalTypeaheadPlayground.vue'
@@ -47,6 +54,27 @@ import LexicalTypeaheadPlayground from './LexicalTypeaheadPlayground.vue'
 const selectedHashtag = ref('none yet')
 const characterCount = ref(0)
 const editorStage = ref<HTMLElement | null>(null)
+const lastWarning = ref('none')
+const sharedHistoryState = createEmptyHistoryState()
+const nestedEditor = createEditor({
+  namespace: 'NuxtLowLevelNestedExample',
+  onError(error) {
+    throw error
+  },
+  onWarn(error) {
+    lastWarning.value = error.message
+  },
+})
+nestedEditor.update(
+  () => {
+    $getRoot().append(
+      $createParagraphNode().append(
+        $createTextNode('This nested editor uses ContentEditableElement directly.'),
+      ),
+    )
+  },
+  { discrete: true },
+)
 const contextMenuItems = [
   new NodeContextMenuOption('Select all', {
     $onSelect: () => {
@@ -95,6 +123,9 @@ const initialConfig = {
   },
   onError(error: Error) {
     throw error
+  },
+  onWarn(error: Error) {
+    lastWarning.value = error.message
   },
   theme: {
     hashtag: 'editor-hashtag',
@@ -189,7 +220,20 @@ function onChange(editorState: EditorState) {
             </template>
           </CharacterLimitPlugin>
         </div>
-        <HistoryPlugin />
+        <aside class="low-level-demo" aria-labelledby="low-level-editor-title">
+          <div class="low-level-demo-copy">
+            <p class="eyebrow">Low-level API · shared history</p>
+            <h3 id="low-level-editor-title">Explicit ContentEditableElement</h3>
+            <p>
+              This nested editor receives its Lexical editor explicitly. Type in either editor, then
+              use the shared controls to verify that both write to one HistoryState.
+            </p>
+            <span class="warning-status">Latest recoverable warning: {{ lastWarning }}</span>
+            <LexicalSharedHistoryControls />
+          </div>
+          <LexicalLowLevelEditor :editor="nestedEditor" :history-state="sharedHistoryState" />
+        </aside>
+        <HistoryPlugin :external-history-state="sharedHistoryState" />
         <HorizontalRulePlugin />
         <TablePlugin :has-horizontal-scroll="true" />
         <TableCellResizer />

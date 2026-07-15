@@ -200,6 +200,85 @@ body {
   font-weight: 700;
 }
 
+.low-level-demo {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.15fr);
+  gap: 20px;
+  padding: 20px;
+  border-top: 1px solid #e7eaf0;
+  background: #f8faff;
+}
+
+.low-level-demo-copy h3 {
+  margin: 5px 0 7px;
+  font-size: 1rem;
+}
+
+.low-level-demo-copy > p:not(.eyebrow) {
+  margin: 0;
+  color: #687287;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.warning-status {
+  display: block;
+  margin-top: 10px;
+  color: #7c8497;
+  font-size: 0.7rem;
+}
+
+.shared-history-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.shared-history-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border: 1px solid #cdd5e5;
+  border-radius: 7px;
+  color: #39445a;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+}
+
+.shared-history-controls button:hover {
+  border-color: #a5b4fc;
+  color: #3730a3;
+  background: #eef2ff;
+}
+
+.low-level-editor-stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #cdd5e5;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.low-level-editor-input {
+  min-height: 92px;
+  padding: 14px 16px;
+  outline: none;
+  line-height: 1.55;
+}
+
+.low-level-editor-placeholder {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  margin: 0;
+  color: #9aa2b1;
+  pointer-events: none;
+}
+
 .editor-paragraph {
   margin: 0;
   padding: 2px 0;
@@ -608,6 +687,10 @@ body {
   }
 
   .collaboration-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .low-level-demo {
     grid-template-columns: 1fr;
   }
 }

@@ -11,6 +11,7 @@ coverage/
 .vitest/
 test-results/
 playwright-report/
+tests/browser/__screenshots__/
 *.tsbuildinfo
 *.tgz
 

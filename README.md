@@ -687,8 +687,10 @@ Lexical state during client hydration.
 
 ```sh
 npm install
+npx playwright install chromium
 npm run check
 npm run coverage
+npm run test:browser
 ```
 
 ## Releases

@@ -37,6 +37,7 @@ React-only rendering details are not copied into the public API.
 ## Milestone 3 — advanced editing
 
 - [x] table support and table selection
+- [x] real-browser Chromium tests for table mouse selection and resizing
 - [x] typeahead, node, context, and auto-embed menus
 - [x] node selection
 - [x] draggable blocks

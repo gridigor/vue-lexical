@@ -684,6 +684,39 @@ Vue-dependent extensions expose components and reactive signals through
 into an editor created outside a Vue component tree, with optional Teleport
 targets and automatic cleanup when the editor is disposed.
 
+### Accessibility and focus management
+
+Extension-built editors can use the framework-neutral extensions from
+`@lexical/a11y` through Vue callback refs. Add the required extension to the
+editor's extension tree, then call the matching composable in a descendant of
+`LexicalExtensionComposer`:
+
+```vue
+<script setup lang="ts">
+import { useLexicalFocusManagerRef, useLexicalRovingTabIndexRef } from '@gridigor/vue-lexical'
+
+const focusManagerRef = useLexicalFocusManagerRef({
+  toolbarItemSelector: '[data-toolbar-item]',
+})
+const rovingRef = useLexicalRovingTabIndexRef()
+</script>
+
+<template>
+  <div :ref="focusManagerRef" role="toolbar">
+    <div :ref="rovingRef">
+      <button type="button" data-toolbar-item>Bold</button>
+      <button type="button" data-toolbar-item>Italic</button>
+    </div>
+  </div>
+</template>
+```
+
+The root extension must declare `FocusManagerExtension` and
+`RovingTabIndexExtension` as dependencies. `useLexicalFocusTrapRef` supports a
+reactive active state, and `useLexicalAriaLiveRegion` announces through
+`AriaLiveRegionExtension`. The experimental `useLexicalSlotRef` mounts a named
+Lexical node slot into a Vue-rendered DOM element and restores it on cleanup.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports

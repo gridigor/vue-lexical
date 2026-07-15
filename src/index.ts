@@ -262,6 +262,10 @@ export {
   type SignalValue,
 } from './useExtensionSignalValue'
 export { useLexicalEditable } from './useLexicalEditable'
+export { useLexicalAriaLiveRegion } from './useLexicalAriaLiveRegion'
+export type { LexicalElementRef } from './useLexicalExtensionElementRef'
+export { useLexicalFocusManagerRef, type FocusManagerOptions } from './useLexicalFocusManagerRef'
+export { useLexicalFocusTrapRef, type FocusTrapInitialFocus } from './useLexicalFocusTrapRef'
 export { useLexicalIsTextContentEmpty } from './useLexicalIsTextContentEmpty'
 export {
   useLexicalNodeSelection,
@@ -270,6 +274,12 @@ export {
   type SetLexicalNodeSelected,
 } from './useLexicalNodeSelection'
 export { useLexicalSubscription, type LexicalSubscription } from './useLexicalSubscription'
+export {
+  useLexicalRovingTabIndexRef,
+  type RovingOrientation,
+  type RovingTabIndexOptions,
+} from './useLexicalRovingTabIndexRef'
+export { useLexicalSlotRef } from './useLexicalSlotRef'
 export {
   registerLexicalTextEntity,
   useLexicalTextEntity,

@@ -1,4 +1,10 @@
 import {
+  AriaLiveRegionExtension,
+  FocusManagerExtension,
+  FocusTrapExtension,
+  RovingTabIndexExtension,
+} from '@lexical/a11y'
+import {
   AutoFocusExtension,
   ClearEditorExtension,
   HorizontalRuleExtension,
@@ -58,12 +64,16 @@ export const PlaygroundExtension = defineExtension({
     )
   },
   dependencies: [
+    AriaLiveRegionExtension,
     AutoFocusExtension,
     ClearEditorExtension,
+    FocusManagerExtension,
+    FocusTrapExtension,
     RichTextExtension,
     configExtension(HistoryExtension, { disabled: false }),
     LinkExtension,
     ListExtension,
+    RovingTabIndexExtension,
     CheckListExtension,
     HashtagExtension,
     HorizontalRuleExtension,

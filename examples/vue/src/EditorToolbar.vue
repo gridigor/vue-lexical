@@ -14,6 +14,7 @@ import {
   Bold,
   CheckSquare,
   Code2,
+  CircleHelp,
   Heading1,
   Heading2,
   Italic,
@@ -41,11 +42,34 @@ import {
   type TextFormatType,
 } from 'lexical'
 import { onMounted, onUnmounted, reactive, ref } from 'vue'
-import { useExtensionSignalValue, useLexicalComposer } from '@gridigor/vue-lexical'
+import {
+  useExtensionSignalValue,
+  useLexicalAriaLiveRegion,
+  useLexicalComposer,
+  useLexicalFocusManagerRef,
+  useLexicalFocusTrapRef,
+  useLexicalRovingTabIndexRef,
+  type LexicalElementRef,
+} from '@gridigor/vue-lexical'
 
 const editor = useLexicalComposer()
 const canUndo = useExtensionSignalValue(HistoryExtension, 'canUndo')
 const canRedo = useExtensionSignalValue(HistoryExtension, 'canRedo')
+const announce = useLexicalAriaLiveRegion()
+const focusManagerRef = useLexicalFocusManagerRef({
+  toolbarItemSelector: 'button:not([disabled])',
+})
+const rovingTabIndexRef = useLexicalRovingTabIndexRef({
+  itemSelector: 'button:not([disabled])',
+  orientation: 'horizontal',
+})
+const toolbarRef: LexicalElementRef = (element) => {
+  focusManagerRef(element)
+  rovingTabIndexRef(element)
+}
+const helpOpen = ref(false)
+const focusTrapRef = useLexicalFocusTrapRef(helpOpen)
+const lastAnnouncement = ref('Use a formatting button to create an announcement.')
 const blockType = ref('paragraph')
 const formats = reactive<Record<TextFormatType, boolean>>({
   bold: false,
@@ -126,10 +150,38 @@ function toggleLink(): void {
     editor.dispatchCommand(TOGGLE_LINK_COMMAND, url === '' ? null : url)
   }
 }
+
+function announceToolbarAction(event: MouseEvent): void {
+  const target = event.target
+  const button = target instanceof Element ? target.closest<HTMLButtonElement>('button') : null
+  const label = button?.getAttribute('aria-label')
+  if (label !== null && label !== undefined && button?.disabled === false) {
+    const message = `${label} activated`
+    lastAnnouncement.value = message
+    announce(message)
+  }
+}
+
+function openKeyboardHelp(): void {
+  helpOpen.value = true
+}
+
+function closeKeyboardHelp(): void {
+  helpOpen.value = false
+  const message = 'Keyboard help closed'
+  lastAnnouncement.value = message
+  announce(message)
+}
 </script>
 
 <template>
-  <nav class="editor-toolbar" aria-label="Editor formatting">
+  <nav
+    :ref="toolbarRef"
+    class="editor-toolbar"
+    aria-label="Editor formatting"
+    role="toolbar"
+    @click="announceToolbarAction"
+  >
     <div class="toolbar-group" aria-label="History">
       <button
         type="button"
@@ -301,6 +353,43 @@ function toggleLink(): void {
       >
         <RemoveFormatting :size="17" aria-hidden="true" />
       </button>
+      <button
+        type="button"
+        title="Keyboard help"
+        aria-label="Keyboard help"
+        @click="openKeyboardHelp"
+      >
+        <CircleHelp :size="17" aria-hidden="true" />
+      </button>
     </div>
   </nav>
+
+  <div class="a11y-demo-guide">
+    <p>
+      Keyboard test: focus the editor, press <kbd>Alt</kbd> + <kbd>F10</kbd>, move through the
+      toolbar with <kbd>←</kbd>/<kbd>→</kbd>, then press <kbd>Escape</kbd> to return.
+    </p>
+    <p aria-hidden="true"><strong>Live-region mirror:</strong> {{ lastAnnouncement }}</p>
+  </div>
+
+  <div v-if="helpOpen" class="dialog-backdrop" @click.self="closeKeyboardHelp">
+    <section
+      :ref="focusTrapRef"
+      class="keyboard-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="keyboard-dialog-title"
+      tabindex="-1"
+      @keydown.esc.stop.prevent="closeKeyboardHelp"
+    >
+      <span class="editor-kicker">Focus trap demo</span>
+      <h3 id="keyboard-dialog-title">Keyboard navigation</h3>
+      <p>
+        Tab and Shift+Tab remain inside this dialog. Escape closes it and restores focus to the
+        toolbar button that opened it.
+      </p>
+      <a href="https://lexical.dev" target="_blank" rel="noreferrer">Lexical documentation</a>
+      <button type="button" @click="closeKeyboardHelp">Close dialog</button>
+    </section>
+  </div>
 </template>

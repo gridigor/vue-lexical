@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@gridigor/vue-lexical": "file:../..",
+    "@lexical/a11y": "^0.47.0",
     "@lexical/extension": "^0.47.0",
     "@lexical/hashtag": "^0.47.0",
     "@lexical/history": "^0.47.0",

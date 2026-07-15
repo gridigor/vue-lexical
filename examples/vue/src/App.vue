@@ -11,14 +11,18 @@ import { CharacterCountExtension, PlaygroundExtension } from './editorExtension'
 
 const renderContentEditable = () =>
   h(
-    ContentEditable,
-    {
-      'aria-label': 'Extension-based rich text editor',
-      class: 'editor-input',
-    },
-    {
-      placeholder: () => h('span', 'Start writing…'),
-    },
+    'div',
+    { class: 'editor-surface' },
+    h(
+      ContentEditable,
+      {
+        'aria-label': 'Extension-based rich text editor',
+        class: 'editor-input',
+      },
+      {
+        placeholder: () => h('span', 'Start writing…'),
+      },
+    ),
   )
 </script>
 

@@ -42,8 +42,14 @@ React-only rendering details are not copied into the public API.
 - [x] node selection
 - [x] draggable blocks
 - [x] collaboration with Yjs
-- [x] Lexical Extension API composers, component host, signals, and tree view
-- [ ] speech-to-text
+- [x] Lexical Extension API composers, component host, signals, and lightweight
+      tree view
+- [x] accessibility and focus-management composables for `@lexical/a11y`
+- [x] experimental Lexical node slot ref
+- [ ] full devtools tree view with command log and time travel
+- [ ] experimental Collaboration V2 with external document and provider
+- [ ] Dragon support in plain-text and rich-text setup
+- [ ] remaining Composer, ContentEditable, History, and menu helper parity
 - [x] selection always on display
 
 ## Milestone 4 — release quality

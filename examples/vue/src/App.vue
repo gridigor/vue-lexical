@@ -57,6 +57,10 @@ const renderContentEditable = () =>
           <summary>Inspect the Lexical tree</summary>
           <ExtensionComponent
             :extension="TreeViewExtension"
+            time-travel-button-class-name="tree-time-travel"
+            time-travel-panel-button-class-name="tree-time-travel-action"
+            time-travel-panel-class-name="tree-time-travel-panel"
+            time-travel-panel-slider-class-name="tree-time-travel-slider"
             tree-type-button-class-name="tree-toggle"
             view-class-name="tree-view"
           />

@@ -10,7 +10,17 @@
     "no-underscore-dangle": [
       "warn",
       {
-        "allow": ["__format", "_config", "_createEditorArgs", "_nodes", "_onError", "_parentEditor"]
+        "allow": [
+          "__format",
+          "__lexicalEditor",
+          "_commands",
+          "_config",
+          "_createEditorArgs",
+          "_nodeMap",
+          "_nodes",
+          "_onError",
+          "_parentEditor"
+        ]
       }
     ]
   },

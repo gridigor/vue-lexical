@@ -678,6 +678,15 @@ to place one elsewhere, or pass a stable render function for custom markup.
 `LexicalExtensionEditorComposer` hosts an existing extension-built editor
 without taking ownership of its `dispose()` lifecycle.
 
+`TreeViewExtension` is the full Lexical devtools view: it prints the editor
+tree, selection and the ten most recent commands, can show exported DOM, and
+records editor states for time travel. Its `treeTypeButtonClassName`,
+`timeTravelButtonClassName`, `timeTravelPanelButtonClassName`,
+`timeTravelPanelClassName`, `timeTravelPanelSliderClassName`, and
+`viewClassName` options match `@lexical/react`; `customPrintNode` can customize
+the text printed for individual Lexical nodes. The same props are available on
+the standalone `TreeView` component when an `editor` is passed directly.
+
 Vue-dependent extensions expose components and reactive signals through
 `useExtensionComponent`, `useExtensionDependency`, and
 `useExtensionSignalValue`. `VuePluginHostExtension` can mount those components

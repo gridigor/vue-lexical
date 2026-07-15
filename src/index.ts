@@ -182,6 +182,9 @@ export {
   generateTreeViewContent,
   LexicalTreeView,
   TreeView,
+  type CustomPrintNodeFn,
+  type LexicalCommandEntry,
+  type LexicalCommandLog,
   type TreeViewProps,
 } from './LexicalTreeView'
 export {

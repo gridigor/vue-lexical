@@ -4,13 +4,20 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@lexical/devtools-core': fileURLToPath(
+        new URL('./node_modules/@lexical/devtools-core/src/index.ts', import.meta.url),
+      ),
+    },
+  },
   build: {
     lib: {
       entry: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
       formats: ['es'],
     },
     rollupOptions: {
-      external: [/^@lexical\//, 'lexical', 'vue', 'yjs'],
+      external: [/^@lexical\/(?!devtools-core(?:$|\/))/, 'lexical', 'vue', 'yjs'],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

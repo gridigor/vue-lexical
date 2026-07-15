@@ -112,7 +112,9 @@ summary {
 }
 
 .editor-toolbar button,
-.tree-toggle {
+.tree-toggle,
+.tree-time-travel,
+.tree-time-travel-action {
   display: inline-grid;
   min-width: 32px;
   min-height: 32px;
@@ -126,7 +128,9 @@ summary {
 
 .editor-toolbar button:hover:not(:disabled),
 .editor-toolbar button.active,
-.tree-toggle:hover {
+.tree-toggle:hover,
+.tree-time-travel:hover,
+.tree-time-travel-action:hover {
   border-color: #a5b4fc;
   color: #3730a3;
   background: #eef2ff;
@@ -357,7 +361,8 @@ summary {
     monospace;
 }
 
-.tree-toggle {
+.tree-toggle,
+.tree-time-travel {
   position: sticky;
   z-index: 1;
   top: 10px;
@@ -365,6 +370,37 @@ summary {
   min-width: auto;
   min-height: 28px;
   margin: 10px 10px 0 0;
+  padding: 4px 9px;
+  color: #dbe4ff;
+  border-color: #44506a;
+  background: #1f2937;
+  font-size: 0.7rem;
+}
+
+.tree-time-travel {
+  right: 0;
+  margin-right: 6px;
+}
+
+.tree-time-travel-panel {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid #44506a;
+  background: #111827;
+}
+
+.tree-time-travel-slider {
+  flex: 1;
+  accent-color: #818cf8;
+}
+
+.tree-time-travel-action {
+  min-width: auto;
+  min-height: 28px;
   padding: 4px 9px;
   color: #dbe4ff;
   border-color: #44506a;

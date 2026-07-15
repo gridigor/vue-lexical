@@ -640,6 +640,37 @@ application explicitly enter offline mode and reconnect. Remote awareness,
 names, cursor colors, selections, reconnect cleanup, custom initial state, and
 multiple editors are handled by the plugin lifecycle.
 
+`CollaborationPluginV2__EXPERIMENTAL` matches Lexical's newer binding when the
+application creates the `Doc` and provider itself. Keep both instances stable
+for the lifetime of the mounted plugin:
+
+```vue
+<script setup lang="ts">
+import { WebsocketProvider } from 'y-websocket'
+import { Doc } from 'yjs'
+import { CollaborationPluginV2__EXPERIMENTAL } from '@gridigor/vue-lexical'
+
+const doc = new Doc({ gc: false })
+const provider = new WebsocketProvider('wss://your-yjs-server.example', 'document-id', doc)
+</script>
+
+<template>
+  <CollaborationPluginV2__EXPERIMENTAL
+    id="document-id"
+    :doc="doc"
+    :provider="provider"
+    :__should-bootstrap-unsafe="true"
+    username="Ada"
+    cursor-color="#7c3aed"
+  />
+</template>
+```
+
+Mount it inside the same `LexicalCollaboration` and `LexicalComposer` structure
+shown above. The unsafe bootstrap flag should be enabled for only one client.
+Creating the document with `gc: false` also enables Lexical's experimental Yjs
+version-diff commands. This V2 API is experimental and may change with Lexical.
+
 ## Extension API
 
 `LexicalExtensionComposer` builds an editor from Lexical extensions. Keep the

@@ -10,8 +10,10 @@ export {
 } from './LexicalCollaborationContext'
 export {
   CollaborationPlugin,
+  CollaborationPluginV2__EXPERIMENTAL,
   LexicalCollaborationPlugin,
   type CollaborationPluginProps,
+  type CollaborationPluginV2Props,
   type CollaborationProviderFactory,
   type CursorsContainer,
 } from './LexicalCollaborationPlugin'

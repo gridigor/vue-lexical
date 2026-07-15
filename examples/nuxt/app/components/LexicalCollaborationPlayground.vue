@@ -6,7 +6,7 @@ import { REDO_COMMAND, UNDO_COMMAND } from 'lexical'
 import { applyUpdate, Doc, encodeStateAsUpdate } from 'yjs'
 import { ref } from 'vue'
 import {
-  CollaborationPlugin,
+  CollaborationPluginV2__EXPERIMENTAL,
   ContentEditable,
   EditorRefPlugin,
   LexicalCollaboration,
@@ -164,15 +164,13 @@ const initialConfigs = identities.map((identity) => ({
   },
 }))
 
-const providerFactories = identities.map((_identity, index) => {
-  return (_id: string, docMap: Map<string, Doc>): Provider => {
-    const doc = new Doc()
-    docMap.set('nuxt-collaboration-demo', doc)
-    return new LocalProvider(doc, hub, (value) => {
+const documents = identities.map(() => new Doc({ gc: false }))
+const providers = documents.map(
+  (doc, index) =>
+    new LocalProvider(doc, hub, (value) => {
       connected.value[index] = value
-    }) as unknown as Provider
-  }
-})
+    }) as unknown as Provider,
+)
 
 function captureEditor(index: number, editor: LexicalEditor | null): void {
   editors.value[index] = editor
@@ -227,10 +225,11 @@ function redo(index: number): void {
               </template>
             </RichTextPlugin>
             <EditorRefPlugin :editor-ref="(editor) => captureEditor(index, editor)" />
-            <CollaborationPlugin
+            <CollaborationPluginV2__EXPERIMENTAL
               id="nuxt-collaboration-demo"
-              :provider-factory="providerFactories[index]!"
-              :should-bootstrap="index === 0"
+              :doc="documents[index]!"
+              :provider="providers[index]!"
+              :__should-bootstrap-unsafe="index === 0"
               :username="identity.name"
               :cursor-color="identity.color"
             />
@@ -248,8 +247,8 @@ function redo(index: number): void {
     </div>
 
     <p class="collaboration-note">
-      This demo uses an in-memory transport. A production app can replace it with y-websocket,
-      WebRTC, or another Yjs provider without changing the editor plugin.
+      This demo passes externally created Yjs documents and providers to the experimental V2 plugin.
+      Its in-memory transport can be replaced with y-websocket, WebRTC, or another Yjs provider.
     </p>
   </section>
 </template>

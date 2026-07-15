@@ -48,7 +48,7 @@ React-only rendering details are not copied into the public API.
 - [x] experimental Lexical node slot ref
 - [x] full devtools tree view with command log, custom node printing, Export
       DOM, and time travel
-- [ ] experimental Collaboration V2 with external document and provider
+- [x] experimental Collaboration V2 with external document and provider
 - [ ] Dragon support in plain-text and rich-text setup
 - [ ] remaining Composer, ContentEditable, History, and menu helper parity
 - [x] selection always on display

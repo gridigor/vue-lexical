@@ -3,9 +3,9 @@
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
 
-> This project is pre-1.0. The current 0.5 line covers the editor foundation,
+> This project is pre-1.0. The current 0.x line covers the editor foundation,
 > SSR and hydration, common text plugins, menu infrastructure, node selection,
-> block editing, tables, and Yjs collaboration.
+> block editing, tables, Yjs collaboration, and the Lexical Extension API.
 
 See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
 status and the features planned next.
@@ -640,6 +640,50 @@ application explicitly enter offline mode and reconnect. Remote awareness,
 names, cursor colors, selections, reconnect cleanup, custom initial state, and
 multiple editors are handled by the plugin lifecycle.
 
+## Extension API
+
+`LexicalExtensionComposer` builds an editor from Lexical extensions. Keep the
+root extension stable at module scope so Vue renders do not rebuild the editor:
+
+```vue
+<script setup lang="ts">
+import { HistoryExtension } from '@lexical/history'
+import { RichTextExtension } from '@lexical/rich-text'
+import { defineExtension } from 'lexical'
+import {
+  ExtensionComponent,
+  LexicalExtensionComposer,
+  TreeViewExtension,
+} from '@gridigor/vue-lexical'
+
+const editorExtension = defineExtension({
+  name: 'MyExtensionEditor',
+  namespace: 'MyExtensionEditor',
+  dependencies: [RichTextExtension, HistoryExtension, TreeViewExtension],
+  onError(error) {
+    throw error
+  },
+})
+</script>
+
+<template>
+  <LexicalExtensionComposer :extension="editorExtension">
+    <ExtensionComponent :extension="TreeViewExtension" view-class-name="tree-view" />
+  </LexicalExtensionComposer>
+</template>
+```
+
+The composer renders a default `ContentEditable`; pass `:content-editable="null"`
+to place one elsewhere, or pass a stable render function for custom markup.
+`LexicalExtensionEditorComposer` hosts an existing extension-built editor
+without taking ownership of its `dispose()` lifecycle.
+
+Vue-dependent extensions expose components and reactive signals through
+`useExtensionComponent`, `useExtensionDependency`, and
+`useExtensionSignalValue`. `VuePluginHostExtension` can mount those components
+into an editor created outside a Vue component tree, with optional Teleport
+targets and automatic cleanup when the editor is disposed.
+
 ## Decorator nodes
 
 `DecoratorNode` values can be Vue VNodes. The composer automatically teleports
@@ -749,6 +793,21 @@ A runnable Nuxt 4 application is available in the
 directory. It renders the editor shell on the server and initializes the
 Lexical state during client hydration.
 
+## Vue SPA example
+
+The standalone [`examples/vue`](examples/vue) Vite application builds its
+rich-text editor with `LexicalExtensionComposer`. It demonstrates core Lexical
+extensions, a custom character-count signal extension, extension components,
+an icon toolbar, and the Tree View extension:
+
+```sh
+npm install --prefix examples/vue
+npm run dev --prefix examples/vue
+```
+
+Use this example for the client-rendered Vue SPA integration path. The Nuxt
+example remains the reference for SSR and hydration.
+
 ## Development
 
 ```sh
@@ -757,6 +816,8 @@ npx playwright install chromium
 npm run check
 npm run coverage
 npm run test:browser
+npm run typecheck --prefix examples/vue
+npm run build --prefix examples/vue
 ```
 
 ## Releases

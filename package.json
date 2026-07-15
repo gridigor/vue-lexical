@@ -1,6 +1,6 @@
 {
   "name": "@gridigor/vue-lexical",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Vue 3 bindings for the Lexical editor framework",
   "type": "module",
   "sideEffects": false,

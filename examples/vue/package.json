@@ -1,0 +1,30 @@
+{
+  "name": "vue-lexical-spa-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "typecheck": "vue-tsgo --project tsconfig.json"
+  },
+  "dependencies": {
+    "@gridigor/vue-lexical": "file:../..",
+    "@lexical/extension": "^0.47.0",
+    "@lexical/hashtag": "^0.47.0",
+    "@lexical/history": "^0.47.0",
+    "@lexical/link": "^0.47.0",
+    "@lexical/list": "^0.47.0",
+    "@lexical/rich-text": "^0.47.0",
+    "@lexical/selection": "^0.47.0",
+    "@lucide/vue": "^1.24.0",
+    "lexical": "^0.47.0",
+    "vue": "^3.5.39"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.7",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vue-tsgo": "^0.3.0"
+  }
+}

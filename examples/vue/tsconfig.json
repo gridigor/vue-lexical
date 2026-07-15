@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "erasableSyntaxOnly": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@gridigor/vue-lexical": ["../../src/index.ts"],
+      "@gridigor/vue-lexical/*": ["../../src/*"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["vite/client"],
+    "useDefineForClassFields": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts"]
+}

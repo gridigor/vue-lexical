@@ -1,4 +1,5 @@
 export { LexicalComposer, type InitialConfig } from './LexicalComposer'
+export { ExtensionComponent, type ExtensionComponentProps } from './ExtensionComponent'
 export {
   collaborationContextKey,
   createCollaborationContext,
@@ -20,6 +21,8 @@ export {
   useLexicalComposerContext,
   type LexicalComposerContext,
 } from './LexicalComposerContext'
+export { LexicalExtensionComposer } from './LexicalExtensionComposer'
+export { LexicalExtensionEditorComposer } from './LexicalExtensionEditorComposer'
 export { ContentEditable, LexicalContentEditable } from './LexicalContentEditable'
 export {
   BlockWithAlignableContents,
@@ -176,6 +179,12 @@ export {
   type TableOfContentsSlotProps,
 } from './LexicalTableOfContentsPlugin'
 export {
+  generateTreeViewContent,
+  LexicalTreeView,
+  TreeView,
+  type TreeViewProps,
+} from './LexicalTreeView'
+export {
   $createTableCellNode,
   $createTableNode,
   $createTableNodeWithDimensions,
@@ -212,6 +221,46 @@ export {
   type TypeaheadMenuPluginProps,
 } from './LexicalTypeaheadMenuPlugin'
 export type { InitialEditorState } from './initializeEditor'
+export {
+  TreeViewExtension,
+  TreeViewExtensionComponent,
+  type ResolvedTreeViewConfig,
+  type TreeViewConfig,
+} from './TreeViewExtension'
+export {
+  configureVueExtension,
+  DefaultEditorChildrenComponent,
+  VueExtension,
+  type EditorChildrenComponent,
+  type EditorChildrenComponentProps,
+  type VueConfig,
+  type VueExtensionContentEditable,
+  type VueExtensionDecorator,
+  type VueOutputs,
+} from './VueExtension'
+export {
+  mountVueExtensionComponent,
+  mountVuePluginComponent,
+  mountVuePluginHost,
+  VUE_PLUGIN_HOST_MOUNT_PLUGIN_COMMAND,
+  VUE_PLUGIN_HOST_MOUNT_ROOT_COMMAND,
+  VuePluginHostExtension,
+  type MountVuePluginCommandArg,
+  type VuePluginHostMountCommandArg,
+  type VuePluginHostOutput,
+} from './VuePluginHostExtension'
+export { VueProviderExtension } from './VueProviderExtension'
+export {
+  useExtensionComponent,
+  useExtensionDependency,
+  useOptionalExtensionDependency,
+  usePeerExtensionDependency,
+} from './useExtensionComponent'
+export {
+  useExtensionSignalValue,
+  useSignalValue,
+  type SignalValue,
+} from './useExtensionSignalValue'
 export { useLexicalEditable } from './useLexicalEditable'
 export { useLexicalIsTextContentEmpty } from './useLexicalIsTextContentEmpty'
 export {

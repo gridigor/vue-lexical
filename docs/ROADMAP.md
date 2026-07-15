@@ -42,6 +42,7 @@ React-only rendering details are not copied into the public API.
 - [x] node selection
 - [x] draggable blocks
 - [x] collaboration with Yjs
+- [x] Lexical Extension API composers, component host, signals, and tree view
 - [ ] speech-to-text
 - [x] selection always on display
 
@@ -51,10 +52,11 @@ React-only rendering details are not copied into the public API.
 - [ ] accessibility tests
 - [ ] bundle-size budgets and tree-shaking fixtures
 - [x] packed-package Vue consumer verification
+- [x] standalone Vue SPA Extension API example
 - [x] Vue/Nuxt SSR example
 - [x] public GitHub Pages playground deployment
 - [ ] compatibility automation for each Lexical release
-- [ ] API reference and migration guide from `lexical-vue`
+- [ ] API reference
 
 ## Compatibility policy
 

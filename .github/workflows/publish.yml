@@ -46,6 +46,15 @@ jobs:
       - name: Verify Nuxt SSR example
         run: npm run build --prefix examples/nuxt
 
+      - name: Install Vue SPA example dependencies
+        run: npm ci --prefix examples/vue
+
+      - name: Type-check Vue SPA example
+        run: npm run typecheck --prefix examples/vue
+
+      - name: Build Vue SPA example
+        run: npm run build --prefix examples/vue
+
       - name: Validate release version
         id: release
         shell: bash

@@ -62,7 +62,8 @@ React-only rendering details are not copied into the public API.
 - [x] executable public API-entrypoint matrix against `@lexical/react@0.47.0`
 - [x] browser tests in Chromium, Firefox, and WebKit
 - [x] automated WCAG accessibility audits and focus-management browser tests
-- [ ] bundle-size budgets and tree-shaking fixtures
+- [x] bundle-size budgets for total output and individual modules
+- [ ] tree-shaking fixtures
 - [x] packed-package Vue consumer verification
 - [x] standalone Vue SPA Extension API example
 - [x] Vue/Nuxt SSR example

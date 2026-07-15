@@ -41,7 +41,7 @@ React-only rendering details are not copied into the public API.
 - [x] typeahead, node, context, and auto-embed menus
 - [x] node selection
 - [x] draggable blocks
-- [ ] collaboration with Yjs
+- [x] collaboration with Yjs
 - [ ] speech-to-text
 - [x] selection always on display
 

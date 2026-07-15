@@ -11,5 +11,6 @@
     </section>
 
     <LexicalEditor />
+    <LexicalCollaborationPlayground />
   </main>
 </template>

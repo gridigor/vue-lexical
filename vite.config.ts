@@ -10,7 +10,7 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: [/^@lexical\//, 'lexical', 'vue'],
+      external: [/^@lexical\//, 'lexical', 'vue', 'yjs'],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

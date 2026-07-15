@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 
 const lexicalAlias = fileURLToPath(new URL('../../node_modules/lexical', import.meta.url))
 const lexicalPackagesAlias = fileURLToPath(new URL('../../node_modules/@lexical', import.meta.url))
+const yjsAlias = fileURLToPath(new URL('../../node_modules/yjs', import.meta.url))
 
 export default defineNuxtConfig({
   app: {
@@ -16,9 +17,10 @@ export default defineNuxtConfig({
     alias: {
       '@lexical': lexicalPackagesAlias,
       lexical: lexicalAlias,
+      yjs: yjsAlias,
     },
     externals: {
-      inline: ['lexical', /^@lexical\//],
+      inline: ['lexical', 'yjs', /^@lexical\//],
     },
   },
   vite: {
@@ -26,6 +28,7 @@ export default defineNuxtConfig({
       alias: {
         '@lexical': lexicalPackagesAlias,
         lexical: lexicalAlias,
+        yjs: yjsAlias,
       },
       dedupe: [
         'lexical',
@@ -35,6 +38,8 @@ export default defineNuxtConfig({
         '@lexical/plain-text',
         '@lexical/rich-text',
         '@lexical/text',
+        '@lexical/yjs',
+        'yjs',
       ],
     },
   },

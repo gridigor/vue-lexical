@@ -3,9 +3,9 @@
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
 
-> This project is pre-1.0. The current 0.3 line covers the editor foundation,
+> This project is pre-1.0. The current 0.5 line covers the editor foundation,
 > SSR and hydration, common text plugins, menu infrastructure, node selection,
-> block decorators, horizontal rules, and draggable top-level blocks.
+> block editing, tables, and Yjs collaboration.
 
 See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
 status and the features planned next.
@@ -573,6 +573,72 @@ not export a resizer.
 `TableOfContentsPlugin` tracks `HeadingNode` instances in document order. Its
 default slot receives `{ tableOfContents, editor }`, where each entry is a
 `[nodeKey, text, headingTag]` tuple.
+
+## Collaboration
+
+`CollaborationPlugin` connects a composer to a Yjs document and a provider. Put
+the collaborating composers under `LexicalCollaboration`, set the composer's
+initial `editorState` to `null`, and let one client bootstrap an empty document.
+The provider decides how Yjs updates travel between clients; for example, with
+`y-websocket`:
+
+```sh
+npm install yjs y-websocket
+```
+
+```vue
+<script setup lang="ts">
+import { WebsocketProvider } from 'y-websocket'
+import { Doc } from 'yjs'
+import {
+  CollaborationPlugin,
+  ContentEditable,
+  LexicalCollaboration,
+  LexicalComposer,
+  RichTextPlugin,
+} from '@gridigor/vue-lexical'
+
+const initialConfig = {
+  namespace: 'CollaborativeEditor',
+  editorState: null,
+  onError(error: Error) {
+    throw error
+  },
+}
+
+function providerFactory(id: string, docMap: Map<string, Doc>) {
+  const doc = docMap.get(id) ?? new Doc()
+  docMap.set(id, doc)
+  return new WebsocketProvider('wss://your-yjs-server.example', id, doc)
+}
+</script>
+
+<template>
+  <LexicalCollaboration>
+    <LexicalComposer :initial-config="initialConfig">
+      <RichTextPlugin>
+        <template #contentEditable>
+          <ContentEditable aria-label="Collaborative editor" />
+        </template>
+      </RichTextPlugin>
+      <CollaborationPlugin
+        id="document-id"
+        :provider-factory="providerFactory"
+        :should-bootstrap="true"
+        username="Ada"
+        cursor-color="#7c3aed"
+      />
+    </LexicalComposer>
+  </LexicalCollaboration>
+</template>
+```
+
+Do not mount `HistoryPlugin` in the same composer: collaboration registers a
+Yjs-backed undo manager and publishes the usual Lexical undo, redo, and
+availability commands. `TOGGLE_CONNECT_COMMAND` from `@lexical/yjs` lets an
+application explicitly enter offline mode and reconnect. Remote awareness,
+names, cursor colors, selections, reconnect cleanup, custom initial state, and
+multiple editors are handled by the plugin lifecycle.
 
 ## Decorator nodes
 

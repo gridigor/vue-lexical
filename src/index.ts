@@ -1,5 +1,20 @@
 export { LexicalComposer, type InitialConfig } from './LexicalComposer'
 export {
+  collaborationContextKey,
+  createCollaborationContext,
+  LexicalCollaboration,
+  useCollaborationContext,
+  type CollaborationContext,
+  type CollaborationContextType,
+} from './LexicalCollaborationContext'
+export {
+  CollaborationPlugin,
+  LexicalCollaborationPlugin,
+  type CollaborationPluginProps,
+  type CollaborationProviderFactory,
+  type CursorsContainer,
+} from './LexicalCollaborationPlugin'
+export {
   lexicalComposerContextKey,
   useLexicalComposer,
   useLexicalComposerContext,

@@ -81,6 +81,10 @@ function onChange(editorState: EditorState) {
 Components can be imported from the package root or through subpaths matching
 the Lexical naming style:
 
+`PlainTextPlugin` and `RichTextPlugin` automatically register Dragon
+NaturallySpeaking support for the lifetime of the mounted editor, matching
+`@lexical/react`.
+
 ```ts
 import { LexicalComposer } from '@gridigor/vue-lexical/LexicalComposer'
 import { ContentEditable } from '@gridigor/vue-lexical/LexicalContentEditable'

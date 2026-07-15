@@ -1,4 +1,6 @@
+import { registerDragonSupport } from '@lexical/dragon'
 import { registerRichText } from '@lexical/rich-text'
+import { mergeRegister } from 'lexical'
 import { Fragment, defineComponent, h, onMounted, onUnmounted } from 'vue'
 import { useLexicalComposer } from './LexicalComposerContext'
 import { useCanShowPlaceholder } from './useCanShowPlaceholder'
@@ -11,7 +13,7 @@ export const RichTextPlugin = defineComponent({
     let unregister: (() => void) | undefined
 
     onMounted(() => {
-      unregister = registerRichText(editor)
+      unregister = mergeRegister(registerRichText(editor), registerDragonSupport(editor))
     })
     onUnmounted(() => unregister?.())
 

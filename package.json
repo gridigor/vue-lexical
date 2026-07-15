@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@lexical/a11y": "^0.47.0",
+    "@lexical/dragon": "^0.47.0",
     "@lexical/extension": "^0.47.0",
     "@lexical/hashtag": "^0.47.0",
     "@lexical/history": "^0.47.0",

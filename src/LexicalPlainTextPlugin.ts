@@ -1,4 +1,6 @@
+import { registerDragonSupport } from '@lexical/dragon'
 import { registerPlainText } from '@lexical/plain-text'
+import { mergeRegister } from 'lexical'
 import { Fragment, defineComponent, h, onMounted, onUnmounted } from 'vue'
 import { useLexicalComposer } from './LexicalComposerContext'
 import { useCanShowPlaceholder } from './useCanShowPlaceholder'
@@ -11,7 +13,7 @@ export const PlainTextPlugin = defineComponent({
     let unregister: (() => void) | undefined
 
     onMounted(() => {
-      unregister = registerPlainText(editor)
+      unregister = mergeRegister(registerPlainText(editor), registerDragonSupport(editor))
     })
     onUnmounted(() => unregister?.())
 

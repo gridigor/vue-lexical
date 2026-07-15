@@ -917,6 +917,7 @@ npm run test:browser
 npm run test:browser:chromium
 npm run build
 npm run check:bundle-size
+npm run check:tree-shaking
 npm run typecheck --prefix examples/vue
 npm run build --prefix examples/vue
 ```

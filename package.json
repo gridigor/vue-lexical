@@ -47,9 +47,10 @@
     "typecheck": "tsc --noEmit",
     "check:api-parity": "node scripts/check-api-parity.mjs",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
+    "check:tree-shaking": "node scripts/check-tree-shaking.mjs",
     "generate:api-parity": "node scripts/check-api-parity.mjs --write",
     "verify:package": "node scripts/verify-package.mjs",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:api-parity && npm run coverage && npm run test:browser && npm run build && npm run check:bundle-size"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:api-parity && npm run coverage && npm run test:browser && npm run build && npm run check:bundle-size && npm run check:tree-shaking"
   },
   "peerDependencies": {
     "lexical": "^0.47.0",

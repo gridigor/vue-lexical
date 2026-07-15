@@ -63,7 +63,7 @@ React-only rendering details are not copied into the public API.
 - [x] browser tests in Chromium, Firefox, and WebKit
 - [x] automated WCAG accessibility audits and focus-management browser tests
 - [x] bundle-size budgets for total output and individual modules
-- [ ] tree-shaking fixtures
+- [x] root and subpath import tree-shaking fixtures
 - [x] packed-package Vue consumer verification
 - [x] standalone Vue SPA Extension API example
 - [x] Vue/Nuxt SSR example

@@ -1,4 +1,10 @@
-export { LexicalComposer, type InitialConfig } from './LexicalComposer'
+export {
+  LexicalComposer,
+  type InitialConfig,
+  type InitialConfigType,
+  type InitialEditorState,
+  type InitialEditorStateType,
+} from './LexicalComposer'
 export { ExtensionComponent, type ExtensionComponentProps } from './ExtensionComponent'
 export {
   collaborationContextKey,
@@ -25,7 +31,13 @@ export {
 } from './LexicalComposerContext'
 export { LexicalExtensionComposer } from './LexicalExtensionComposer'
 export { LexicalExtensionEditorComposer } from './LexicalExtensionEditorComposer'
-export { ContentEditable, LexicalContentEditable } from './LexicalContentEditable'
+export {
+  ContentEditable,
+  ContentEditableElement,
+  LexicalContentEditable,
+  type ContentEditableElementProps,
+  type ContentEditableProps,
+} from './LexicalContentEditable'
 export {
   BlockWithAlignableContents,
   LexicalBlockWithAlignableContents,
@@ -91,7 +103,12 @@ export {
   LexicalEditorRefPlugin,
   type LexicalEditorRef,
 } from './LexicalEditorRefPlugin'
-export { HistoryPlugin, LexicalHistoryPlugin } from './LexicalHistoryPlugin'
+export {
+  createEmptyHistoryState,
+  HistoryPlugin,
+  LexicalHistoryPlugin,
+  type HistoryState,
+} from './LexicalHistoryPlugin'
 export {
   $createHorizontalRuleNode,
   $isHorizontalRuleNode,
@@ -212,12 +229,14 @@ export {
 } from './LexicalTablePlugin'
 export {
   createBasicTypeaheadTriggerMatch,
+  getScrollParent,
   LexicalTypeaheadMenuPlugin,
   MenuOption,
   PUNCTUATION,
   SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND,
   TypeaheadMenuPlugin,
   useBasicTypeaheadTriggerMatch,
+  useDynamicPositioning,
   type BasicTypeaheadTriggerOptions,
   type MenuResolution,
   type MenuSlotProps,
@@ -225,7 +244,6 @@ export {
   type TriggerFn,
   type TypeaheadMenuPluginProps,
 } from './LexicalTypeaheadMenuPlugin'
-export type { InitialEditorState } from './initializeEditor'
 export {
   TreeViewExtension,
   TreeViewExtensionComponent,

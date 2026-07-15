@@ -110,17 +110,56 @@ try {
     join(fixtureDirectory, 'main.ts'),
     `import { ParagraphNode, type LexicalEditor } from 'lexical'
 import { createApp, h } from 'vue'
-import { LexicalComposer, useLexicalTextEntity } from '@gridigor/vue-lexical'
+import {
+  ContentEditableElement,
+  createEmptyHistoryState,
+  getScrollParent,
+  LexicalComposer,
+  useDynamicPositioning,
+  useLexicalTextEntity,
+  type ContentEditableElementProps,
+  type ContentEditableProps,
+  type HistoryState,
+  type InitialConfigType,
+  type InitialEditorStateType,
+} from '@gridigor/vue-lexical'
+import type {
+  ContentEditableElementProps as SubpathContentEditableElementProps,
+  ContentEditableProps as SubpathContentEditableProps,
+} from '@gridigor/vue-lexical/LexicalContentEditable'
+import {
+  createEmptyHistoryState as createEmptySubpathHistoryState,
+  type HistoryState as SubpathHistoryState,
+} from '@gridigor/vue-lexical/LexicalHistoryPlugin'
+import {
+  getScrollParent as getSubpathScrollParent,
+  useDynamicPositioning as useSubpathDynamicPositioning,
+} from '@gridigor/vue-lexical/LexicalTypeaheadMenuPlugin'
+import type {
+  InitialConfig,
+  InitialEditorState,
+} from '@gridigor/vue-lexical/LexicalComposer'
 import NodeEventPlugin, {
   type NodeEventListener,
 } from '@gridigor/vue-lexical/LexicalNodeEventPlugin'
 
-const initialConfig = {
+const initialEditorState: InitialEditorStateType = null
+const compatibleInitialEditorState: InitialEditorState = initialEditorState
+const initialConfig: InitialConfigType = {
   namespace: 'PackageFixture',
+  editorState: compatibleInitialEditorState,
   onError(error: Error) {
     throw error
   },
 }
+const compatibleInitialConfig: InitialConfig = initialConfig
+const contentEditableProps: ContentEditableProps = { 'aria-label': 'Editor' }
+const subpathContentEditableProps: SubpathContentEditableProps = contentEditableProps
+const contentEditableElementProps = null as unknown as ContentEditableElementProps
+const subpathContentEditableElementProps: SubpathContentEditableElementProps =
+  contentEditableElementProps
+const historyState: HistoryState = createEmptyHistoryState()
+const subpathHistoryState: SubpathHistoryState = createEmptySubpathHistoryState()
 
 const listener: NodeEventListener = (
   _event: Event,
@@ -129,10 +168,19 @@ const listener: NodeEventListener = (
 ) => {}
 
 void useLexicalTextEntity
+void ContentEditableElement
+void subpathContentEditableProps
+void subpathContentEditableElementProps
+void historyState
+void subpathHistoryState
+void getScrollParent
+void useDynamicPositioning
+void getSubpathScrollParent
+void useSubpathDynamicPositioning
 
 createApp({
   render: () =>
-    h(LexicalComposer, { initialConfig }, {
+    h(LexicalComposer, { initialConfig: compatibleInitialConfig }, {
       default: () =>
         h(NodeEventPlugin, {
           eventListener: listener,
@@ -149,7 +197,15 @@ createApp({
 const nodeEvents = await import('@gridigor/vue-lexical/LexicalNodeEventPlugin')
 const textEntity = await import('@gridigor/vue-lexical/useLexicalTextEntity')
 
-if (!root.LexicalComposer || !nodeEvents.default || !textEntity.useLexicalTextEntity) {
+if (
+  !root.ContentEditableElement ||
+  !root.createEmptyHistoryState ||
+  !root.getScrollParent ||
+  !root.LexicalComposer ||
+  !root.useDynamicPositioning ||
+  !nodeEvents.default ||
+  !textEntity.useLexicalTextEntity
+) {
   throw new Error('Expected package exports were not available')
 }
 `,

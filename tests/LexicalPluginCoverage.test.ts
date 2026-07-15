@@ -140,7 +140,7 @@ describe('built-in plugin behavior', () => {
     const root = wrapper.get('section')
     expect(root.attributes('role')).toBe('document')
     expect(root.attributes('spellcheck')).toBe('false')
-    expect(root.attributes('aria-readonly')).toBe('false')
+    expect(root.attributes('aria-readonly')).toBeUndefined()
 
     editor?.setEditable(false)
     await nextTick()

@@ -50,7 +50,11 @@ React-only rendering details are not copied into the public API.
       DOM, and time travel
 - [x] experimental Collaboration V2 with external document and provider
 - [x] Dragon support in plain-text and rich-text setup
-- [ ] remaining Composer, ContentEditable, History, and menu helper parity
+- [x] Composer warning handling, guarded callback initialization, and public type aliases
+- [x] public Vue `ContentEditableElement` building block and prop types
+- [x] history state factory and type re-exports
+- [x] public scroll-parent and dynamic menu-positioning helpers
+- [x] intentional Vue-specific public API differences documented
 - [x] selection always on display
 
 ## Milestone 4 — release quality

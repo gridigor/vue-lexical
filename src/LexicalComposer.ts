@@ -10,18 +10,22 @@ import { createEditor } from 'lexical'
 import { Fragment, defineComponent, h, provide } from 'vue'
 import { lexicalComposerContextKey, type LexicalComposerContext } from './LexicalComposerContext'
 import { LexicalDecorators } from './LexicalDecorators'
-import { initializeEditor, type InitialEditorState } from './initializeEditor'
+import { initializeEditor, type InitialEditorStateType } from './initializeEditor'
 
-export interface InitialConfig {
+export type InitialConfigType = Readonly<{
   namespace: string
   editable?: boolean
-  editorState?: InitialEditorState
+  editorState?: InitialEditorStateType
   html?: HTMLConfig
   nodes?: ReadonlyArray<Klass<LexicalNode> | LexicalNodeReplacement>
   onError?: (error: Error, editor: LexicalEditor) => void
+  onWarn?: (error: Error, editor: LexicalEditor) => void
   parentEditor?: LexicalEditor
   theme?: EditorThemeClasses
-}
+}>
+
+export type InitialConfig = InitialConfigType
+export type { InitialEditorState, InitialEditorStateType } from './initializeEditor'
 
 export const LexicalComposer = defineComponent({
   name: 'LexicalComposer',
@@ -36,6 +40,7 @@ export const LexicalComposer = defineComponent({
   },
   setup(props, { emit, slots }) {
     const config = props.initialConfig
+    const onWarn = config.onWarn
     let editor: LexicalEditor
 
     editor = createEditor({
@@ -51,6 +56,13 @@ export const LexicalComposer = defineComponent({
           throw error
         }
       },
+      ...(onWarn === undefined
+        ? {}
+        : {
+            onWarn(error: Error) {
+              onWarn(error, editor)
+            },
+          }),
       parentEditor: config.parentEditor,
       theme: config.theme,
     })

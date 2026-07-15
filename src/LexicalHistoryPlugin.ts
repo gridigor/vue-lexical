@@ -32,5 +32,6 @@ export const HistoryPlugin = defineComponent({
   },
 })
 
+export { createEmptyHistoryState, type HistoryState }
 export { HistoryPlugin as LexicalHistoryPlugin }
 export default HistoryPlugin

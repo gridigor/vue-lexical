@@ -74,6 +74,30 @@ describe('LexicalComposer', () => {
     expect(editor?.getEditorState().read(() => $getRoot().getTextContent())).toBe('Hello Vue')
   })
 
+  it('forwards recoverable warnings with the editor instance', () => {
+    let editor: LexicalEditor | undefined
+    const onWarn = vi.fn()
+    const CaptureEditor = defineComponent({
+      setup() {
+        editor = useLexicalComposer()
+        return () => null
+      },
+    })
+    mount(LexicalComposer, {
+      props: {
+        initialConfig: { namespace: 'warning-handler', onError, onWarn },
+      },
+      slots: { default: () => h(CaptureEditor) },
+    })
+    const warning = new Error('recoverable warning')
+    const warnHandler = Reflect.get(editor as LexicalEditor, '_onWarn') as (error: Error) => void
+
+    warnHandler(warning)
+
+    expect(onWarn).toHaveBeenCalledOnce()
+    expect(onWarn).toHaveBeenCalledWith(warning, editor)
+  })
+
   it('registers plain text behavior and emits editor changes', async () => {
     let editor: LexicalEditor | undefined
     const onChange = vi.fn()

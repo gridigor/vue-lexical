@@ -6,7 +6,7 @@ import {
   $getSelection,
   createEditor,
 } from 'lexical'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { initializeEditor } from '../src/initializeEditor'
 
 const onError = (error: Error) => {
@@ -63,5 +63,20 @@ describe('initializeEditor', () => {
     const editor = createEditor({ namespace: 'editor-state', onError })
     initializeEditor(editor, createState('state object'))
     expect(editor.getEditorState().read(() => $getRoot().getTextContent())).toBe('state object')
+  })
+
+  it('does not run a functional initial state when the root already has content', () => {
+    const editor = createEditor({ namespace: 'guarded-functional-state', onError })
+    const initialEditorState = vi.fn(() => {
+      $getRoot()
+        .clear()
+        .append($createParagraphNode().append($createTextNode('replacement')))
+    })
+    editor.setEditorState(createState('existing'))
+
+    initializeEditor(editor, initialEditorState)
+
+    expect(initialEditorState).not.toHaveBeenCalled()
+    expect(editor.getEditorState().read(() => $getRoot().getTextContent())).toBe('existing')
   })
 })

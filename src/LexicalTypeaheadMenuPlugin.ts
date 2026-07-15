@@ -1,4 +1,4 @@
-import { getScrollParent } from '@lexical/utils'
+import { getScrollParent as getScrollParentFromUtils } from '@lexical/utils'
 import {
   $getSelection,
   $isRangeSelection,
@@ -31,6 +31,7 @@ import {
   setMenuAnchorAttributes,
   tryToPositionRange,
   type TriggerFn,
+  useDynamicPositioning,
 } from './menu/LexicalMenu'
 
 export const PUNCTUATION = '\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%\'"~=<>_:;'
@@ -100,6 +101,10 @@ export function createBasicTypeaheadTriggerMatch(
 
 /** Vue-compatible alias matching the upstream composable name. */
 export const useBasicTypeaheadTriggerMatch = createBasicTypeaheadTriggerMatch
+
+/** @deprecated Import getScrollParent from @lexical/utils instead. */
+export const getScrollParent = getScrollParentFromUtils
+export { useDynamicPositioning }
 
 export const TypeaheadMenuPlugin = defineComponent({
   name: 'LexicalTypeaheadMenuPlugin',
@@ -321,7 +326,7 @@ export const TypeaheadMenuPlugin = defineComponent({
           const unregisterCommands = registerMenuCommands()
           let animationFrame = 0
           let visible = true
-          const scrollParent = root ? getScrollParent(root, false) : parent
+          const scrollParent = root ? getScrollParentFromUtils(root, false) : parent
           const onPositionChange = () => {
             if (animationFrame === 0) {
               animationFrame = requestAnimationFrame(() => {

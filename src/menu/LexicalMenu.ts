@@ -4,11 +4,17 @@ import {
   $isTextNode,
   getDOMSelection,
   getDOMSelectionPoints,
+  getDOMShadowRoots,
+  mergeRegister,
+  registerEventListener,
   type LexicalEditor,
   type RangeSelection,
   type TextNode,
 } from 'lexical'
-import type { VNodeChild } from 'vue'
+import { getScrollParent } from '@lexical/utils'
+import type { MaybeRefOrGetter, VNodeChild, WatchStopHandle } from 'vue'
+import { onUnmounted, toValue, watch } from 'vue'
+import { useLexicalComposer } from '../LexicalComposerContext'
 
 export interface MenuTextMatch {
   leadOffset: number
@@ -221,4 +227,75 @@ export function isTriggerVisible(target: HTMLElement, container: HTMLElement): b
   return (
     targetRect.top >= containerRect.top - margin && targetRect.top <= containerRect.bottom + margin
   )
+}
+
+/** Keeps an open menu aligned while its target or surrounding viewport moves. */
+export function useDynamicPositioning(
+  resolution: MaybeRefOrGetter<MenuResolution | null>,
+  targetElement: MaybeRefOrGetter<HTMLElement | null>,
+  onReposition: () => void,
+  onVisibilityChange?: (isInView: boolean) => void,
+): void {
+  const editor = useLexicalComposer()
+  let stopWatch: WatchStopHandle | undefined
+
+  stopWatch = watch(
+    [() => toValue(resolution), () => toValue(targetElement)],
+    ([currentResolution, currentTarget], _previous, onCleanup) => {
+      if (currentResolution === null || currentTarget === null) {
+        return
+      }
+
+      const rootElement = editor.getRootElement()
+      const rootScrollParent = rootElement
+        ? getScrollParent(rootElement, false)
+        : currentTarget.ownerDocument.body
+      let ticking = false
+      let animationFrame = 0
+      let previousIsInView = isTriggerVisible(currentTarget, rootScrollParent)
+      const handleScroll = () => {
+        if (!ticking) {
+          ticking = true
+          animationFrame = window.requestAnimationFrame(() => {
+            animationFrame = 0
+            ticking = false
+            onReposition()
+          })
+        }
+
+        const isInView = isTriggerVisible(currentTarget, rootScrollParent)
+        if (isInView !== previousIsInView) {
+          previousIsInView = isInView
+          onVisibilityChange?.(isInView)
+        }
+      }
+      const resizeObserver = new ResizeObserver(onReposition)
+      const enclosingShadowRoots = getDOMShadowRoots(rootElement ?? currentTarget)
+      resizeObserver.observe(currentTarget)
+
+      const unregister = mergeRegister(
+        registerEventListener(window, 'resize', onReposition),
+        registerEventListener(document, 'scroll', handleScroll, {
+          capture: true,
+          passive: true,
+        }),
+        ...enclosingShadowRoots.map((root) =>
+          registerEventListener(root, 'scroll', handleScroll, {
+            capture: true,
+            passive: true,
+          }),
+        ),
+        () => resizeObserver.unobserve(currentTarget),
+        () => {
+          if (animationFrame !== 0) {
+            window.cancelAnimationFrame(animationFrame)
+          }
+        },
+      )
+      onCleanup(unregister)
+    },
+    { immediate: true },
+  )
+
+  onUnmounted(() => stopWatch?.())
 }

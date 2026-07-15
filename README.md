@@ -8,7 +8,8 @@ same small, composable building blocks as `@lexical/react`.
 > block editing, tables, Yjs collaboration, and the Lexical Extension API.
 
 See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
-status and the features planned next.
+status and the features planned next. Framework-specific contracts are listed
+in [Intentional Vue API differences](docs/VUE_API_DIFFERENCES.md).
 
 ## Requirements
 
@@ -78,12 +79,25 @@ function onChange(editorState: EditorState) {
 </template>
 ```
 
+`initialConfig` is read once when the composer creates the editor. Its optional
+`onWarn(error, editor)` callback receives recoverable Lexical warnings without
+treating them as fatal errors. The public `InitialConfigType` and
+`InitialEditorStateType` types match the naming used by `@lexical/react`;
+`InitialConfig` and `InitialEditorState` remain available as compatibility
+aliases.
+
 Components can be imported from the package root or through subpaths matching
 the Lexical naming style:
 
 `PlainTextPlugin` and `RichTextPlugin` automatically register Dragon
 NaturallySpeaking support for the lifetime of the mounted editor, matching
 `@lexical/react`.
+
+`ContentEditable` reads the editor from the nearest composer and supports the
+`placeholder` slot. For lower-level integrations, `ContentEditableElement`
+accepts an explicit `editor` prop and binds that editor directly to its rendered
+element. Both components accept standard Vue HTML/ARIA attributes; the
+camelCase ARIA compatibility props from `@lexical/react` are also available.
 
 ```ts
 import { LexicalComposer } from '@gridigor/vue-lexical/LexicalComposer'
@@ -435,6 +449,10 @@ function onSelectOption(option: MenuOption, queryNode: TextNode | null, close: (
 Use the default scoped slot to replace the menu markup while retaining the
 positioning and keyboard behavior. It receives `options`, `selectedIndex`,
 `matchingString`, `setHighlightedIndex`, and `selectOptionAndCleanUp`.
+Custom floating-menu components can call `useDynamicPositioning()` during
+`setup` to react to scroll, window resize, target resize, visibility changes,
+and enclosing shadow-root scrolls. The deprecated `getScrollParent` compatibility
+export matches `@lexical/react`; new code should import it from `@lexical/utils`.
 
 ## Node and context menus
 
@@ -821,7 +839,9 @@ The nested editor inherits its parent, theme, namespace when omitted, registered
 nodes when omitted, and editable state. Set `skip-editable-listener` when the
 nested editor must manage its editable state independently. To share undo/redo
 across parent and nested editors, pass the same `HistoryState` instance to both
-`HistoryPlugin` components through `externalHistoryState`.
+`HistoryPlugin` components through `externalHistoryState`. Both `HistoryState`
+and `createEmptyHistoryState()` are exported from `@gridigor/vue-lexical` and
+its `LexicalHistoryPlugin` subpath.
 
 ## Error boundary
 

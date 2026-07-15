@@ -1,11 +1,13 @@
 import type { EditorState, LexicalEditor } from 'lexical'
 import { $createParagraphNode, $getRoot, $getSelection } from 'lexical'
 
-export type InitialEditorState = null | string | EditorState | ((editor: LexicalEditor) => void)
+export type InitialEditorStateType = null | string | EditorState | ((editor: LexicalEditor) => void)
+
+export type InitialEditorState = InitialEditorStateType
 
 export function initializeEditor(
   editor: LexicalEditor,
-  initialEditorState?: InitialEditorState,
+  initialEditorState?: InitialEditorStateType,
 ): void {
   if (initialEditorState === null) {
     return
@@ -37,10 +39,17 @@ export function initializeEditor(
   }
 
   if (typeof initialEditorState === 'function') {
-    editor.update(() => initialEditorState(editor), {
-      discrete: true,
-      tag: 'history-merge',
-    })
+    editor.update(
+      () => {
+        if ($getRoot().isEmpty()) {
+          initialEditorState(editor)
+        }
+      },
+      {
+        discrete: true,
+        tag: 'history-merge',
+      },
+    )
     return
   }
 

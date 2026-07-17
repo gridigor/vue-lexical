@@ -1,6 +1,6 @@
 # API reference
 
-This file is generated from the public exports of `@gridigor/vue-lexical@1.0.0`.
+This file is generated from the public exports of `@gridigor/vue-lexical@1.1.0`.
 Run `npm run generate:api-reference` after changing the public API. CI runs
 `npm run check:api-reference` and fails when this reference is stale.
 

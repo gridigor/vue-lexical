@@ -1,7 +1,7 @@
 # @lexical/react API parity matrix
 
 This matrix covers every canonical public entrypoint published by
-`@lexical/react@0.47.0`. Each entrypoint has a supported Vue equivalent;
+`@lexical/react@0.48.0`. Each entrypoint has a supported Vue equivalent;
 component props, React hooks, JSX render callbacks, and portals are adapted to
 Vue props, composables, slots, and Teleport.
 
@@ -16,7 +16,7 @@ removed. Run
 - 3 framework-named entrypoints use a `Vue*` name
 - Detailed contract differences: [Vue API differences](./VUE_API_DIFFERENCES.md)
 
-| @lexical/react 0.47.0                              | Vue equivalent                                            | Mapping      |
+| @lexical/react 0.48.0                              | Vue equivalent                                            | Mapping      |
 | -------------------------------------------------- | --------------------------------------------------------- | ------------ |
 | `@lexical/react/ExtensionComponent`                | `@gridigor/vue-lexical/ExtensionComponent`                | Same subpath |
 | `@lexical/react/LexicalAutoEmbedPlugin`            | `@gridigor/vue-lexical/LexicalAutoEmbedPlugin`            | Same subpath |

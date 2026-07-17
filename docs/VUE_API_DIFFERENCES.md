@@ -1,7 +1,7 @@
 # Intentional Vue API differences
 
-`@gridigor/vue-lexical@1.0.0` mirrors the editor behavior and public building
-blocks of `@lexical/react@0.47.0`, but framework-specific rendering contracts
+`@gridigor/vue-lexical@1.1.0` mirrors the editor behavior and public building
+blocks of `@lexical/react@0.48.0`, but framework-specific rendering contracts
 use Vue primitives. These differences are intentional and are not missing
 parity.
 

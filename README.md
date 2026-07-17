@@ -3,8 +3,8 @@
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
 
-Version 1.0 provides a Vue equivalent for every public entrypoint and public
-symbol in `@lexical/react@0.47.0`, with React rendering contracts adapted to Vue
+Version 1.1 provides a Vue equivalent for every public entrypoint and public
+symbol in `@lexical/react@0.48.0`, with React rendering contracts adapted to Vue
 components, composables, slots, emits, and Teleport.
 
 See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
@@ -16,7 +16,7 @@ are listed in [Intentional Vue API differences](docs/VUE_API_DIFFERENCES.md).
 ## Requirements
 
 - Vue 3.5 or newer
-- Lexical 0.47.x
+- Lexical 0.48.x
 - Node.js 22.12 or newer for development
 - TypeScript 7 for this repository's toolchain
 
@@ -669,6 +669,10 @@ application explicitly enter offline mode and reconnect. Remote awareness,
 names, cursor colors, selections, reconnect cleanup, custom initial state, and
 multiple editors are handled by the plugin lifecycle.
 
+Set `root-name` when the Lexical content must use a Yjs shared-type key other
+than the default `root`. The same prop is available on
+`CollaborationPluginV2__EXPERIMENTAL`, whose default key is `root-v2`.
+
 `CollaborationPluginV2__EXPERIMENTAL` matches Lexical's newer binding when the
 application creates the `Doc` and provider itself. Keep both instances stable
 for the lifetime of the mounted plugin:
@@ -853,7 +857,7 @@ its `LexicalHistoryPlugin` subpath.
 When collaboration is active, nested content waits for its Yjs subdocument by
 default. Set `skip-collab-checks` only when the nested editor is intentionally
 managed outside that lifecycle. The deprecated `initialNodes` prop is retained
-for `@lexical/react@0.47.0` compatibility; new code should configure nodes in
+for `@lexical/react@0.48.0` compatibility; new code should configure nodes in
 `createEditor({ nodes, parentEditor })`.
 
 ## Error boundary
@@ -944,7 +948,7 @@ npm run build --prefix examples/vue
 
 Package releases are published from GitHub Releases through npm trusted
 publishing. The GitHub tag must equal the version in `package.json`, with an
-optional leading `v` (for example, `v1.0.0`). Prerelease versions are
+optional leading `v` (for example, `v1.1.0`). Prerelease versions are
 published under the `next` dist-tag; stable versions use `latest`.
 
 The dependency ranges intentionally stay on one Lexical minor line. CI tests

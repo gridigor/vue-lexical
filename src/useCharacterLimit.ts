@@ -115,6 +115,11 @@ export function $wrapOverflowedNodes(offset: number): void {
   let accumulatedLength = 0
 
   for (const { node } of nodes) {
+    const previousNode = node.getPreviousSibling()
+    if ($isElementNode(previousNode) && !previousNode.isInline()) {
+      accumulatedLength += 2
+    }
+
     const isSlotValueLeaf = $isLeafNode(node) && $getSlotHost(node) !== null
     const needsOverflowParent =
       $isLeafNode(node) && !isSlotValueLeaf && !$findMatchingParent(node, $isOverflowNode)
@@ -130,7 +135,7 @@ export function $wrapOverflowedNodes(offset: number): void {
         $unwrapNode(node)
         const selection = $getSelection()
 
-        /* v8 ignore start -- Lexical 0.47 repairs range selection synchronously inside
+        /* v8 ignore start -- Lexical 0.48 repairs range selection synchronously inside
          * $unwrapNode for supported nodes. Keep this upstream-compatible fallback for
          * custom nodes that may leave selection points detached. */
         if (
@@ -175,6 +180,10 @@ export function $wrapOverflowedNodes(offset: number): void {
           $setSelection(previousSelection)
         }
         $mergePrevious(overflowNode)
+        const nextNode = overflowNode.getNextSibling()
+        if ($isOverflowNode(nextNode)) {
+          $mergePrevious(nextNode)
+        }
       }
     }
   }

@@ -1,11 +1,12 @@
-# Version 1.0 API parity status
+# Version 1.x API parity status
 
 The goal is behavioral parity with the framework-neutral parts of
 `@lexical/react`, expressed with Vue components, slots, emits, and composables.
 React-only rendering details are not copied into the public API.
 
-`1.0.0` completes this roadmap against `@lexical/react@0.47.0`. The executable
-parity audit verifies all 56 upstream entrypoints and every named public symbol;
+`1.0.0` completed the roadmap against `@lexical/react@0.47.0`; `1.1.0` updates
+the supported line to `@lexical/react@0.48.0`. The executable parity audit
+verifies all 56 upstream entrypoints and every named public symbol;
 framework-specific mappings are declared explicitly.
 
 ## Milestone 1 — editor foundation
@@ -63,7 +64,7 @@ framework-specific mappings are declared explicitly.
 
 ## Milestone 4 — release quality
 
-- [x] executable public API-entrypoint matrix against `@lexical/react@0.47.0`
+- [x] executable public API-entrypoint matrix against `@lexical/react@0.48.0`
 - [x] browser tests in Chromium, Firefox, and WebKit
 - [x] automated WCAG accessibility audits and focus-management browser tests
 - [x] bundle-size budgets for total output and individual modules
@@ -74,8 +75,9 @@ framework-specific mappings are declared explicitly.
 - [x] public GitHub Pages playground deployment
 - [x] daily and manually dispatchable compatibility automation for new Lexical releases
 - [x] generated root-export and subpath API reference
-- [x] symbol-level parity audit for every `@lexical/react@0.47.0` entrypoint
+- [x] symbol-level parity audit for every `@lexical/react@0.48.0` entrypoint
 - [x] `1.0.0` package metadata and versioned documentation
+- [x] `1.1.0` Lexical 0.48 compatibility update and future-minor notification guard
 
 ## Compatibility policy
 

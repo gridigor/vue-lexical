@@ -149,6 +149,7 @@ export const ContentEditableElement = defineComponent({
           ref: rootElement,
           role,
           spellcheck: attrs.spellcheck ?? true,
+          tabindex: attrs.tabindex ?? (isEditable ? undefined : -1),
         }),
       )
     }

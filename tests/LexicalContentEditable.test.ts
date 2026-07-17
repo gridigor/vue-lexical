@@ -68,6 +68,7 @@ describe('ContentEditableElement', () => {
     expect(element.getAttribute('aria-required')).toBe('true')
     expect(element.getAttribute('data-custom')).toBe('custom-value')
     expect(element.hasAttribute('aria-readonly')).toBe(false)
+    expect(element.hasAttribute('tabindex')).toBe(false)
 
     editor.setEditable(false)
     await nextTick()
@@ -80,6 +81,7 @@ describe('ContentEditableElement', () => {
     expect(element.hasAttribute('aria-expanded')).toBe(false)
     expect(element.hasAttribute('aria-owns')).toBe(false)
     expect(element.getAttribute('aria-describedby')).toBe('description')
+    expect(element.getAttribute('tabindex')).toBe('-1')
 
     wrapper.unmount()
     expect(editor.getRootElement()).toBeNull()
@@ -89,6 +91,7 @@ describe('ContentEditableElement', () => {
     const editor = createTestEditor('custom-content-editable-element')
     const wrapper = mount(ContentEditableElement, {
       props: { as: 'section', editor },
+      attrs: { tabindex: 2 },
     })
     await nextTick()
     const replacement = document.createElement('article')
@@ -96,6 +99,10 @@ describe('ContentEditableElement', () => {
     expect(wrapper.element.tagName).toBe('SECTION')
     expect(wrapper.attributes('role')).toBe('textbox')
     expect(wrapper.attributes('spellcheck')).toBe('true')
+
+    editor.setEditable(false)
+    await nextTick()
+    expect(wrapper.attributes('tabindex')).toBe('2')
 
     editor.setRootElement(replacement)
     wrapper.unmount()

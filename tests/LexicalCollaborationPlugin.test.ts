@@ -50,8 +50,8 @@ vi.mock('@lexical/yjs', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@lexical/yjs')>()
   return {
     ...actual,
-    createBinding(...args: Parameters<typeof actual.createBinding>) {
-      const binding = actual.createBinding(...args)
+    createYjsBinding(...args: Parameters<typeof actual.createYjsBinding>) {
+      const binding = actual.createYjsBinding(...args)
       syncSpies.bindings.push(binding)
       return binding
     },
@@ -241,6 +241,7 @@ describe('LexicalCollaborationPlugin', () => {
               cursorsContainerRef: index === 0 ? cursorTarget : cursorTargetRef,
               syncCursorPositionsFn: syncCursors,
               selectionHighlight: true,
+              rootName: 'custom-root',
             }),
           ],
         },
@@ -271,6 +272,7 @@ describe('LexicalCollaborationPlugin', () => {
       ]),
     )
     expect(providers).toHaveLength(2)
+    expect(providers.every((provider) => provider.doc?.share.has('custom-root'))).toBe(true)
     expect(providers.every((provider) => provider.connect.mock.calls.length === 1)).toBe(true)
     expect(cursorTarget.querySelectorAll('div')).toHaveLength(2)
 
@@ -541,6 +543,38 @@ describe('LexicalCollaborationPlugin', () => {
     existing.wrapper.unmount()
   })
 
+  it('requires the provider factory to register its Yjs document', () => {
+    const provider = new TestProvider()
+
+    expect(() =>
+      mount(LexicalCollaboration, {
+        slots: {
+          default: () =>
+            h(
+              LexicalComposer,
+              {
+                initialConfig: {
+                  namespace: 'missing-collaboration-document',
+                  editorState: null,
+                  onError(error: Error) {
+                    throw error
+                  },
+                },
+              },
+              {
+                default: () =>
+                  h(CollaborationPlugin, {
+                    id: 'missing-document',
+                    providerFactory: () => provider.asProvider(),
+                    shouldBootstrap: false,
+                  }),
+              },
+            ),
+        },
+      }),
+    ).toThrow('providerFactory must add the document to yjsDocMap')
+  })
+
   it('supports external V2 documents and providers, diff views, and shared history', async () => {
     const contexts = [createCollaborationContext(), createCollaborationContext()]
     const docs = [new Doc({ gc: false }), new Doc({ gc: false })]
@@ -582,6 +616,7 @@ describe('LexicalCollaborationPlugin', () => {
               awarenessData: { role: 'author' },
               cursorsContainerRef: index === 0 ? cursorTarget : cursorTargetRef,
               selectionHighlight: true,
+              rootName: 'custom-root-v2',
             }),
           ],
         },
@@ -602,6 +637,7 @@ describe('LexicalCollaborationPlugin', () => {
     await nextTick()
 
     expect(syncSpies.bindingsV2).toHaveLength(bindingCount + 2)
+    expect(docs.every((doc) => doc.share.has('custom-root-v2'))).toBe(true)
     expect(providers.every((provider) => provider.connect.mock.calls.length === 1)).toBe(true)
     expect(contexts.every((context) => context.isCollabActive)).toBe(true)
     expect(contexts[0].yjsDocMap.get('external-document')).toBe(docs[0])

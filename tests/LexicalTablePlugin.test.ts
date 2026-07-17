@@ -6,10 +6,12 @@ import { mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { LexicalComposer } from '../src/LexicalComposer'
 import { useLexicalComposer } from '../src/LexicalComposerContext'
+import { ContentEditable } from '../src/LexicalContentEditable'
 import { TablePlugin } from '../src/LexicalTablePlugin'
 
 const tableMocks = vi.hoisted(() => ({
   activeScroll: new WeakMap<object, boolean>(),
+  getDOMCellFromTarget: vi.fn(),
   registerTableCellUnmergeTransform: vi.fn(),
   registerTablePlugin: vi.fn(),
   registerTableSelectionObserver: vi.fn(),
@@ -23,6 +25,7 @@ vi.mock('@lexical/table', async (importOriginal) => {
     ...actual,
     $isScrollableTablesActive: (editor: LexicalEditor) =>
       tableMocks.activeScroll.get(editor) ?? false,
+    getDOMCellFromTarget: tableMocks.getDOMCellFromTarget,
     registerTableCellUnmergeTransform: tableMocks.registerTableCellUnmergeTransform,
     registerTablePlugin: tableMocks.registerTablePlugin,
     registerTableSelectionObserver: tableMocks.registerTableSelectionObserver,
@@ -68,7 +71,7 @@ function mountPlugin(props: Record<string, boolean> = {}) {
             },
           },
           {
-            default: () => [h(CaptureEditor), h(TablePlugin, hostProps)],
+            default: () => [h(ContentEditable), h(CaptureEditor), h(TablePlugin, hostProps)],
           },
         )
     },
@@ -85,6 +88,7 @@ function mountPlugin(props: Record<string, boolean> = {}) {
 describe('LexicalTablePlugin', () => {
   beforeEach(() => {
     tableMocks.activeScroll = new WeakMap<object, boolean>()
+    tableMocks.getDOMCellFromTarget.mockReset()
     tableMocks.registerTableCellUnmergeTransform.mockReset()
     tableMocks.registerTablePlugin.mockReset()
     tableMocks.registerTableSelectionObserver.mockReset()
@@ -190,5 +194,69 @@ describe('LexicalTablePlugin', () => {
         slots: { default: () => h(TablePlugin) },
       }),
     ).toThrow(/must be registered/)
+  })
+
+  it('prevents native selection only during a mouse-driven table selection', async () => {
+    tableMocks.getDOMCellFromTarget.mockReturnValue({})
+    const addEventListener = vi.spyOn(window, 'addEventListener')
+    const { editor, wrapper } = mountPlugin()
+    await nextTick()
+    const root = wrapper.get('[contenteditable]').element
+    expect(editor.getRootElement()).toBe(root)
+    expect(root.ownerDocument.defaultView).toBe(window)
+
+    const pointerDown = new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+      pointerType: 'mouse',
+    })
+    Object.defineProperty(pointerDown, 'target', { value: root })
+    const findGuardListener = (type: string) =>
+      addEventListener.mock.calls.find(
+        ([eventType, listener]) =>
+          eventType === type && String(listener).includes('isTablePointerDown'),
+      )?.[1]
+    const pointerDownListener = findGuardListener('pointerdown')
+    const pointerMoveListener = findGuardListener('pointermove')
+    const pointerUpListener = findGuardListener('pointerup')
+    expect(pointerDownListener).toBeTypeOf('function')
+    expect(pointerMoveListener).toBeTypeOf('function')
+    expect(pointerUpListener).toBeTypeOf('function')
+    ;(pointerDownListener as EventListener)(pointerDown)
+    expect(tableMocks.getDOMCellFromTarget).toHaveBeenCalledWith(root)
+    const tableMove = new PointerEvent('pointermove', {
+      bubbles: true,
+      buttons: 1,
+      cancelable: true,
+    })
+    ;(pointerMoveListener as EventListener)(tableMove)
+    expect(tableMove.defaultPrevented).toBe(true)
+
+    ;(pointerUpListener as EventListener)(new PointerEvent('pointerup', { bubbles: true }))
+    const stoppedMove = new PointerEvent('pointermove', {
+      bubbles: true,
+      buttons: 1,
+      cancelable: true,
+    })
+    ;(pointerMoveListener as EventListener)(stoppedMove)
+    expect(stoppedMove.defaultPrevented).toBe(false)
+
+    const touchDown = new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+      pointerType: 'touch',
+    })
+    Object.defineProperty(touchDown, 'target', { value: root })
+    ;(pointerDownListener as EventListener)(touchDown)
+    const touchMove = new PointerEvent('pointermove', {
+      bubbles: true,
+      buttons: 1,
+      cancelable: true,
+    })
+    ;(pointerMoveListener as EventListener)(touchMove)
+    expect(touchMove.defaultPrevented).toBe(false)
+
+    wrapper.unmount()
+    addEventListener.mockRestore()
   })
 })

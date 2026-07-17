@@ -71,3 +71,6 @@ jobs:
           npm run build
           npm run check:bundle-size
           npm run check:tree-shaking
+
+      - name: Require an explicit supported Lexical minor
+        run: npm run check:lexical-baseline

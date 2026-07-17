@@ -9,8 +9,8 @@ import type {
 import {
   CLEAR_DIFF_VERSIONS_COMMAND__EXPERIMENTAL,
   CONNECTED_COMMAND,
-  createBinding,
   createBindingV2__EXPERIMENTAL,
+  createYjsBinding,
   createUndoManager,
   DIFF_VERSIONS_COMMAND__EXPERIMENTAL,
   initLocalState,
@@ -66,6 +66,7 @@ export interface CollaborationPluginProps {
   awarenessData?: object
   syncCursorPositionsFn?: SyncCursorPositionsFn
   selectionHighlight?: boolean
+  rootName?: string
 }
 
 export interface CollaborationPluginV2Props {
@@ -79,6 +80,7 @@ export interface CollaborationPluginV2Props {
   excludedProperties?: ExcludedProperties
   awarenessData?: object
   selectionHighlight?: boolean
+  rootName?: string
 }
 
 interface CollaborationSessionOptions extends CollaborationPluginProps {
@@ -227,20 +229,25 @@ function startCollaborationSession(options: CollaborationSessionOptions): () => 
     name,
     onBinding,
     providerFactory,
+    rootName,
     selectionHighlight = false,
     shouldBootstrap,
     syncCursorPositionsFn = syncCursorPositions,
     yjsDocMap,
   } = options
   const provider = providerFactory(id, yjsDocMap)
-  const binding = createBinding(
+  const doc = yjsDocMap.get(id)
+  if (doc === undefined) {
+    throw new Error('CollaborationPlugin: providerFactory must add the document to yjsDocMap')
+  }
+  const binding = createYjsBinding({
+    doc,
+    docMap: yjsDocMap,
     editor,
-    provider,
     id,
-    yjsDocMap.get(id),
-    yjsDocMap,
     excludedProperties,
-  )
+    rootName,
+  })
   let isReloadingDoc = false
   let disposed = false
   onBinding(binding)
@@ -275,9 +282,9 @@ function startCollaborationSession(options: CollaborationSessionOptions): () => 
     },
   )
 
-  const onReload = (doc: Doc) => {
+  const onReload = (replacementDoc: Doc) => {
     clearEditorSkipCollab(editor, binding)
-    yjsDocMap.set(id, doc)
+    yjsDocMap.set(id, replacementDoc)
     isReloadingDoc = true
   }
   const onStatus = ({ status }: { status: string }) => {
@@ -405,11 +412,13 @@ function startCollaborationSessionV2(options: CollaborationSessionV2Options): ()
     name,
     onBinding,
     provider,
+    rootName,
     selectionHighlight = false,
     yjsDocMap,
   } = options
   const binding = createBindingV2__EXPERIMENTAL(editor, id, doc, yjsDocMap, {
     excludedProperties,
+    rootName,
   })
   let disposed = false
   let diffSnapshots: { prevSnapshot?: Snapshot; snapshot?: Snapshot } | null = null
@@ -610,6 +619,7 @@ export const CollaborationPlugin = defineComponent({
       default: undefined,
     },
     selectionHighlight: { type: Boolean, default: false },
+    rootName: { type: String, default: undefined },
   },
   setup(props) {
     const editor = useLexicalComposer()
@@ -673,6 +683,7 @@ export const CollaborationPluginV2__EXPERIMENTAL = defineComponent({
     },
     awarenessData: { type: Object, default: undefined },
     selectionHighlight: { type: Boolean, default: false },
+    rootName: { type: String, default: undefined },
   },
   setup(props) {
     const editor = useLexicalComposer()

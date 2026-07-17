@@ -461,6 +461,49 @@ describe('text limit plugins', () => {
     )
   })
 
+  it('counts block separators when locating the overflow boundary', () => {
+    const editor = createEditor({
+      namespace: 'block-separator-overflow',
+      nodes: [OverflowNode],
+      onError,
+    })
+    editor.update(
+      () => {
+        const first = $createParagraphNode().append($createTextNode('abc'))
+        const second = $createParagraphNode().append($createTextNode('def'))
+        $getRoot().append(first, second)
+        $wrapOverflowedNodes(4)
+
+        expect(second.getChildren()).toHaveLength(1)
+        expect($isOverflowNode(second.getFirstChild())).toBe(true)
+      },
+      { discrete: true },
+    )
+  })
+
+  it('merges the next overflow node after wrapping a new boundary', () => {
+    const editor = createEditor({
+      namespace: 'merge-next-overflow',
+      nodes: [OverflowNode],
+      onError,
+    })
+    editor.update(
+      () => {
+        const paragraph = $createParagraphNode().append(
+          $createTextNode('a'),
+          $createOverflowNode().append($createTextNode('bc')),
+        )
+        $getRoot().append(paragraph)
+        $wrapOverflowedNodes(0)
+
+        expect(paragraph.getChildren()).toHaveLength(1)
+        expect($isOverflowNode(paragraph.getFirstChild())).toBe(true)
+        expect(paragraph.getTextContent()).toBe('abc')
+      },
+      { discrete: true },
+    )
+  })
+
   it('merges adjacent overflow nodes while preserving a cross-node selection', () => {
     const editor = createEditor({ namespace: 'merge-overflow', nodes: [OverflowNode], onError })
 

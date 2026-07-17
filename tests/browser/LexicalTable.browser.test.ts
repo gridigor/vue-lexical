@@ -167,6 +167,7 @@ describe('Lexical tables in a real browser', () => {
             toX: 1,
             toY: 1,
           })
+          expect($isTableSelection(selection)).toBe(true)
           if ($isTableSelection(selection)) {
             expect(selection.getShape()).toEqual({ fromX: 0, fromY: 0, toX: 1, toY: 1 })
           }

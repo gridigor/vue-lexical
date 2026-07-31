@@ -4,7 +4,7 @@ export function assertLexicalBaseline(declaredRange, installedVersion) {
 
   if (range === null) {
     throw new Error(
-      `Expected a single Lexical minor range such as ^0.48.0, received ${declaredRange}`,
+      `Expected a single Lexical minor range such as ^0.49.0, received ${declaredRange}`,
     )
   }
   if (version === null) {

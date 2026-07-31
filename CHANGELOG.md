@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.49.0
+
+- Starting with this release, the Vue Lexical minor version tracks the supported
+  Lexical minor line: `1.49.x` corresponds to Lexical `0.49.x`, `1.50.x` will
+  correspond to Lexical `0.50.x`, and so on.
+- Updated the supported dependency line and complete public API parity baseline
+  to `@lexical/react@0.49.0`.
+- Migrated the Vue horizontal-rule node to Lexical's `$config()` protocol.
+- Adopted the invariant-safe `AnyLexicalCommand` type in the devtools command log.
+- Replaced deprecated table-selection shape checks with the merged-cell-aware
+  table-map boundary APIs introduced in Lexical 0.49.
+- Verified all 56 upstream entrypoints and the Vue/Nuxt examples against the
+  Lexical 0.49 built-in node and command changes.
+
 ## 1.1.0
 
 - Updated the supported dependency line and complete public API parity baseline

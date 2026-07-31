@@ -1,11 +1,16 @@
 import {
+  $computeTableCellRectBoundary,
+  $computeTableMap,
   $createTableNodeWithDimensions,
   $findCellNode,
+  $isTableCellNode,
+  $isTableNode,
   $isTableSelection,
   INSERT_TABLE_COMMAND,
   TableCellNode,
   TableNode,
   TableRowNode,
+  type TableSelection,
 } from '@lexical/table'
 import {
   $createParagraphNode,
@@ -34,6 +39,20 @@ async function flushEditor(): Promise<void> {
   await nextTick()
   await Promise.resolve()
   await nextTick()
+}
+
+function getTableSelectionBoundary(selection: TableSelection) {
+  const anchorCell = selection.anchor.getNode()
+  const focusCell = selection.focus.getNode()
+  if (!$isTableCellNode(anchorCell) || !$isTableCellNode(focusCell)) {
+    throw new Error('Expected table selection points to reference table cells')
+  }
+  const table = anchorCell.getParentOrThrow().getParentOrThrow()
+  if (!$isTableNode(table)) {
+    throw new Error('Expected table cell to be attached to a table')
+  }
+  const [map, anchorMap, focusMap] = $computeTableMap(table, anchorCell, focusCell)
+  return $computeTableCellRectBoundary(map, anchorMap, focusMap)
 }
 
 function mountTableEditor(props: Record<string, boolean> = {}, editorState?: () => void) {
@@ -255,7 +274,12 @@ describe('Lexical table integration', () => {
       const selection = $getSelection()
       expect($isTableSelection(selection)).toBe(true)
       if ($isTableSelection(selection)) {
-        expect(selection.getShape()).toEqual({ fromX: 0, fromY: 0, toX: 1, toY: 1 })
+        expect(getTableSelectionBoundary(selection)).toEqual({
+          minColumn: 0,
+          minRow: 0,
+          maxColumn: 1,
+          maxRow: 1,
+        })
       }
     })
 

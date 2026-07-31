@@ -1,7 +1,7 @@
 import { generateContent } from '@lexical/devtools-core'
 import type {
+  AnyLexicalCommand,
   EditorState,
-  LexicalCommand,
   LexicalEditor,
   LexicalNode,
   SerializedEditorState,
@@ -13,7 +13,7 @@ import { defineComponent, h, onMounted, onUnmounted, ref, shallowRef, toRaw, wat
 
 export type CustomPrintNodeFn = (node: LexicalNode, obfuscateText?: boolean) => string | undefined
 
-export type LexicalCommandEntry = { index: number } & LexicalCommand<unknown> & {
+export type LexicalCommandEntry = { index: number } & AnyLexicalCommand & {
     payload: unknown
   }
 

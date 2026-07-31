@@ -1,10 +1,15 @@
 import {
+  $computeTableCellRectBoundary,
+  $computeTableMap,
   $createTableNodeWithDimensions,
   getTableObserverFromTableElement,
+  $isTableCellNode,
+  $isTableNode,
   $isTableSelection,
   TableCellNode,
   TableNode,
   TableRowNode,
+  type TableSelection,
 } from '@lexical/table'
 import { $getRoot, $getSelection, $nodesOfType, type LexicalEditor } from 'lexical'
 import { createApp, defineComponent, h, nextTick, type App } from 'vue'
@@ -65,6 +70,20 @@ async function waitForTableReady(host: HTMLElement): Promise<void> {
     },
     { timeout: 3_000 },
   )
+}
+
+function getTableSelectionBoundary(selection: TableSelection) {
+  const anchorCell = selection.anchor.getNode()
+  const focusCell = selection.focus.getNode()
+  if (!$isTableCellNode(anchorCell) || !$isTableCellNode(focusCell)) {
+    throw new Error('Expected table selection points to reference table cells')
+  }
+  const table = anchorCell.getParentOrThrow().getParentOrThrow()
+  if (!$isTableNode(table)) {
+    throw new Error('Expected table cell to be attached to a table')
+  }
+  const [map, anchorMap, focusMap] = $computeTableMap(table, anchorCell, focusCell)
+  return $computeTableCellRectBoundary(map, anchorMap, focusMap)
 }
 
 function mountTableEditor(): { app: App; editor: LexicalEditor; host: HTMLElement } {
@@ -161,15 +180,23 @@ describe('Lexical tables in a real browser', () => {
         mounted.editor.getEditorState().read(() => {
           const selection = $getSelection()
           const observer = getTableObserverFromTableElement(mounted.host.querySelector('table')!)!
-          expect(observer.tableSelection?.getShape()).toEqual({
-            fromX: 0,
-            fromY: 0,
-            toX: 1,
-            toY: 1,
-          })
+          expect($isTableSelection(observer.tableSelection)).toBe(true)
+          if ($isTableSelection(observer.tableSelection)) {
+            expect(getTableSelectionBoundary(observer.tableSelection)).toEqual({
+              minColumn: 0,
+              minRow: 0,
+              maxColumn: 1,
+              maxRow: 1,
+            })
+          }
           expect($isTableSelection(selection)).toBe(true)
           if ($isTableSelection(selection)) {
-            expect(selection.getShape()).toEqual({ fromX: 0, fromY: 0, toX: 1, toY: 1 })
+            expect(getTableSelectionBoundary(selection)).toEqual({
+              minColumn: 0,
+              minRow: 0,
+              maxColumn: 1,
+              maxRow: 1,
+            })
           }
         })
         expect(mounted.host.querySelectorAll('.browser-table-cell-selected')).toHaveLength(4)

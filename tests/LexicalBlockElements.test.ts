@@ -385,7 +385,7 @@ describe('HorizontalRuleNode and HorizontalRulePlugin', () => {
         const serialized = node.exportJSON()
         expect(HorizontalRuleNode.importJSON(serialized)).toBeInstanceOf(HorizontalRuleNode)
 
-        const importer = HorizontalRuleNode.importDOM()?.hr?.(document.createElement('hr'))
+        const importer = HorizontalRuleNode.importDOM?.()?.hr?.(document.createElement('hr'))
         const converted = importer?.conversion(document.createElement('hr'))
         expect(converted?.node).toBeInstanceOf(HorizontalRuleNode)
       },

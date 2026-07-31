@@ -4,7 +4,7 @@ import {
   INSERT_HORIZONTAL_RULE_COMMAND,
   type SerializedHorizontalRuleNode,
 } from '@lexical/extension'
-import type { DOMConversionMap, DOMConversionOutput, NodeKey } from 'lexical'
+import type { DOMConversionOutput, NodeKey } from 'lexical'
 import type { VNodeChild } from 'vue'
 import {
   $applyNodeReplacement,
@@ -81,25 +81,15 @@ const HorizontalRuleComponent = defineComponent({
 
 /** Horizontal rule node with Vue-powered node-selection styling. */
 export class HorizontalRuleNode extends BaseHorizontalRuleNode {
-  static getType(): string {
-    return 'horizontalrule'
-  }
-
-  static clone(node: HorizontalRuleNode): HorizontalRuleNode {
-    return new HorizontalRuleNode(node.getKey())
-  }
-
-  static importJSON(serializedNode: SerializedHorizontalRuleNode): HorizontalRuleNode {
-    return $createHorizontalRuleNode().updateFromJSON(serializedNode)
-  }
-
-  static importDOM(): DOMConversionMap | null {
-    return {
-      hr: () => ({
-        conversion: $convertHorizontalRuleElement,
-        priority: 0,
-      }),
-    }
+  $config() {
+    return this.config('horizontalrule', {
+      importDOM: {
+        hr: () => ({
+          conversion: $convertHorizontalRuleElement,
+          priority: 0,
+        }),
+      },
+    })
   }
 
   decorate(): VNodeChild {

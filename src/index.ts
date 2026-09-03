@@ -6,14 +6,14 @@ export {
   type InitialEditorStateType,
 } from './LexicalComposer'
 export { ExtensionComponent, type ExtensionComponentProps } from './ExtensionComponent'
+export { LexicalCollaboration } from './LexicalCollaborationContext'
 export {
   collaborationContextKey,
   createCollaborationContext,
-  LexicalCollaboration,
   useCollaborationContext,
   type CollaborationContext,
   type CollaborationContextType,
-} from './LexicalCollaborationContext'
+} from './LexicalCollaborationContextUtils'
 export {
   CollaborationPlugin,
   CollaborationPluginV2__EXPERIMENTAL,
@@ -74,15 +74,17 @@ export {
 export { LexicalNestedComposer, type LexicalNestedComposerProps } from './LexicalNestedComposer'
 export { AutoFocusPlugin, LexicalAutoFocusPlugin } from './LexicalAutoFocusPlugin'
 export {
-  AutoEmbedOption,
   AutoEmbedPlugin,
-  INSERT_EMBED_COMMAND,
   LexicalAutoEmbedPlugin,
-  URL_MATCHER,
   type AutoEmbedPluginProps,
+} from './LexicalAutoEmbedPlugin'
+export {
+  AutoEmbedOption,
+  INSERT_EMBED_COMMAND,
+  URL_MATCHER,
   type EmbedConfig,
   type EmbedMatchResult,
-} from './LexicalAutoEmbedPlugin'
+} from './LexicalAutoEmbedPluginUtils'
 export {
   AutoLinkPlugin,
   LexicalAutoLinkPlugin,
@@ -248,17 +250,19 @@ export {
   type InsertTableCommandPayloadHeaders,
   type TablePluginProps,
 } from './LexicalTablePlugin'
+export { MenuOption } from './LexicalMenuOption'
 export {
   createBasicTypeaheadTriggerMatch,
   getScrollParent,
-  LexicalTypeaheadMenuPlugin,
-  MenuOption,
   PUNCTUATION,
   SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND,
-  TypeaheadMenuPlugin,
   useBasicTypeaheadTriggerMatch,
-  useDynamicPositioning,
   type BasicTypeaheadTriggerOptions,
+} from './LexicalTypeaheadMenuPluginUtils'
+export {
+  LexicalTypeaheadMenuPlugin,
+  TypeaheadMenuPlugin,
+  useDynamicPositioning,
   type MenuResolution,
   type MenuSlotProps,
   type MenuTextMatch,

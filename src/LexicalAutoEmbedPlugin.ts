@@ -4,52 +4,30 @@ import {
   $getSelection,
   COMMAND_PRIORITY_EDITOR,
   COMMAND_PRIORITY_LOW,
-  createCommand,
   mergeRegister,
   PASTE_TAG,
   type CommandListenerPriority,
-  type LexicalCommand,
-  type LexicalEditor,
-  type LexicalNode,
   type NodeKey,
 } from 'lexical'
 import type { PropType, SlotsType, VNode } from 'vue'
 import { defineComponent, h, onMounted, onUnmounted, shallowRef } from 'vue'
 import { useLexicalComposer } from './LexicalComposerContext'
 import { NodeMenuPlugin } from './LexicalNodeMenuPlugin'
-import { MenuOption, type MenuSlotProps } from './menu/LexicalMenu'
+import type { MenuSlotProps } from './menu/LexicalMenu'
+import type { MenuOption } from './LexicalMenuOption'
+import {
+  AutoEmbedOption,
+  INSERT_EMBED_COMMAND,
+  type EmbedConfig,
+} from './LexicalAutoEmbedPluginUtils'
 
-export interface EmbedMatchResult<TData = unknown> {
-  data?: TData
-  id: string
-  url: string
-}
-
-export interface EmbedConfig<
-  TData = unknown,
-  TResult extends EmbedMatchResult<TData> = EmbedMatchResult<TData>,
-> {
-  insertNode: (editor: LexicalEditor, result: TResult) => void
-  parseUrl: (text: string) => Promise<TResult | null> | TResult | null
-  type: string
-}
-
-export const URL_MATCHER =
-  /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
-
-export const INSERT_EMBED_COMMAND: LexicalCommand<EmbedConfig['type']> =
-  createCommand('INSERT_EMBED_COMMAND')
-
-export class AutoEmbedOption extends MenuOption {
-  declare title: string
-  onSelect: (targetNode: LexicalNode | null) => void
-
-  constructor(title: string, options: { onSelect: (targetNode: LexicalNode | null) => void }) {
-    super(title)
-    this.title = title
-    this.onSelect = options.onSelect.bind(this)
-  }
-}
+export {
+  AutoEmbedOption,
+  INSERT_EMBED_COMMAND,
+  URL_MATCHER,
+  type EmbedConfig,
+  type EmbedMatchResult,
+} from './LexicalAutoEmbedPluginUtils'
 
 export interface AutoEmbedPluginProps<TEmbedConfig extends EmbedConfig = EmbedConfig> {
   embedConfigs: readonly TEmbedConfig[]

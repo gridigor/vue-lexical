@@ -1,7 +1,7 @@
 # @lexical/react API parity matrix
 
 This matrix covers every canonical public entrypoint published by
-`@lexical/react@0.49.0`. Each entrypoint has a supported Vue equivalent;
+`@lexical/react@0.50.0`. Each entrypoint has a supported Vue equivalent;
 component props, React hooks, JSX render callbacks, and portals are adapted to
 Vue props, composables, slots, and Teleport.
 
@@ -11,15 +11,16 @@ and root export, and fails when an upstream entrypoint or symbol is added or
 removed. Run
 `npm run generate:api-parity` after intentionally updating the matrix.
 
-- 56 of 56 upstream entrypoints mapped
-- 53 entrypoints keep the same subpath
+- 60 of 60 upstream entrypoints mapped
+- 57 entrypoints keep the same subpath
 - 3 framework-named entrypoints use a `Vue*` name
 - Detailed contract differences: [Vue API differences](./VUE_API_DIFFERENCES.md)
 
-| @lexical/react 0.49.0                              | Vue equivalent                                            | Mapping      |
+| @lexical/react 0.50.0                              | Vue equivalent                                            | Mapping      |
 | -------------------------------------------------- | --------------------------------------------------------- | ------------ |
 | `@lexical/react/ExtensionComponent`                | `@gridigor/vue-lexical/ExtensionComponent`                | Same subpath |
 | `@lexical/react/LexicalAutoEmbedPlugin`            | `@gridigor/vue-lexical/LexicalAutoEmbedPlugin`            | Same subpath |
+| `@lexical/react/LexicalAutoEmbedPluginUtils`       | `@gridigor/vue-lexical/LexicalAutoEmbedPluginUtils`       | Same subpath |
 | `@lexical/react/LexicalAutoFocusPlugin`            | `@gridigor/vue-lexical/LexicalAutoFocusPlugin`            | Same subpath |
 | `@lexical/react/LexicalAutoLinkPlugin`             | `@gridigor/vue-lexical/LexicalAutoLinkPlugin`             | Same subpath |
 | `@lexical/react/LexicalBlockWithAlignableContents` | `@gridigor/vue-lexical/LexicalBlockWithAlignableContents` | Same subpath |
@@ -28,6 +29,7 @@ removed. Run
 | `@lexical/react/LexicalClearEditorPlugin`          | `@gridigor/vue-lexical/LexicalClearEditorPlugin`          | Same subpath |
 | `@lexical/react/LexicalClickableLinkPlugin`        | `@gridigor/vue-lexical/LexicalClickableLinkPlugin`        | Same subpath |
 | `@lexical/react/LexicalCollaborationContext`       | `@gridigor/vue-lexical/LexicalCollaborationContext`       | Same subpath |
+| `@lexical/react/LexicalCollaborationContextUtils`  | `@gridigor/vue-lexical/LexicalCollaborationContextUtils`  | Same subpath |
 | `@lexical/react/LexicalCollaborationPlugin`        | `@gridigor/vue-lexical/LexicalCollaborationPlugin`        | Same subpath |
 | `@lexical/react/LexicalComposer`                   | `@gridigor/vue-lexical/LexicalComposer`                   | Same subpath |
 | `@lexical/react/LexicalComposerContext`            | `@gridigor/vue-lexical/LexicalComposerContext`            | Same subpath |
@@ -45,6 +47,7 @@ removed. Run
 | `@lexical/react/LexicalLinkPlugin`                 | `@gridigor/vue-lexical/LexicalLinkPlugin`                 | Same subpath |
 | `@lexical/react/LexicalListPlugin`                 | `@gridigor/vue-lexical/LexicalListPlugin`                 | Same subpath |
 | `@lexical/react/LexicalMarkdownShortcutPlugin`     | `@gridigor/vue-lexical/LexicalMarkdownShortcutPlugin`     | Same subpath |
+| `@lexical/react/LexicalMenuOption`                 | `@gridigor/vue-lexical/LexicalMenuOption`                 | Same subpath |
 | `@lexical/react/LexicalNestedComposer`             | `@gridigor/vue-lexical/LexicalNestedComposer`             | Same subpath |
 | `@lexical/react/LexicalNodeContextMenuPlugin`      | `@gridigor/vue-lexical/LexicalNodeContextMenuPlugin`      | Same subpath |
 | `@lexical/react/LexicalNodeEventPlugin`            | `@gridigor/vue-lexical/LexicalNodeEventPlugin`            | Same subpath |
@@ -58,6 +61,7 @@ removed. Run
 | `@lexical/react/LexicalTablePlugin`                | `@gridigor/vue-lexical/LexicalTablePlugin`                | Same subpath |
 | `@lexical/react/LexicalTreeView`                   | `@gridigor/vue-lexical/LexicalTreeView`                   | Same subpath |
 | `@lexical/react/LexicalTypeaheadMenuPlugin`        | `@gridigor/vue-lexical/LexicalTypeaheadMenuPlugin`        | Same subpath |
+| `@lexical/react/LexicalTypeaheadMenuPluginUtils`   | `@gridigor/vue-lexical/LexicalTypeaheadMenuPluginUtils`   | Same subpath |
 | `@lexical/react/ReactExtension`                    | `@gridigor/vue-lexical/VueExtension`                      | Vue rename   |
 | `@lexical/react/ReactPluginHostExtension`          | `@gridigor/vue-lexical/VuePluginHostExtension`            | Vue rename   |
 | `@lexical/react/ReactProviderExtension`            | `@gridigor/vue-lexical/VueProviderExtension`              | Vue rename   |

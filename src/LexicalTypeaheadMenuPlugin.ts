@@ -3,7 +3,6 @@ import {
   $getSelection,
   $isRangeSelection,
   COMMAND_PRIORITY_LOW,
-  createCommand,
   KEY_ARROW_DOWN_COMMAND,
   KEY_ARROW_UP_COMMAND,
   KEY_ENTER_COMMAND,
@@ -11,7 +10,6 @@ import {
   KEY_TAB_COMMAND,
   mergeRegister,
   type CommandListenerPriority,
-  type LexicalCommand,
   type TextNode,
 } from 'lexical'
 import type { PropType, SlotsType, VNode, VNodeChild, VNodeRef, WatchStopHandle } from 'vue'
@@ -33,15 +31,7 @@ import {
   type TriggerFn,
   useDynamicPositioning,
 } from './menu/LexicalMenu'
-
-export const PUNCTUATION = '\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%\'"~=<>_:;'
-
-export interface BasicTypeaheadTriggerOptions {
-  allowWhitespace?: boolean
-  maxLength?: number
-  minLength?: number
-  punctuation?: string
-}
+import { SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND } from './LexicalTypeaheadMenuPluginUtils'
 
 export interface TypeaheadMenuPluginProps<TOption extends MenuOption = MenuOption> {
   anchorClassName?: string
@@ -62,48 +52,14 @@ export interface TypeaheadMenuPluginProps<TOption extends MenuOption = MenuOptio
   triggerFn: TriggerFn
 }
 
-export const SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND: LexicalCommand<{
-  index: number
-  option: MenuOption
-}> = createCommand('SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND')
-
-export function createBasicTypeaheadTriggerMatch(
-  trigger: string,
-  {
-    allowWhitespace = false,
-    maxLength = 75,
-    minLength = 1,
-    punctuation = PUNCTUATION,
-  }: BasicTypeaheadTriggerOptions = {},
-): TriggerFn {
-  const validCharacters = `[^${trigger}${punctuation}${allowWhitespace ? '' : '\\s'}]`
-  const expression = new RegExp(
-    `(^|\\s|\\()([${trigger}]((?:${validCharacters}){0,${maxLength}}))$`,
-  )
-
-  return (text) => {
-    const match = expression.exec(text)
-    if (match === null) {
-      return null
-    }
-    const leadingText = match[1] ?? ''
-    const matchingString = match[3] ?? ''
-    if (matchingString.length < minLength) {
-      return null
-    }
-    return {
-      leadOffset: match.index + leadingText.length,
-      matchingString,
-      replaceableString: match[2] ?? '',
-    }
-  }
-}
-
-/** Vue-compatible alias matching the upstream composable name. */
-export const useBasicTypeaheadTriggerMatch = createBasicTypeaheadTriggerMatch
-
-/** @deprecated Import getScrollParent from @lexical/utils instead. */
-export const getScrollParent = getScrollParentFromUtils
+export {
+  createBasicTypeaheadTriggerMatch,
+  getScrollParent,
+  PUNCTUATION,
+  SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND,
+  useBasicTypeaheadTriggerMatch,
+  type BasicTypeaheadTriggerOptions,
+} from './LexicalTypeaheadMenuPluginUtils'
 export { useDynamicPositioning }
 
 export const TypeaheadMenuPlugin = defineComponent({

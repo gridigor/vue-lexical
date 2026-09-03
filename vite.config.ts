@@ -1,6 +1,16 @@
+import { readdirSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vitest/config'
+
+// Every public module is its own build entry so that each documented subpath
+// keeps its full export surface. With a single entry, Rollup would tree-shake
+// re-exports that src/index.ts happens to import from another module.
+const publicEntries = Object.fromEntries(
+  readdirSync(fileURLToPath(new URL('./src', import.meta.url)))
+    .filter((file) => file.endsWith('.ts'))
+    .map((file) => [file.slice(0, -3), fileURLToPath(new URL(`./src/${file}`, import.meta.url))]),
+)
 
 export default defineConfig({
   plugins: [vue()],
@@ -13,7 +23,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
+      entry: publicEntries,
       formats: ['es'],
     },
     rollupOptions: {

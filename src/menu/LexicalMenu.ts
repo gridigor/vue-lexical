@@ -12,8 +12,9 @@ import {
   type TextNode,
 } from 'lexical'
 import { getScrollParent } from '@lexical/utils'
-import type { MaybeRefOrGetter, VNodeChild, WatchStopHandle } from 'vue'
+import type { MaybeRefOrGetter, WatchStopHandle } from 'vue'
 import { onUnmounted, toValue, watch } from 'vue'
+import { MenuOption, type MenuOptionRef } from '../LexicalMenuOption'
 import { useLexicalComposer } from '../LexicalComposerContext'
 
 export interface MenuTextMatch {
@@ -27,27 +28,7 @@ export interface MenuResolution {
   match?: MenuTextMatch
 }
 
-export interface MenuOptionRef {
-  current: HTMLElement | null
-}
-
-/** Base class for options shared by typeahead and node menus. */
-export class MenuOption {
-  key: string
-  ref: MenuOptionRef
-  icon?: VNodeChild
-  title?: VNodeChild
-
-  constructor(key: string) {
-    this.key = key
-    this.ref = { current: null }
-    this.setRefElement = this.setRefElement.bind(this)
-  }
-
-  setRefElement(element: Element | null): void {
-    this.ref = { current: element instanceof HTMLElement ? element : null }
-  }
-}
+export { MenuOption, type MenuOptionRef }
 
 export interface MenuSlotProps<TOption extends MenuOption = MenuOption> {
   anchorElement: HTMLElement

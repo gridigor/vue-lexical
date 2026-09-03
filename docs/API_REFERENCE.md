@@ -1,6 +1,6 @@
 # API reference
 
-This file is generated from the public exports of `@gridigor/vue-lexical@1.49.0`.
+This file is generated from the public exports of `@gridigor/vue-lexical@1.50.0`.
 Run `npm run generate:api-reference` after changing the public API. CI runs
 `npm run check:api-reference` and fails when this reference is stale.
 
@@ -34,14 +34,21 @@ Import from the package root or from `@gridigor/vue-lexical/ExtensionComponent`.
 
 Import from the package root or from `@gridigor/vue-lexical/LexicalCollaborationContext`.
 
-| Export                       | Kind          | Description      |
-| ---------------------------- | ------------- | ---------------- |
-| `collaborationContextKey`    | Constant      | Public constant. |
-| `createCollaborationContext` | Function      | Public function. |
-| `LexicalCollaboration`       | Vue component | Vue component.   |
-| `useCollaborationContext`    | Composable    | Vue composable.  |
-| `CollaborationContext`       | Type          | TypeScript type. |
-| `CollaborationContextType`   | Type          | TypeScript type. |
+| Export                 | Kind          | Description    |
+| ---------------------- | ------------- | -------------- |
+| `LexicalCollaboration` | Vue component | Vue component. |
+
+## `LexicalCollaborationContextUtils`
+
+Import from the package root or from `@gridigor/vue-lexical/LexicalCollaborationContextUtils`.
+
+| Export                       | Kind       | Description                                                          |
+| ---------------------------- | ---------- | -------------------------------------------------------------------- |
+| `collaborationContextKey`    | Constant   | Vue injection key holding the shared collaboration context.          |
+| `createCollaborationContext` | Function   | Creates a collaboration context with a random name and cursor color. |
+| `useCollaborationContext`    | Composable | Reads the collaboration context from the nearest provider.           |
+| `CollaborationContext`       | Type       | The collaboration state shared by the editors under a provider.      |
+| `CollaborationContextType`   | Type       | TypeScript type.                                                     |
 
 ## `LexicalCollaborationPlugin`
 
@@ -177,14 +184,21 @@ Import from the package root or from `@gridigor/vue-lexical/LexicalAutoEmbedPlug
 
 | Export                   | Kind          | Description      |
 | ------------------------ | ------------- | ---------------- |
-| `AutoEmbedOption`        | Class         | Public class.    |
 | `AutoEmbedPlugin`        | Vue component | Vue component.   |
-| `INSERT_EMBED_COMMAND`   | Constant      | Public constant. |
 | `LexicalAutoEmbedPlugin` | Vue component | Vue component.   |
-| `URL_MATCHER`            | Constant      | Public constant. |
 | `AutoEmbedPluginProps`   | Type          | TypeScript type. |
-| `EmbedConfig`            | Type          | TypeScript type. |
-| `EmbedMatchResult`       | Type          | TypeScript type. |
+
+## `LexicalAutoEmbedPluginUtils`
+
+Import from the package root or from `@gridigor/vue-lexical/LexicalAutoEmbedPluginUtils`.
+
+| Export                 | Kind     | Description                                                              |
+| ---------------------- | -------- | ------------------------------------------------------------------------ |
+| `AutoEmbedOption`      | Class    | A menu option pairing a display title with an embed callback.            |
+| `INSERT_EMBED_COMMAND` | Constant | Starts inserting an embed; the payload is the EmbedConfig type to use.   |
+| `URL_MATCHER`          | Constant | General-purpose URL expression, a convenience for implementing parseUrl. |
+| `EmbedConfig`          | Type     | Describes a kind of embed that AutoEmbedPlugin can detect and insert.    |
+| `EmbedMatchResult`     | Type     | The result of matching a URL for an embed.                               |
 
 ## `LexicalAutoLinkPlugin`
 
@@ -493,27 +507,41 @@ Import from the package root or from `@gridigor/vue-lexical/LexicalTablePlugin`.
 | `InsertTableCommandPayloadHeaders` | Type          | TypeScript type.                                                           |
 | `TablePluginProps`                 | Type          | TypeScript type.                                                           |
 
+## `LexicalMenuOption`
+
+Import from the package root or from `@gridigor/vue-lexical/LexicalMenuOption`.
+
+| Export       | Kind  | Description                                                |
+| ------------ | ----- | ---------------------------------------------------------- |
+| `MenuOption` | Class | Base class for options shared by typeahead and node menus. |
+
+## `LexicalTypeaheadMenuPluginUtils`
+
+Import from the package root or from `@gridigor/vue-lexical/LexicalTypeaheadMenuPluginUtils`.
+
+| Export                                      | Kind     | Description                                                              |
+| ------------------------------------------- | -------- | ------------------------------------------------------------------------ |
+| `createBasicTypeaheadTriggerMatch`          | Function | Builds a trigger function for a single-character trigger such as @ or #. |
+| `getScrollParent`                           | Constant |                                                                          |
+| `PUNCTUATION`                               | Constant | Default punctuation character class that terminates a typeahead query.   |
+| `SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND` | Constant | Scrolls the option at the given index into view while the menu is open.  |
+| `useBasicTypeaheadTriggerMatch`             | Function | Builds a trigger function for a single-character trigger such as @ or #. |
+| `BasicTypeaheadTriggerOptions`              | Type     | TypeScript type.                                                         |
+
 ## `LexicalTypeaheadMenuPlugin`
 
 Import from the package root or from `@gridigor/vue-lexical/LexicalTypeaheadMenuPlugin`.
 
-| Export                                      | Kind          | Description      |
-| ------------------------------------------- | ------------- | ---------------- |
-| `createBasicTypeaheadTriggerMatch`          | Function      | Public function. |
-| `getScrollParent`                           | Constant      |                  |
-| `LexicalTypeaheadMenuPlugin`                | Vue component | Vue component.   |
-| `MenuOption`                                | Export        | Public export.   |
-| `PUNCTUATION`                               | Constant      | Public constant. |
-| `SCROLL_TYPEAHEAD_OPTION_INTO_VIEW_COMMAND` | Constant      | Public constant. |
-| `TypeaheadMenuPlugin`                       | Vue component | Vue component.   |
-| `useBasicTypeaheadTriggerMatch`             | Function      | Public function. |
-| `useDynamicPositioning`                     | Composable    | Vue composable.  |
-| `BasicTypeaheadTriggerOptions`              | Type          | TypeScript type. |
-| `MenuResolution`                            | Type          | TypeScript type. |
-| `MenuSlotProps`                             | Type          | TypeScript type. |
-| `MenuTextMatch`                             | Type          | TypeScript type. |
-| `TriggerFn`                                 | Type          | TypeScript type. |
-| `TypeaheadMenuPluginProps`                  | Type          | TypeScript type. |
+| Export                       | Kind          | Description      |
+| ---------------------------- | ------------- | ---------------- |
+| `LexicalTypeaheadMenuPlugin` | Vue component | Vue component.   |
+| `TypeaheadMenuPlugin`        | Vue component | Vue component.   |
+| `useDynamicPositioning`      | Composable    | Vue composable.  |
+| `MenuResolution`             | Type          | TypeScript type. |
+| `MenuSlotProps`              | Type          | TypeScript type. |
+| `MenuTextMatch`              | Type          | TypeScript type. |
+| `TriggerFn`                  | Type          | TypeScript type. |
+| `TypeaheadMenuPluginProps`   | Type          | TypeScript type. |
 
 ## `TreeViewExtension`
 

@@ -1,6 +1,7 @@
 export const API_PARITY = [
   ['ExtensionComponent', 'ExtensionComponent'],
   ['LexicalAutoEmbedPlugin', 'LexicalAutoEmbedPlugin'],
+  ['LexicalAutoEmbedPluginUtils', 'LexicalAutoEmbedPluginUtils'],
   ['LexicalAutoFocusPlugin', 'LexicalAutoFocusPlugin'],
   ['LexicalAutoLinkPlugin', 'LexicalAutoLinkPlugin'],
   ['LexicalBlockWithAlignableContents', 'LexicalBlockWithAlignableContents'],
@@ -9,6 +10,7 @@ export const API_PARITY = [
   ['LexicalClearEditorPlugin', 'LexicalClearEditorPlugin'],
   ['LexicalClickableLinkPlugin', 'LexicalClickableLinkPlugin'],
   ['LexicalCollaborationContext', 'LexicalCollaborationContext'],
+  ['LexicalCollaborationContextUtils', 'LexicalCollaborationContextUtils'],
   ['LexicalCollaborationPlugin', 'LexicalCollaborationPlugin'],
   ['LexicalComposer', 'LexicalComposer'],
   ['LexicalComposerContext', 'LexicalComposerContext'],
@@ -26,6 +28,7 @@ export const API_PARITY = [
   ['LexicalLinkPlugin', 'LexicalLinkPlugin'],
   ['LexicalListPlugin', 'LexicalListPlugin'],
   ['LexicalMarkdownShortcutPlugin', 'LexicalMarkdownShortcutPlugin'],
+  ['LexicalMenuOption', 'LexicalMenuOption'],
   ['LexicalNestedComposer', 'LexicalNestedComposer'],
   ['LexicalNodeContextMenuPlugin', 'LexicalNodeContextMenuPlugin'],
   ['LexicalNodeEventPlugin', 'LexicalNodeEventPlugin'],
@@ -39,6 +42,7 @@ export const API_PARITY = [
   ['LexicalTablePlugin', 'LexicalTablePlugin'],
   ['LexicalTreeView', 'LexicalTreeView'],
   ['LexicalTypeaheadMenuPlugin', 'LexicalTypeaheadMenuPlugin'],
+  ['LexicalTypeaheadMenuPluginUtils', 'LexicalTypeaheadMenuPluginUtils'],
   ['ReactExtension', 'VueExtension'],
   ['ReactPluginHostExtension', 'VuePluginHostExtension'],
   ['ReactProviderExtension', 'VueProviderExtension'],
@@ -63,6 +67,7 @@ export const API_PARITY = [
  * name in the mapped Vue entrypoint.
  */
 export const API_SYMBOL_MAPPINGS = {
+  'LexicalCollaborationContextUtils:newContext': 'createCollaborationContext',
   'LexicalNodeMenuPlugin:MenuRenderFn': 'MenuSlotProps',
   'LexicalTypeaheadMenuPlugin:MenuRenderFn': 'MenuSlotProps',
   'ReactExtension:ReactConfig': 'VueConfig',

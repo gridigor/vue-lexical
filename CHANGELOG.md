@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.50.0
+
+- Updated the supported dependency line and complete public API parity baseline
+  to `@lexical/react@0.50.0` and Lexical `0.50.x`.
+- Added the four entrypoints introduced upstream in 0.50, which split shared
+  values out of the plugin component modules: `LexicalMenuOption`,
+  `LexicalAutoEmbedPluginUtils`, `LexicalTypeaheadMenuPluginUtils`, and
+  `LexicalCollaborationContextUtils`. As upstream does, the original modules
+  keep re-exporting every symbol that moved, so existing imports are unchanged.
+- Mapped the upstream `newContext` factory to the Vue
+  `createCollaborationContext` equivalent in the parity audit.
+- Each public module is now its own build entry, so every documented subpath
+  keeps its full export surface instead of only the exports reachable from the
+  package root.
+- Verified all 60 upstream entrypoints, the packed-package consumer, and the
+  Vue/Nuxt examples against Lexical 0.50.
+
 ## 1.49.0
 
 - Starting with this release, the Vue Lexical minor version tracks the supported

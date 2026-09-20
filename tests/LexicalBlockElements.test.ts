@@ -124,6 +124,8 @@ describe('DecoratorBlockNode', () => {
         expect(node.updateDOM()).toBe(false)
         expect(node.getFormat()).toBe('center')
         expect(node.exportJSON()).toMatchObject({ format: 'center', type: 'test-block' })
+        expect(node.exportJSON(true)).toEqual({ format: 'center', type: 'test-block' })
+        expect($createTestBlockNode().exportJSON(true)).toEqual({ type: 'test-block' })
         expect($isDecoratorBlockNode(node)).toBe(true)
         expect($isDecoratorBlockNode(null)).toBe(false)
 

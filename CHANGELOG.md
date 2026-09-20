@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.51.0
+
+- Updated the supported dependency line and complete public API parity baseline
+  to `@lexical/react@0.51.0` and Lexical `0.51.x`. Upstream added and removed no
+  entrypoints in this release, so all 60 stay mapped.
+- Migrated `DecoratorBlockNode` to Lexical's declarative serialization schema.
+  The `format` property is now declared once on `$config().json`, which drives
+  `exportJSON`, `updateFromJSON`, and the clone, replacing the three
+  hand-written methods. Serialized output is unchanged, and the node now also
+  supports the new compact export (`exportJSON(true)`).
+- Passed the explicit `extends` that the upstream horizontal-rule base node now
+  declares through the Vue subclass's `$config()`.
+- `DecoratorBlockNode.setFormat` now returns the writable node rather than the
+  receiver, matching upstream. A schema field is read straight off the instance,
+  so a chain continuing from a stale reference could otherwise write or export a
+  stale value.
+- Followed the upstream `SerializedEditorState` change, which is no longer
+  generic, in the tree-view content helper.
+- Mirrored the upstream deprecation of `LexicalComposer` in favour of
+  `LexicalExtensionComposer`, and the deprecation of `HorizontalRuleNode` and
+  `$createHorizontalRuleNode` in favour of `HorizontalRuleExtension` from
+  `@lexical/extension`. Both remain fully supported in this release.
+- Stopped aliasing the `@lexical` scope to a directory in the Vue and Nuxt
+  examples. Lexical 0.51 publishes `@lexical/extension` as subpath exports and
+  its packages import each other through them, so a directory alias rewrites
+  those to bare paths and bypasses the exports map, failing the build. The
+  examples now deduplicate instead, which keeps the single Lexical instance the
+  packages require. Applications that alias the scope the same way need the
+  same change.
+- Verified all 60 upstream entrypoints, the packed-package consumer, and the
+  Vue/Nuxt examples against Lexical 0.51.
+
 ## 1.50.0
 
 - Updated the supported dependency line and complete public API parity baseline

@@ -1,8 +1,17 @@
+import { readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 const lexicalAlias = fileURLToPath(new URL('../../node_modules/lexical', import.meta.url))
-const lexicalPackagesAlias = fileURLToPath(new URL('../../node_modules/@lexical', import.meta.url))
 const yjsAlias = fileURLToPath(new URL('../../node_modules/yjs', import.meta.url))
+
+// The `@lexical` scope is deduplicated rather than aliased to a directory:
+// since Lexical 0.51 the packages import each other through subpaths, which a
+// directory alias rewrites to bare paths, bypassing each package's exports
+// map. `lexical` and `yjs` publish a single entrypoint each, so aliasing them
+// to the repository copy is still safe.
+const lexicalPackages = readdirSync(new URL('../../node_modules/@lexical', import.meta.url)).map(
+  (name) => `@lexical/${name}`,
+)
 
 export default defineNuxtConfig({
   app: {
@@ -15,7 +24,6 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   nitro: {
     alias: {
-      '@lexical': lexicalPackagesAlias,
       lexical: lexicalAlias,
       yjs: yjsAlias,
     },
@@ -26,21 +34,15 @@ export default defineNuxtConfig({
   vite: {
     resolve: {
       alias: {
-        '@lexical': lexicalPackagesAlias,
         lexical: lexicalAlias,
         yjs: yjsAlias,
       },
-      dedupe: [
-        'lexical',
-        '@lexical/hashtag',
-        '@lexical/history',
-        '@lexical/markdown',
-        '@lexical/plain-text',
-        '@lexical/rich-text',
-        '@lexical/text',
-        '@lexical/yjs',
-        'yjs',
-      ],
+      dedupe: ['lexical', ...lexicalPackages, 'yjs'],
+    },
+    // Bundled by Vite rather than left for Nitro to resolve, so that the
+    // dedupe above also governs the server build.
+    ssr: {
+      noExternal: ['lexical', ...lexicalPackages, 'yjs'],
     },
   },
 })

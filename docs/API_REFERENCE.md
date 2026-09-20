@@ -1,6 +1,6 @@
 # API reference
 
-This file is generated from the public exports of `@gridigor/vue-lexical@1.50.0`.
+This file is generated from the public exports of `@gridigor/vue-lexical@1.51.0`.
 Run `npm run generate:api-reference` after changing the public API. CI runs
 `npm run check:api-reference` and fails when this reference is stale.
 
@@ -13,13 +13,13 @@ are documented separately in [Vue API differences](./VUE_API_DIFFERENCES.md).
 
 Import from the package root or from `@gridigor/vue-lexical/LexicalComposer`.
 
-| Export                   | Kind          | Description      |
-| ------------------------ | ------------- | ---------------- |
-| `LexicalComposer`        | Vue component | Vue component.   |
-| `InitialConfig`          | Type          | TypeScript type. |
-| `InitialConfigType`      | Type          | TypeScript type. |
-| `InitialEditorState`     | Type          | TypeScript type. |
-| `InitialEditorStateType` | Type          | TypeScript type. |
+| Export                   | Kind          | Description                                                                                                                                                                                                                                                    |
+| ------------------------ | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LexicalComposer`        | Vue component | Provides a Lexical editor and its context to descendants. removed in a future major release. `LexicalComposer` cannot accept extensions, so any feature delivered as one is unreachable from an editor built here; the migration is usually a two-line change. |
+| `InitialConfig`          | Type          | TypeScript type.                                                                                                                                                                                                                                               |
+| `InitialConfigType`      | Type          | TypeScript type.                                                                                                                                                                                                                                               |
+| `InitialEditorState`     | Type          | TypeScript type.                                                                                                                                                                                                                                               |
+| `InitialEditorStateType` | Type          | TypeScript type.                                                                                                                                                                                                                                               |
 
 ## `ExtensionComponent`
 
@@ -281,13 +281,13 @@ Import from the package root or from `@gridigor/vue-lexical/LexicalHistoryPlugin
 
 Import from the package root or from `@gridigor/vue-lexical/LexicalHorizontalRuleNode`.
 
-| Export                           | Kind     | Description                                                   |
-| -------------------------------- | -------- | ------------------------------------------------------------- |
-| `$createHorizontalRuleNode`      | Function | Public function.                                              |
-| `$isHorizontalRuleNode`          | Function | Public function.                                              |
-| `HorizontalRuleNode`             | Class    | Horizontal rule node with Vue-powered node-selection styling. |
-| `INSERT_HORIZONTAL_RULE_COMMAND` | Export   | Public export.                                                |
-| `SerializedHorizontalRuleNode`   | Type     | TypeScript type.                                              |
+| Export                           | Kind     | Description                                                                            |
+| -------------------------------- | -------- | -------------------------------------------------------------------------------------- |
+| `$createHorizontalRuleNode`      | Function | framework-specific node.                                                               |
+| `$isHorizontalRuleNode`          | Function | Public function.                                                                       |
+| `HorizontalRuleNode`             | Class    | Horizontal rule node with Vue-powered node-selection styling. framework-specific node. |
+| `INSERT_HORIZONTAL_RULE_COMMAND` | Export   | Public export.                                                                         |
+| `SerializedHorizontalRuleNode`   | Type     | TypeScript type.                                                                       |
 
 ## `LexicalHorizontalRulePlugin`
 

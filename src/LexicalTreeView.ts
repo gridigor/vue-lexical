@@ -4,7 +4,6 @@ import type {
   EditorState,
   LexicalEditor,
   LexicalNode,
-  SerializedEditorState,
   SerializedLexicalNode,
 } from 'lexical'
 import { COMMAND_PRIORITY_CRITICAL } from 'lexical'
@@ -61,7 +60,7 @@ function printNode(node: SerializedNodeWithChildren, prefix = '', isLast = true)
  * complete devtools output, render {@link TreeView} instead.
  */
 export function generateTreeViewContent(editorState: EditorState, asJson = false): string {
-  const serialized = editorState.toJSON() as SerializedEditorState<SerializedNodeWithChildren>
+  const serialized = editorState.toJSON() as { root: SerializedNodeWithChildren }
   return asJson ? JSON.stringify(serialized, null, 2) : printNode(serialized.root).join('\n')
 }
 

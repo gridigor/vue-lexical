@@ -30,6 +30,14 @@ export type InitialConfigType = Readonly<{
 export type InitialConfig = InitialConfigType
 export type { InitialEditorState, InitialEditorStateType } from './initializeEditor'
 
+/**
+ * Provides a Lexical editor and its context to descendants.
+ *
+ * @deprecated Superseded by `LexicalExtensionComposer`, and expected to be
+ * removed in a future major release. `LexicalComposer` cannot accept
+ * extensions, so any feature delivered as one is unreachable from an editor
+ * built here; the migration is usually a two-line change.
+ */
 export const LexicalComposer = defineComponent({
   name: 'LexicalComposer',
   props: {

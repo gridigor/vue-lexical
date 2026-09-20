@@ -79,10 +79,16 @@ const HorizontalRuleComponent = defineComponent({
   },
 })
 
-/** Horizontal rule node with Vue-powered node-selection styling. */
+/**
+ * Horizontal rule node with Vue-powered node-selection styling.
+ *
+ * @deprecated Use HorizontalRuleExtension from @lexical/extension, which needs no
+ * framework-specific node.
+ */
 export class HorizontalRuleNode extends BaseHorizontalRuleNode {
   $config() {
     return this.config('horizontalrule', {
+      extends: BaseHorizontalRuleNode,
       importDOM: {
         hr: () => ({
           conversion: $convertHorizontalRuleElement,
@@ -101,6 +107,10 @@ function $convertHorizontalRuleElement(): DOMConversionOutput {
   return { node: $createHorizontalRuleNode() }
 }
 
+/**
+ * @deprecated Use HorizontalRuleExtension from @lexical/extension, which needs no
+ * framework-specific node.
+ */
 export function $createHorizontalRuleNode(): HorizontalRuleNode {
   return $applyNodeReplacement(new HorizontalRuleNode())
 }

@@ -1,18 +1,35 @@
 import type {
   ElementFormatType,
   LexicalNode,
-  LexicalUpdateJSON,
+  LexicalParseJSON,
   NodeKey,
   SerializedLexicalNode,
+  SerializedPartial,
   Spread,
 } from 'lexical'
 import type { VNodeChild } from 'vue'
-import { $getDocument, DecoratorNode } from 'lexical'
+import { $getDocument, DecoratorNode, enumValue, nodeSchema, withField } from 'lexical'
 
 export type SerializedDecoratorBlockNode = Spread<
   { format: ElementFormatType },
   SerializedLexicalNode
 >
+
+// Single source of truth for the node-specific properties of a
+// SerializedDecoratorBlockNode. The base is abstract and has no concrete node
+// type, so it publishes the schema under the well-known
+// Symbol.for('DecoratorBlockNode') key and subclasses compose it with theirs.
+const decoratorBlockNodeSchema = nodeSchema<DecoratorBlockNode>()({
+  format: withField(enumValue(['', 'left', 'start', 'center', 'right', 'end', 'justify']), {
+    field: '__format',
+  }),
+})
+
+export interface DecoratorBlockNode {
+  exportJSON(compact?: false): SerializedDecoratorBlockNode
+  exportJSON(compact: boolean): SerializedPartial<SerializedDecoratorBlockNode>
+  updateFromJSON(serializedNode: LexicalParseJSON<SerializedDecoratorBlockNode>): this
+}
 
 /** Base node for block-level Vue decorators with element alignment. */
 export abstract class DecoratorBlockNode extends DecoratorNode<VNodeChild> {
@@ -23,20 +40,14 @@ export abstract class DecoratorBlockNode extends DecoratorNode<VNodeChild> {
     this.__format = format ?? ''
   }
 
-  afterCloneFrom(previousNode: this): void {
-    super.afterCloneFrom(previousNode)
-    this.__format = previousNode.__format
-  }
-
-  exportJSON(): SerializedDecoratorBlockNode {
-    return {
-      ...super.exportJSON(),
-      format: this.__format,
-    }
-  }
-
-  updateFromJSON(serializedNode: LexicalUpdateJSON<SerializedDecoratorBlockNode>): this {
-    return super.updateFromJSON(serializedNode).setFormat(serializedNode.format ?? '')
+  $config() {
+    // Named explicitly: this class carries the only declaration of `format`
+    // that its subclasses inherit, and composeSchema honours an explicit
+    // `extends` where a severed static prototype chain would stop the walk.
+    return this.config(Symbol.for('DecoratorBlockNode'), {
+      extends: DecoratorNode,
+      json: decoratorBlockNodeSchema,
+    })
   }
 
   canIndent(): false {
@@ -52,8 +63,9 @@ export abstract class DecoratorBlockNode extends DecoratorNode<VNodeChild> {
   }
 
   setFormat(format: ElementFormatType): this {
-    this.getWritable().__format = format
-    return this
+    const self = this.getWritable()
+    self.__format = format
+    return self
   }
 
   getFormat(): ElementFormatType {

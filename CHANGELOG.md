@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.52.0
+
+- Updated the supported dependency line and complete public API parity baseline
+  to `@lexical/react@0.52.0` and Lexical `0.52.x`. Upstream added and removed no
+  entrypoints in this release, so all 60 stay mapped, and no entrypoint this
+  library mirrors gained or lost a public symbol.
+- No Vue port needed changing: every one of the 60 `@lexical/react` development
+  builds is byte-identical between 0.51.0 and 0.52.0, and `@lexical/devtools-core`
+  is unchanged too. Upstream's work in this release is in `lexical` core,
+  `@lexical/utils`, `@lexical/table`, and `@lexical/code-core`, behind APIs this
+  library consumes rather than reimplements.
+- Upstream removed the long-deprecated `LexicalNode.getCommonAncestor`. Nothing
+  in this library used it; applications still calling it should move to
+  `$getCommonAncestor` from `lexical` before upgrading.
+- Upstream now warns in development builds when `editor.dispatchCommand` is
+  called from a read-only context such as `editor.read`, and documents that
+  `SELECTION_CHANGE_COMMAND` fires before reconciliation, so the DOM is not
+  guaranteed to match the pending selection. Audited every dispatch site and
+  read block in this library: all dispatches already run inside an update or a
+  command listener, and no plugin here listens for `SELECTION_CHANGE_COMMAND`.
+  Application code that positions DOM from that command should read the DOM in
+  `$onUpdate(() => editor.read('latest', ...))`.
+- Verified all 60 upstream entrypoints, the packed-package consumer, and the
+  Vue/Nuxt examples against Lexical 0.52, including a single-instance check of
+  the Nuxt client and Nitro server bundles and an SSR smoke test.
+
 ## 1.51.0
 
 - Updated the supported dependency line and complete public API parity baseline

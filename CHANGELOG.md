@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- `useLexicalComposerContext` and `useCollaborationContext` no longer let Vue
+  warn about the missing injection before they throw. Used outside their
+  provider they still throw the same error, but development builds no longer
+  print Vue's vague `injection "Symbol(...)" not found` ahead of it.
+
 ## 1.53.0
 
 - Updated the supported dependency line and complete public API parity baseline

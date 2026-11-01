@@ -38,7 +38,16 @@ describe('built-in plugin behavior', () => {
       },
     })
 
+    // setup() throws before it can return a render function, so Vue warns
+    // about the missing one on the way out. The throw is the assertion here.
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
     expect(() => mount(InvalidConsumer)).toThrow('must be used inside a <LexicalComposer>')
+
+    // The explicit inject() default keeps Vue's own vague warning from
+    // preceding the error this test asserts on.
+    expect(warn.mock.calls.flat().join(' ')).not.toContain('injection')
+    warn.mockRestore()
   })
 
   it('rethrows editor errors when no onError callback is configured', () => {

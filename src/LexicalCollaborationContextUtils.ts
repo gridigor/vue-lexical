@@ -59,7 +59,9 @@ export function createCollaborationContext(name?: string, color?: string): Colla
 
 /** Reads the collaboration context from the nearest provider. */
 export function useCollaborationContext(username?: string, color?: string): CollaborationContext {
-  const context = inject(collaborationContextKey)
+  // The explicit default keeps Vue from warning about the missing
+  // injection before the clearer error below is thrown.
+  const context = inject(collaborationContextKey, undefined)
 
   if (context === undefined) {
     throw new Error('useCollaborationContext() must be used inside a <LexicalCollaboration>.')

@@ -32,7 +32,9 @@ export function createLexicalComposerContext(
 }
 
 export function useLexicalComposerContext(): LexicalComposerContext {
-  const context = inject(lexicalComposerContextKey)
+  // The explicit default keeps Vue from warning about the missing
+  // injection before the clearer error below is thrown.
+  const context = inject(lexicalComposerContextKey, undefined)
 
   if (context === undefined) {
     throw new Error('useLexicalComposerContext() must be used inside a <LexicalComposer>.')

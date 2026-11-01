@@ -3,8 +3,8 @@
 Modern Vue 3 bindings for [Lexical](https://lexical.dev), designed around the
 same small, composable building blocks as `@lexical/react`.
 
-Version 1.52 provides a Vue equivalent for every public entrypoint and public
-symbol in `@lexical/react@0.52.0`, with React rendering contracts adapted to Vue
+Version 1.53 provides a Vue equivalent for every public entrypoint and public
+symbol in `@lexical/react@0.53.0`, with React rendering contracts adapted to Vue
 components, composables, slots, emits, and Teleport.
 
 See the [API parity roadmap](docs/ROADMAP.md) for the current implementation
@@ -16,7 +16,7 @@ are listed in [Intentional Vue API differences](docs/VUE_API_DIFFERENCES.md).
 ## Requirements
 
 - Vue 3.5 or newer
-- Lexical 0.52.x
+- Lexical 0.53.x
 - Node.js 22.12 or newer for development
 - TypeScript 7 for this repository's toolchain
 
@@ -25,7 +25,7 @@ version as `lexical`.
 
 Starting with `@gridigor/vue-lexical@1.49.0`, the minor version tracks the
 supported Lexical minor line: Vue Lexical `1.49.x` supports Lexical `0.49.x`,
-`1.52.x` supports Lexical `0.52.x`, and so on. Patch releases remain
+`1.53.x` supports Lexical `0.53.x`, and so on. Patch releases remain
 independent and contain compatible fixes for that Lexical line.
 
 ## Playground
@@ -510,6 +510,11 @@ matches their URL against `embedConfigs`, and opens a node menu. Each config
 supplies `parseUrl` and `insertNode`; `getMenuOptions` decides whether the user
 can embed or dismiss the detected URL. The exported `INSERT_EMBED_COMMAND`,
 `AutoEmbedOption`, and `URL_MATCHER` mirror the corresponding React helpers.
+The match found when the menu opened is the one inserted, so `parseUrl` runs
+once per detected link. When several configs match a URL the last one wins, and
+configs after it are never parsed. Pass `disableMenuFor` to suppress the menu
+where a block embed does not belong, such as an inline-only slot; it receives
+the `LinkNode` and runs inside the editor state.
 
 ## Block elements
 
@@ -862,7 +867,7 @@ its `LexicalHistoryPlugin` subpath.
 When collaboration is active, nested content waits for its Yjs subdocument by
 default. Set `skip-collab-checks` only when the nested editor is intentionally
 managed outside that lifecycle. The deprecated `initialNodes` prop is retained
-for `@lexical/react@0.52.0` compatibility; new code should configure nodes in
+for `@lexical/react@0.53.0` compatibility; new code should configure nodes in
 `createEditor({ nodes, parentEditor })`.
 
 ## Error boundary

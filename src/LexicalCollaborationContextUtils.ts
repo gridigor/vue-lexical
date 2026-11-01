@@ -1,5 +1,6 @@
 import type { Doc } from 'yjs'
 import type { InjectionKey } from 'vue'
+import { CAN_USE_DOM } from 'lexical'
 import { inject, shallowReactive } from 'vue'
 
 /** The collaboration state shared by the editors under a provider. */
@@ -36,14 +37,22 @@ export const collaborationContextKey: InjectionKey<CollaborationContext> = Symbo
   'LexicalCollaborationContext',
 )
 
+// Without a DOM the first entry is used instead of a random one. Server
+// rendering must not read Math.random(): the value would differ from the one
+// the browser picks and make hydration mismatch, and prerenderers reject the
+// call outright. The browser picks its own entry when it creates its context.
+function randomEntry(): (typeof entries)[number] {
+  return CAN_USE_DOM ? entries[Math.floor(Math.random() * entries.length)]! : entries[0]
+}
+
 /** Creates a collaboration context with a random name and cursor color. */
 export function createCollaborationContext(name?: string, color?: string): CollaborationContext {
-  const randomEntry = entries[Math.floor(Math.random() * entries.length)]
+  const entry = randomEntry()
 
   return shallowReactive({
-    color: color ?? randomEntry[1],
+    color: color ?? entry[1],
     isCollabActive: false,
-    name: name ?? randomEntry[0],
+    name: name ?? entry[0],
     yjsDocMap: shallowReactive(new Map()),
   })
 }

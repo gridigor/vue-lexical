@@ -64,8 +64,18 @@ function preferredAriaAttribute(
   return attrs[name] ?? compatibilityValue
 }
 
-function expandedAriaAttribute(value: unknown): boolean {
-  return value === 'false' ? false : Boolean(value)
+const rolelessAriaAttributes = [
+  'aria-activedescendant',
+  'aria-autocomplete',
+  'aria-expanded',
+  'aria-multiline',
+  'aria-placeholder',
+  'aria-readonly',
+  'aria-required',
+] as const
+
+function hasAccessibleName(values: readonly unknown[]): boolean {
+  return values.some((value) => typeof value === 'string' && value.trim() !== '')
 }
 
 /** Lower-level editable surface that binds an explicitly supplied editor. */
@@ -107,51 +117,65 @@ export const ContentEditableElement = defineComponent({
 
     return () => {
       const isEditable = editable.value
-      const role = attrs.role ?? 'textbox'
-      const expandedAttribute = attrs['aria-expanded']
+      const roleAttribute = attrs.role
+      const label = preferredAriaAttribute(attrs, 'aria-label', props.ariaLabel)
+      const labelledBy = preferredAriaAttribute(attrs, 'aria-labelledby', props.ariaLabelledBy)
 
-      return h(
-        props.as,
-        mergeProps(attrs, {
-          'aria-activedescendant': isEditable
-            ? preferredAriaAttribute(attrs, 'aria-activedescendant', props.ariaActiveDescendant)
-            : undefined,
-          'aria-autocomplete': isEditable
-            ? preferredAriaAttribute(attrs, 'aria-autocomplete', props.ariaAutoComplete)
-            : 'none',
-          'aria-controls': isEditable
-            ? preferredAriaAttribute(attrs, 'aria-controls', props.ariaControls)
-            : undefined,
-          'aria-describedby': preferredAriaAttribute(
-            attrs,
-            'aria-describedby',
-            props.ariaDescribedBy,
-          ),
-          'aria-errormessage': preferredAriaAttribute(
-            attrs,
-            'aria-errormessage',
-            props.ariaErrorMessage,
-          ),
-          'aria-expanded':
-            isEditable && role === 'combobox'
-              ? expandedAriaAttribute(expandedAttribute ?? props.ariaExpanded)
-              : undefined,
-          'aria-invalid': preferredAriaAttribute(attrs, 'aria-invalid', props.ariaInvalid),
-          'aria-label': preferredAriaAttribute(attrs, 'aria-label', props.ariaLabel),
-          'aria-labelledby': preferredAriaAttribute(attrs, 'aria-labelledby', props.ariaLabelledBy),
-          'aria-multiline': preferredAriaAttribute(attrs, 'aria-multiline', props.ariaMultiline),
-          'aria-owns': isEditable
-            ? preferredAriaAttribute(attrs, 'aria-owns', props.ariaOwns)
-            : undefined,
-          'aria-readonly': isEditable ? undefined : true,
-          'aria-required': preferredAriaAttribute(attrs, 'aria-required', props.ariaRequired),
-          contenteditable: isEditable ? 'true' : 'false',
-          ref: rootElement,
-          role,
-          spellcheck: attrs.spellcheck ?? true,
-          tabindex: attrs.tabindex ?? (isEditable ? undefined : -1),
-        }),
-      )
+      // A read-only surface with no accessible name is not a textbox: an
+      // unnamed role="textbox" is a violation on its own, so the role is
+      // dropped and the widget attributes that depend on it go with it.
+      const role =
+        roleAttribute === undefined
+          ? isEditable || hasAccessibleName([label, labelledBy, attrs.title])
+            ? 'textbox'
+            : undefined
+          : roleAttribute
+
+      const elementProps: Record<string, unknown> = mergeProps(attrs, {
+        'aria-activedescendant': isEditable
+          ? preferredAriaAttribute(attrs, 'aria-activedescendant', props.ariaActiveDescendant)
+          : undefined,
+        'aria-autocomplete': isEditable
+          ? preferredAriaAttribute(attrs, 'aria-autocomplete', props.ariaAutoComplete)
+          : 'none',
+        'aria-controls': isEditable
+          ? preferredAriaAttribute(attrs, 'aria-controls', props.ariaControls)
+          : undefined,
+        'aria-describedby': preferredAriaAttribute(
+          attrs,
+          'aria-describedby',
+          props.ariaDescribedBy,
+        ),
+        'aria-errormessage': preferredAriaAttribute(
+          attrs,
+          'aria-errormessage',
+          props.ariaErrorMessage,
+        ),
+        'aria-expanded':
+          role === 'combobox' ? (attrs['aria-expanded'] ?? props.ariaExpanded ?? false) : undefined,
+        'aria-invalid': preferredAriaAttribute(attrs, 'aria-invalid', props.ariaInvalid),
+        'aria-label': label,
+        'aria-labelledby': labelledBy,
+        'aria-multiline': preferredAriaAttribute(attrs, 'aria-multiline', props.ariaMultiline),
+        'aria-owns': isEditable
+          ? preferredAriaAttribute(attrs, 'aria-owns', props.ariaOwns)
+          : undefined,
+        'aria-readonly': isEditable ? undefined : true,
+        'aria-required': preferredAriaAttribute(attrs, 'aria-required', props.ariaRequired),
+        contenteditable: isEditable ? 'true' : 'false',
+        ref: rootElement,
+        role,
+        spellcheck: attrs.spellcheck ?? true,
+        tabindex: attrs.tabindex ?? (isEditable ? undefined : -1),
+      })
+
+      if (role === undefined) {
+        for (const name of rolelessAriaAttributes) {
+          elementProps[name] = undefined
+        }
+      }
+
+      return h(props.as, elementProps)
     }
   },
 })

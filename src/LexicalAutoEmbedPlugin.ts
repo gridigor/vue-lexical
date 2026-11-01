@@ -19,6 +19,7 @@ import {
   AutoEmbedOption,
   INSERT_EMBED_COMMAND,
   type EmbedConfig,
+  type EmbedMatchResult,
 } from './LexicalAutoEmbedPluginUtils'
 
 export {
@@ -30,6 +31,7 @@ export {
 } from './LexicalAutoEmbedPluginUtils'
 
 export interface AutoEmbedPluginProps<TEmbedConfig extends EmbedConfig = EmbedConfig> {
+  disableMenuFor?: (linkNode: LinkNode) => boolean
   embedConfigs: readonly TEmbedConfig[]
   getMenuOptions: (
     activeEmbedConfig: TEmbedConfig,
@@ -43,6 +45,7 @@ export interface AutoEmbedPluginProps<TEmbedConfig extends EmbedConfig = EmbedCo
 export const AutoEmbedPlugin = defineComponent({
   name: 'LexicalAutoEmbedPlugin',
   props: {
+    disableMenuFor: Function as PropType<(linkNode: LinkNode) => boolean>,
     embedConfigs: {
       type: Array as unknown as PropType<readonly EmbedConfig[]>,
       required: true,
@@ -62,9 +65,16 @@ export const AutoEmbedPlugin = defineComponent({
   }>,
   setup(props, { slots }) {
     const editor = useLexicalComposer()
+    const currentLink = (key: NodeKey, url: string): LinkNode | null => {
+      const node = $getNodeByKey(key)
+      return $isLinkNode(node) && node.isAttached() && node.getURL() === url ? node : null
+    }
+    const isMenuDisabledFor = (link: LinkNode) =>
+      props.disableMenuFor != null && props.disableMenuFor(link)
     const nodeKey = shallowRef<NodeKey | null>(null)
     const activeEmbedConfig = shallowRef<EmbedConfig | null>(null)
     const activeUrl = shallowRef<string | null>(null)
+    const activeResult = shallowRef<EmbedMatchResult | null>(null)
     const options = shallowRef<readonly AutoEmbedOption[]>([])
     let unregisterMutations: (() => void) | undefined
     let unregisterCommand: (() => void) | undefined
@@ -75,6 +85,7 @@ export const AutoEmbedPlugin = defineComponent({
       nodeKey.value = null
       activeEmbedConfig.value = null
       activeUrl.value = null
+      activeResult.value = null
       options.value = []
     }
 
@@ -82,41 +93,56 @@ export const AutoEmbedPlugin = defineComponent({
       options.value = props.getMenuOptions(config, embedLink, reset)
     }
 
-    const embedLink = async () => {
+    const embedLink = () => {
       const config = activeEmbedConfig.value
       const key = nodeKey.value
       const url = activeUrl.value
-      if (config === null || key === null || url === null) return
-      const result = await Promise.resolve(config.parseUrl(url))
-      if (result === null) return
+      const result = activeResult.value
+      if (config === null || key === null || url === null || result === null) return
       editor.update(() => {
-        const link = $getNodeByKey(key)
-        if (!$isLinkNode(link)) return
-        if ($getSelection() === null) link.selectEnd()
-        config.insertNode(editor, result)
-        if (link.isAttached()) link.remove()
+        // Defensive: a destroyed or re-pointed link resets the plugin before
+        // this runs, so the guard above normally catches it first.
+        const link = currentLink(key, url)
+        if (link !== null) {
+          if ($getSelection() === null) link.selectEnd()
+          config.insertNode(editor, result)
+          if (link.isAttached()) link.remove()
+        }
       })
     }
 
     const checkIfLinkNodeIsEmbeddable = async (key: NodeKey) => {
       const sequence = ++checkSequence
-      const url = editor.read(() => {
-        const node = $getNodeByKey(key) as LinkNode
-        return node.getURL()
+      const url = editor.read('latest', () => {
+        const node = $getNodeByKey(key)
+        return $isLinkNode(node) && !isMenuDisabledFor(node) ? node.getURL() : undefined
       })
-      const matches = await Promise.all(
-        props.embedConfigs.map(async (config) => ({
-          config,
-          match: await Promise.resolve(config.parseUrl(url)),
-        })),
-      )
-      if (sequence !== checkSequence) return
-      const active = matches.find(({ match }) => match !== null)
-      if (active !== undefined) {
-        activeEmbedConfig.value = active.config
-        activeUrl.value = url
-        nodeKey.value = key
-        refreshOptions(active.config)
+      if (url === undefined) return
+
+      const configs = props.embedConfigs
+      for (let index = configs.length - 1; index >= 0; index -= 1) {
+        const config = configs[index]!
+        // Sequential on purpose: the search stops at the first match from the
+        // end, so parseUrl is not called for configs that cannot win.
+        // oxlint-disable-next-line no-await-in-loop
+        const match = await Promise.resolve(config.parseUrl(url))
+        if (sequence !== checkSequence) return
+        if (match === null) continue
+
+        // Edits made while parseUrl was pending may not be committed yet, and
+        // the link may have moved into a disabled location since.
+        const stillEmbeddable = editor.read('pending', () => {
+          const link = currentLink(key, url)
+          return link !== null && !isMenuDisabledFor(link)
+        })
+        if (stillEmbeddable) {
+          activeEmbedConfig.value = config
+          activeUrl.value = url
+          activeResult.value = match
+          nodeKey.value = key
+          refreshOptions(config)
+        }
+        return
       }
     }
 

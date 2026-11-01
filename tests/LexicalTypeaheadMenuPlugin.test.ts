@@ -365,6 +365,36 @@ describe('TypeaheadMenuPlugin', () => {
     wrapper.unmount()
   })
 
+  it('pairs onOpen and onClose across a pending asynchronous close', async () => {
+    let finishClose: (() => void) | undefined
+    const onClose = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          finishClose = resolve
+        }),
+    )
+    const { callbacks, editor, wrapper } = await mountTypeahead({ onClose })
+    await setEditorText(editor, '@v')
+    expect(callbacks.onOpen).toHaveBeenCalledOnce()
+
+    const escape = () => editor.dispatchCommand(KEY_ESCAPE_COMMAND, new KeyboardEvent('keydown'))
+    escape()
+    expect(onClose).toHaveBeenCalledOnce()
+
+    // The close is still pending, so the menu counts as closed even though its
+    // resolution has not been cleared yet: closing again is not another close.
+    escape()
+    expect(onClose).toHaveBeenCalledOnce()
+
+    await setEditorText(editor, '@vue')
+    expect(callbacks.onOpen).toHaveBeenCalledTimes(2)
+
+    finishClose?.()
+    await nextTick()
+    expect(document.querySelectorAll('[role="option"]')).toHaveLength(2)
+    wrapper.unmount()
+  })
+
   it('handles rejected asynchronous close callbacks', async () => {
     const { editor, wrapper } = await mountTypeahead({ onClose: () => Promise.reject('closed') })
     await setEditorText(editor, '@v')

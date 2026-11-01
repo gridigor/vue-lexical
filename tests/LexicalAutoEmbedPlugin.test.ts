@@ -4,6 +4,7 @@ import {
   $createParagraphNode,
   $createTextNode,
   $getRoot,
+  $setSelection,
   PASTE_TAG,
   type LexicalEditor,
 } from 'lexical'
@@ -31,6 +32,7 @@ let latestSlotProps: MenuSlotProps<AutoEmbedOption> | null = null
 
 const TestEditor = defineComponent({
   props: {
+    disableMenuFor: Function as PropType<NonNullable<AutoEmbedPluginProps['disableMenuFor']>>,
     embedConfigs: {
       type: Array as PropType<EmbedConfig[]>,
       required: true,
@@ -69,6 +71,8 @@ const TestEditor = defineComponent({
           h(
             AutoEmbedPlugin,
             {
+              disableMenuFor: this.disableMenuFor,
+
               embedConfigs: this.embedConfigs,
               getMenuOptions: this.getMenuOptions,
               onOpenEmbedModalForConfig: this.onOpenEmbedModalForConfig,
@@ -194,7 +198,7 @@ describe('AutoEmbedPlugin', () => {
     wrapper.unmount()
   })
 
-  it('checks every config and lets menu options dismiss the suggestion', async () => {
+  it('prefers the last matching config and lets menu options dismiss the suggestion', async () => {
     const dismissHolder: { dismiss?: () => void } = {}
     const first: EmbedConfig = {
       insertNode: vi.fn(),
@@ -218,6 +222,7 @@ describe('AutoEmbedPlugin', () => {
     })
     await pasteLink(editor)
     expect(getMenuOptions).toHaveBeenCalledWith(second, expect.any(Function), expect.any(Function))
+    expect(first.parseUrl).not.toHaveBeenCalled()
     dismissHolder.dismiss?.()
     await nextTick()
     expect(document.querySelector('.embed-option')).toBeNull()
@@ -250,51 +255,113 @@ describe('AutoEmbedPlugin', () => {
     unmatched.wrapper.unmount()
   })
 
-  it('does not embed when the target disappears or no longer parses', async () => {
+  it('does not embed when the target disappears before the menu is used', async () => {
     const { config, editor, getMenuOptions, wrapper } = await mountAutoEmbed()
     await pasteLink(editor)
     const embed = getMenuOptions.mock.calls[0]?.[1]
     await clearEditor(editor)
-    await embed?.()
+    embed?.()
     expect(config.insertNode).not.toHaveBeenCalled()
     wrapper.unmount()
-
-    const nullConfig: EmbedConfig = {
-      insertNode: vi.fn(),
-      parseUrl: vi
-        .fn()
-        .mockReturnValueOnce({ id: 'initial', url: 'https://example.com/video' })
-        .mockReturnValue(null),
-      type: 'null',
-    }
-    const second = await mountAutoEmbed({ embedConfigs: [nullConfig] })
-    await pasteLink(second.editor)
-    const nullEmbed = second.getMenuOptions.mock.calls[0]?.[1]
-    await nullEmbed?.()
-    expect(nullConfig.insertNode).not.toHaveBeenCalled()
-    second.wrapper.unmount()
   })
 
-  it('does not insert after an asynchronously parsed target is removed', async () => {
-    let resolveEmbed: ((value: { id: string; url: string }) => void) | undefined
+  it('embeds the match captured when the menu opened without parsing again', async () => {
     const parseUrl = vi
       .fn()
-      .mockReturnValueOnce({ id: 'initial', url: 'https://example.com/video' })
-      .mockImplementationOnce(
-        (_url: string) =>
-          new Promise<{ id: string; url: string }>((resolve) => {
-            resolveEmbed = resolve
-          }),
-      )
-    const config: EmbedConfig = { insertNode: vi.fn(), parseUrl, type: 'race' }
+      .mockReturnValueOnce({ id: 'captured', url: 'https://example.com/video' })
+      .mockReturnValue(null)
+    const config: EmbedConfig = { insertNode: vi.fn(), parseUrl, type: 'captured' }
     const { editor, getMenuOptions, wrapper } = await mountAutoEmbed({ embedConfigs: [config] })
     await pasteLink(editor)
-    const embedPromise = getMenuOptions.mock.calls[0]?.[1]?.()
-    await clearEditor(editor)
-    resolveEmbed?.({ id: 'late', url: 'https://example.com/video' })
-    await embedPromise
+
+    getMenuOptions.mock.calls[0]?.[1]?.()
     await nextTick()
-    expect(config.insertNode).not.toHaveBeenCalled()
+
+    expect(parseUrl).toHaveBeenCalledTimes(1)
+    expect(config.insertNode).toHaveBeenCalledWith(editor, {
+      id: 'captured',
+      url: 'https://example.com/video',
+    })
+    wrapper.unmount()
+  })
+
+  it('selects the link when the editor has no selection', async () => {
+    const { config, editor, getMenuOptions, wrapper } = await mountAutoEmbed()
+    await pasteLink(editor)
+
+    await new Promise<void>((resolve) =>
+      editor.update(() => $setSelection(null), { onUpdate: resolve }),
+    )
+    getMenuOptions.mock.calls[0]?.[1]?.()
+    await nextTick()
+
+    expect(config.insertNode).toHaveBeenCalledOnce()
+    wrapper.unmount()
+  })
+
+  it('abandons a check that a newer paste has superseded', async () => {
+    const pending: ((value: { id: string; url: string } | null) => void)[] = []
+    const parseUrl = vi.fn(
+      (_url: string) =>
+        new Promise<{ id: string; url: string } | null>((resolve) => {
+          pending.push(resolve)
+        }),
+    )
+    const config: EmbedConfig = { insertNode: vi.fn(), parseUrl, type: 'superseded' }
+    const { editor, getMenuOptions, wrapper } = await mountAutoEmbed({ embedConfigs: [config] })
+
+    await pasteLink(editor, 'https://example.com/first')
+    await pasteLink(editor, 'https://example.com/second')
+    expect(pending).toHaveLength(2)
+
+    // The first check is resolved last, so its result is discarded rather than
+    // opening a menu for a link the newer paste has replaced.
+    pending[1]?.(null)
+    await Promise.resolve()
+    pending[0]?.({ id: 'first', url: 'https://example.com/first' })
+    await Promise.resolve()
+    await nextTick()
+
+    expect(getMenuOptions).not.toHaveBeenCalled()
+    expect(document.querySelector('.embed-option')).toBeNull()
+    wrapper.unmount()
+  })
+
+  it('does not open the menu for a link the host disables', async () => {
+    const { config, editor, getMenuOptions, wrapper } = await mountAutoEmbed({
+      disableMenuFor: () => true,
+    })
+    await pasteLink(editor)
+
+    expect(config.parseUrl).not.toHaveBeenCalled()
+    expect(getMenuOptions).not.toHaveBeenCalled()
+    expect(document.querySelector('.embed-option')).toBeNull()
+    wrapper.unmount()
+  })
+
+  it('does not open the menu when the link becomes disabled while parsing', async () => {
+    let resolveMatch: ((value: { id: string; url: string }) => void) | undefined
+    const parseUrl = vi.fn(
+      (_url: string) =>
+        new Promise<{ id: string; url: string }>((resolve) => {
+          resolveMatch = resolve
+        }),
+    )
+    const config: EmbedConfig = { insertNode: vi.fn(), parseUrl, type: 'late-disable' }
+    const disableMenuFor = vi.fn().mockReturnValueOnce(false).mockReturnValue(true)
+    const { getMenuOptions, editor, wrapper } = await mountAutoEmbed({
+      disableMenuFor,
+      embedConfigs: [config],
+    })
+    await pasteLink(editor)
+
+    resolveMatch?.({ id: 'late', url: 'https://example.com/video' })
+    await Promise.resolve()
+    await nextTick()
+
+    expect(disableMenuFor).toHaveBeenCalledTimes(2)
+    expect(getMenuOptions).not.toHaveBeenCalled()
+    expect(document.querySelector('.embed-option')).toBeNull()
     wrapper.unmount()
   })
 })

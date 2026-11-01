@@ -78,7 +78,7 @@ describe('ContentEditableElement', () => {
     expect(element.getAttribute('aria-readonly')).toBe('true')
     expect(element.hasAttribute('aria-activedescendant')).toBe(false)
     expect(element.hasAttribute('aria-controls')).toBe(false)
-    expect(element.hasAttribute('aria-expanded')).toBe(false)
+    expect(element.getAttribute('aria-expanded')).toBe('true')
     expect(element.hasAttribute('aria-owns')).toBe(false)
     expect(element.getAttribute('aria-describedby')).toBe('description')
     expect(element.getAttribute('tabindex')).toBe('-1')
@@ -108,6 +108,85 @@ describe('ContentEditableElement', () => {
     wrapper.unmount()
     expect(editor.getRootElement()).toBe(replacement)
     editor.setRootElement(null)
+  })
+
+  it('drops the role and its widget attributes from an unnamed read-only surface', async () => {
+    const editor = createTestEditor('roleless-read-only')
+    const wrapper = mount(ContentEditableElement, {
+      props: { editor, ariaMultiline: true, ariaRequired: true },
+      attrs: { 'aria-placeholder': 'Write here' },
+    })
+    await nextTick()
+
+    expect(wrapper.attributes('role')).toBe('textbox')
+    expect(wrapper.attributes('aria-multiline')).toBe('true')
+
+    editor.setEditable(false)
+    await nextTick()
+
+    expect(wrapper.attributes('role')).toBeUndefined()
+    expect(wrapper.attributes('aria-autocomplete')).toBeUndefined()
+    expect(wrapper.attributes('aria-multiline')).toBeUndefined()
+    expect(wrapper.attributes('aria-placeholder')).toBeUndefined()
+    expect(wrapper.attributes('aria-readonly')).toBeUndefined()
+    expect(wrapper.attributes('aria-required')).toBeUndefined()
+    wrapper.unmount()
+  })
+
+  it.each([
+    ['aria-label', { 'aria-label': 'Notes' }],
+    ['aria-labelledby', { 'aria-labelledby': 'notes-heading' }],
+    ['title', { title: 'Notes' }],
+  ])('keeps the textbox role of a read-only surface named by %s', async (_name, attrs) => {
+    const editor = createTestEditor(`named-read-only-${_name}`)
+    const wrapper = mount(ContentEditableElement, { props: { editor }, attrs })
+    await nextTick()
+    editor.setEditable(false)
+    await nextTick()
+
+    expect(wrapper.attributes('role')).toBe('textbox')
+    expect(wrapper.attributes('aria-readonly')).toBe('true')
+    wrapper.unmount()
+  })
+
+  it('ignores a blank accessible name on a read-only surface', async () => {
+    const editor = createTestEditor('blank-named-read-only')
+    const wrapper = mount(ContentEditableElement, {
+      props: { editor, ariaLabel: '   ' },
+    })
+    await nextTick()
+    editor.setEditable(false)
+    await nextTick()
+
+    expect(wrapper.attributes('role')).toBeUndefined()
+    wrapper.unmount()
+  })
+
+  it('honours an explicitly requested role on an unnamed read-only surface', async () => {
+    const editor = createTestEditor('explicit-role-read-only')
+    const wrapper = mount(ContentEditableElement, {
+      props: { editor },
+      attrs: { role: 'presentation' },
+    })
+    await nextTick()
+    editor.setEditable(false)
+    await nextTick()
+
+    expect(wrapper.attributes('role')).toBe('presentation')
+    expect(wrapper.attributes('aria-readonly')).toBe('true')
+    wrapper.unmount()
+  })
+
+  it('reports a combobox as collapsed when no expanded state is given', async () => {
+    const editor = createTestEditor('default-expanded')
+    const wrapper = mount(ContentEditableElement, {
+      props: { editor },
+      attrs: { role: 'combobox' },
+    })
+    await nextTick()
+
+    expect(wrapper.attributes('aria-expanded')).toBe('false')
+    wrapper.unmount()
   })
 
   it('keeps a hyphenated aria-expanded value for a combobox', async () => {

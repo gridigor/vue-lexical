@@ -1,5 +1,48 @@
 # Changelog
 
+## 1.53.0
+
+- Updated the supported dependency line and complete public API parity baseline
+  to `@lexical/react@0.53.0` and Lexical `0.53.x`. Upstream added and removed no
+  entrypoints in this release, so all 60 stay mapped, and no entrypoint this
+  library mirrors gained or lost a public symbol.
+- `ContentEditableElement` no longer defaults `role` to `textbox`. The role is
+  now resolved: an editable surface, or a read-only one carrying an accessible
+  name through `aria-label`, `aria-labelledby`, or `title`, is still a
+  `textbox`, while a read-only surface with no accessible name renders no role
+  at all, because an unnamed `role="textbox"` is an accessibility violation on
+  its own. When the resolved role is absent, the widget attributes that depend
+  on it (`aria-activedescendant`, `aria-autocomplete`, `aria-expanded`,
+  `aria-multiline`, `aria-placeholder`, `aria-readonly`, `aria-required`) are
+  dropped with it. An explicitly supplied `role` is still authoritative and
+  keeps those attributes, read-only included.
+- `aria-expanded` on a `combobox` is no longer suppressed while the editor is
+  read-only, and the supplied value is passed through rather than coerced, so a
+  combobox with no expanded state given now reports `aria-expanded="false"`.
+- `AutoEmbedPlugin` accepts `disableMenuFor` to suppress the embed menu where a
+  block embed does not belong, such as an inline-only slot. Upstream names this
+  prop `$disableMenuFor`; Vue reserves `$`-prefixed names for its instance
+  API and refuses to declare such a prop, so the prefix is dropped here. It is
+  checked both when the pasted link is read and again after `parseUrl` resolves.
+- `AutoEmbedPlugin` now inserts the match captured when the menu opened instead
+  of parsing the URL a second time, so `parseUrl` runs once per detected link
+  and a config whose result changes between the two calls can no longer insert
+  something other than what the menu offered. A link that was removed or
+  re-pointed while `parseUrl` was pending no longer opens a menu, and when
+  several configs match a URL the last one wins while the configs before it are
+  never parsed.
+- `TypeaheadMenuPlugin` pairs `onOpen` and `onClose` across an asynchronous
+  close. A close whose `onClose` promise is still pending now counts as closed,
+  so closing again does not call `onClose` a second time and reopening calls
+  `onOpen` again instead of silently skipping it.
+- `createCollaborationContext` no longer reads `Math.random()` without a DOM
+  and uses the first identity instead. A random identity picked on the server
+  differs from the one the browser picks and makes hydration mismatch, and
+  prerenderers reject the call outright.
+- Verified all 60 upstream entrypoints, the packed-package consumer, and the
+  Vue/Nuxt examples against Lexical 0.53, including a single-instance check of
+  the Nuxt client and Nitro server bundles and an SSR smoke test.
+
 ## 1.52.0
 
 - Updated the supported dependency line and complete public API parity baseline

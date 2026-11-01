@@ -107,6 +107,10 @@ export const TypeaheadMenuPlugin = defineComponent({
     let unregisterUpdate: (() => void) | undefined
     let unregisterEditable: (() => void) | undefined
     let closeSequence = 0
+    // Whether the menu is open as far as onOpen and onClose are concerned.
+    // Unlike resolution, this sees a close whose onClose promise is still
+    // pending, so neither callback is called twice or left unpaired.
+    let isOpen = false
 
     const updateSelectedIndex = (index: number) => {
       const root = editor.getRootElement()
@@ -121,9 +125,10 @@ export const TypeaheadMenuPlugin = defineComponent({
     }
 
     const closeMenu = () => {
-      if (resolution.value === null) {
+      if (!isOpen) {
         return
       }
+      isOpen = false
       const sequence = ++closeSequence
       let result: void | PromiseLike<void> = undefined
       try {
@@ -141,10 +146,10 @@ export const TypeaheadMenuPlugin = defineComponent({
     }
 
     const openMenu = (nextResolution: MenuResolution) => {
-      const wasClosed = resolution.value === null
       closeSequence += 1
       resolution.value = nextResolution
-      if (wasClosed) {
+      if (!isOpen) {
+        isOpen = true
         props.onOpen?.(nextResolution)
       }
     }
